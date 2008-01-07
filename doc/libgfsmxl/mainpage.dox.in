@@ -1,0 +1,51 @@
+/* -*- Mode: C -*- */
+/** 
+\mainpage libgfsmxl : finite state cascaded lookup utility library
+
+\author Bryan Jurish <moocow@ling.uni-potsdam.de>
+
+\version @VERSION@
+
+<b>Project URL:</b> http://www.ling.uni-potsdam.de/~moocow/projects/gfsm
+
+\section Intro Introduction
+
+libgfsmxl is an abstract C library for online lookup operations
+in cascaded finite state automata.
+
+\section building Building libgfsmxl
+
+Run the \a configure script in the distribution directory, and then call \a make:
+
+\verbatim
+bash$ cd gfsmxl-XX.YY.ZZ
+
+bash$ ./configure
+> checking build system type... i686-pc-linux-gnu
+> checking host system type... i686-pc-linux-gnu
+> checking target system type... i686-pc-linux-gnu
+> checking for a BSD-compatible install... /usr/bin/install -c
+...
+> config.status: executing depfiles commands
+
+bash$ make
+> Making all in config
+...
+> make[1]: Nothing to be done for `all-am'.
+> make: Leaving directory `/home/moocow/gfsmxl-XX.YY.ZZ'
+
+bash$ make install
+> Making install in config
+...
+> make: Leaving directory `/home/moocow/gfsmxl-XX.YY.ZZ'
+
+\endverbatim
+
+libgfsmxl will install itself in /usr/local by default.
+
+See the file \a INSTALL in the gfsm distribution root directory
+for more details.
+
+
+*/
+

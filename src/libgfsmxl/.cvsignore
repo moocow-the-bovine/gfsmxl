@@ -11,8 +11,10 @@
 *.tfst
 *.lab
 *.loT
-gfsmConfigAuto.*
+
+gfsmxlConfigAuto.*
 gmon.out
+
 *.output
 stamp-h*
 ###config.h
@@ -39,4 +41,4 @@ SFST.moocow
 fsa6-src
 pd-fst
 save
-libgfsm.*
+libgfsmxl.*

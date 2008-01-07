@@ -1,0 +1,14 @@
+*~
+.*~
+*.o
+*.lo
+*.la
+.libs
+*.a
+*.so
+aclocal.m4
+Makefile
+Makefile.in
+README.txt
+configure
+.deps

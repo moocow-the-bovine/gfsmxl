@@ -1,0 +1,352 @@
+
+/*=============================================================================*\
+ * File: gfsmxlCascade.hi
+ * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
+ * Description: finite state machine library: lookup cascade: inline definitions
+ *
+ * Copyright (c) 2007,2008 Bryan Jurish.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *=============================================================================*/
+
+/** \file gfsmxlCascade.hi
+ *  \brief First stab at transducer cascade
+ */
+#include <gfsmAssert.h>
+
+/*======================================================================
+ * constructors, etc.
+ */
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_cascade_set_depth(gfsmxlCascade *csc, guint depth)
+{
+  csc->depth = depth;
+  g_ptr_array_set_size(csc->xfsms, depth);
+#ifdef CASCADE_USE_BLOCKS
+  g_ptr_array_set_size(csc->xblks, depth);
+#endif
+  g_array_set_size(csc->roots, depth+1);
+  //g_array_index(csc->roots,gfsmStateId,0) = depth;
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlCascade *gfsmxl_cascade_new_full(guint depth, gfsmSRType srtype)
+{
+  gfsmxlCascade *csc = g_new0(gfsmxlCascade,1);
+  csc->depth = depth;
+  csc->sr    = gfsm_semiring_new(srtype);
+  csc->xfsms = g_ptr_array_sized_new(depth);
+#ifdef CASCADE_USE_BLOCKS
+  csc->xblks = g_ptr_array_sized_new(depth);
+#endif
+  //
+  csc->roots = g_array_sized_new(FALSE,TRUE,sizeof(gfsmStateId),depth);
+  //csc->roots = g_array_sized_new(FALSE,TRUE,sizeof(gfsmStateId),depth+1);
+  //g_array_index(csc->roots,gfsmStateId,0) = depth;
+  return csc;
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlCascade *gfsmxl_cascade_new(void)
+{ return gfsmxl_cascade_new_full(0, gfsmAutomatonDefaultSRType); }
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_cascade_free(gfsmxlCascade *csc, gboolean free_automata)
+{
+  if (csc) {
+    gfsmxl_cascade_clear(csc,free_automata);
+    if (csc->sr)    gfsm_semiring_free(csc->sr);
+    if (csc->xfsms) g_ptr_array_free(csc->xfsms,TRUE);
+#ifdef CASCADE_USE_BLOCKS
+    if (csc->xblks) g_ptr_array_free(csc->xblks,TRUE);
+#endif
+    if (csc->roots) g_array_free(csc->roots,TRUE);
+    g_free(csc);
+  }
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_cascade_append_indexed(gfsmxlCascade *csc, gfsmIndexedAutomaton *xfsm)
+{
+  g_ptr_array_add(csc->xfsms,    xfsm);
+#if defined(CASCADE_USE_BLOCK_INDEX)
+  g_ptr_array_add(csc->xblks,    gfsmxl_arc_block_index_new_lower(xfsm));
+#elif defined(CASCADE_USE_BLOCK_HASH)
+  g_ptr_array_add(csc->xblks,    gfsmxl_arc_block_hash_new_lower(xfsm));
+#endif
+  g_array_append_val(csc->roots, xfsm->root_id);
+  //g_array_index(csc->roots,gfsmStateId,0)++;
+  csc->depth++;
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_cascade_append(gfsmxlCascade *csc, gfsmAutomaton *fsm)
+{
+  gfsmxl_cascade_append_indexed(csc, gfsm_automaton_to_indexed(fsm,NULL));
+}
+
+/*======================================================================
+ * High-level Access
+ */
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_cascade_set_semiring(gfsmxlCascade *csc, gfsmSemiring *sr)
+{
+  if (csc->sr) gfsm_semiring_free(csc->sr);
+  csc->sr = gfsm_semiring_copy(sr);
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_cascade_set_semiring_type(gfsmxlCascade *csc, gfsmSRType srtype)
+{
+  if (csc->sr) {
+    if (csc->sr->type==srtype) return;
+    gfsm_semiring_free(csc->sr);
+  }
+  csc->sr = gfsm_semiring_new(srtype);
+}
+
+/*======================================================================
+ * StateId Utilities
+ */
+
+//--------------------------------------------------------------
+#if 0
+GFSM_INLINE
+gfsmStateId gfsmxl_cascade_stateid_depth(gfsmxlCascadeStateId qid)
+{ return qid[0]; }
+#endif
+
+//--------------------------------------------------------------
+#if 0
+GFSM_INLINE
+gfsmStateId* gfsmxl_cascade_stateid_data(gfsmxlCascadeStateId qid)
+{ return qid+1; }
+#endif
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlCascadeStateId gfsmxl_cascade_get_root(gfsmxlCascade *csc)
+{ return (gfsmxlCascadeStateId)(csc->roots->data); }
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlCascadeStateId gfsmxl_cascade_stateid_sized_new(guint depth)
+{
+  gfsmxlCascadeStateId qids = g_new(gfsmStateId,depth);
+  //qids[0] = depth;
+  return qids;
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlCascadeStateId gfsmxl_cascade_stateid_new(gfsmxlCascade *csc)
+{ return gfsmxl_cascade_stateid_sized_new(csc->depth); }
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlCascadeStateId gfsmxl_cascade_stateid_sized_copy(gfsmxlCascadeStateId dst, gfsmxlCascadeStateId src, guint depth)
+{
+  memcpy(dst, src, depth*sizeof(gfsmStateId));
+  return dst;
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlCascadeStateId gfsmxl_cascade_stateid_sized_clone(gfsmxlCascadeStateId src, guint depth)
+{
+  return gfsmxl_cascade_stateid_sized_copy(gfsmxl_cascade_stateid_sized_new(depth), src, depth);
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_cascade_stateid_free(gfsmxlCascadeStateId qids)
+{ g_free(qids); }
+
+
+
+/*======================================================================
+ * Arc Utilties: gfsmxlArcPP
+ */
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlArcPP gfsmxl_arcpp_sized_new(guint depth)
+{ return g_new0(gfsmArc*,depth); }
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlArcPP gfsmxl_arcpp_sized_copy(gfsmxlArcPP dst, gfsmxlArcPP src, guint depth)
+{
+  memcpy(dst, src, depth*sizeof(gfsmArc*));
+  return dst;
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlArcPP gfsmxl_arcpp_sized_clone(gfsmxlArcPP src, guint depth)
+{ return gfsmxl_arcpp_sized_copy(gfsmxl_arcpp_sized_new(depth), src, depth); }
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_arcpp_free(gfsmxlArcPP arcpp)
+{ g_free(arcpp); }
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmLabelId gfsmxl_arcpp_lower(gfsmxlArcPP arcpp)
+{ return arcpp[0] ? arcpp[0]->lower : gfsmEpsilon; }
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmLabelId gfsmxl_arcpp_upper(gfsmxlArcPP arcpp, guint depth)
+{ return arcpp[depth-1] ? arcpp[depth-1]->upper : gfsmEpsilon; }
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmWeight gfsmxl_arcpp_weight(gfsmxlArcPP arcpp, guint depth, gfsmSemiring *sr)
+{
+  guint i;
+  gfsmWeight w = sr->one;
+  for (i=0; i < depth; i++) {
+    if (arcpp[i]) w = gfsm_sr_times(sr,w,arcpp[i]->weight);
+  }
+  return w;
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_arcpp_target(gfsmxlArcPP arcpp, gfsmxlCascadeStateId src, gfsmxlCascadeStateId dst, guint depth)
+{
+  guint i;
+  for (i=0; i < depth; i++) {
+    dst[i] = arcpp[i] ? arcpp[i]->target : src[i];
+  }
+}
+
+
+/*======================================================================
+ * Arc Utilties: gfsmxlCascadeArc
+ */
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlCascadeArc* gfsmxl_cascade_arc_sized_new(guint depth)
+{
+  gfsmxlCascadeArc *arc = (gfsmxlCascadeArc*)g_malloc(sizeof(gfsmxlCascadeArc)+(depth*sizeof(gfsmStateId)));
+  arc->targets = (gfsmxlCascadeStateId)( ((void*)arc) + sizeof(gfsmxlCascadeArc) );
+  return arc;
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlCascadeArc* gfsmxl_cascade_arc_sized_copy(gfsmxlCascadeArc *dst, gfsmxlCascadeArc *src, guint depth)
+{
+  dst->lower  = src->lower;
+  dst->upper  = src->upper;
+  dst->weight = src->weight;
+  gfsmxl_cascade_stateid_sized_copy(dst->targets,src->targets,depth);
+  return dst;
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlCascadeArc* gfsmxl_cascade_arc_sized_clone(gfsmxlCascadeArc *src, guint depth)
+{
+  return gfsmxl_cascade_arc_sized_copy(gfsmxl_cascade_arc_sized_new(depth), src, depth);
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_cascade_arc_free(gfsmxlCascadeArc *arc)
+{
+  //gfsmxl_cascade_stateid_free(arc->targets);
+  g_free(arc);
+}
+
+
+/*======================================================================
+ * Arc Iteration
+ */
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gboolean gfsmxl_cascade_arciter_ok(gfsmxlCascadeArcIter *cai)
+{
+  gfsm_assert(cai!=NULL);
+  return cai->cur!=NULL;
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlCascadeArc *gfsmxl_cascade_arciter_arc(gfsmxlCascadeArcIter *cai)
+{
+  gfsm_assert(cai!=NULL);
+  gfsm_assert(cai->cur!=NULL);
+  return (gfsmxlCascadeArc*)cai->cur->data;
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_cascade_arciter_next(gfsmxlCascadeArcIter *cai)
+{
+  gfsm_assert(cai!=NULL);
+  cai->cur = cai->cur ? cai->cur->next : NULL;
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_cascade_arciter_reset(gfsmxlCascadeArcIter *cai)
+{
+  gfsm_assert(cai!=NULL);
+  cai->cur = cai->arclist;
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_cascade_arciter_insert_arc_(gfsmxlCascadeArcIter *cai, gfsmxlCascadeArc *carc)
+{
+#ifdef CASCADE_SORT_ARCITER
+  gfsmSemiring *sr=cai->csc->sr;
+  GSList       *prev=NULL, *list=cai->arclist, *tmp=g_slist_alloc();
+  while (list != NULL) {
+    if (!gfsm_sr_less(sr, ((gfsmxlCascadeArc*)list->data)->weight, carc->weight)) break;
+    prev = list;
+    list = list->next;
+  }
+  tmp->data = carc;
+  tmp->next = list;
+  if (prev) { prev->next   = tmp; }
+  else      { cai->arclist = tmp; }
+#else
+  cai->arclist = g_slist_prepend(cai->arclist,carc);
+#endif
+}
+
+
+
+/*======================================================================
+ * END
+ */
+//--------------------------------------------------------------

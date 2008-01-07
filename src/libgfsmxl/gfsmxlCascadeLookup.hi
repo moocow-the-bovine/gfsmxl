@@ -1,0 +1,178 @@
+
+/*=============================================================================*\
+ * File: gfsmxlCascadeLookup.hi
+ * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
+ * Description: finite state machine library: lookup cascade: lookup: inline definitions
+ *
+ * Copyright (c) 2007,2008 Bryan Jurish.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ *=============================================================================*/
+
+/** \file gfsmxlCascadeLookup.hi
+ *  \brief First stab at transducer cascade: inline definitions
+ */
+#include <gfsmAssert.h>
+
+/*======================================================================
+ * constructors, etc.
+ */
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_cascade_lookup_set_cascade(gfsmxlCascadeLookup *cl, gfsmxlCascade *csc)
+{
+  if (cl->csc) gfsmxl_cascade_free(cl->csc,TRUE);
+  cl->csc = csc;
+  cl->heap_neginf.csc  = csc;
+  cl->heap_neginf.qids = NULL; //-- unhashable!
+  cl->heap_neginf.ipos = (guint32)(-1);
+  cl->heap_neginf.w    = csc->sr->zero;
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlCascadeLookup *gfsmxl_cascade_lookup_new_full(gfsmxlCascade *csc, gfsmWeight max_w, guint max_paths, guint max_ops)
+{
+  gfsmxlCascadeLookup *cl = g_new0(gfsmxlCascadeLookup,1);
+  cl->csc       = NULL;
+  cl->max_w     = max_w;
+  cl->max_paths = max_paths;
+  cl->max_ops   = max_ops;
+  cl->heap      = gfsmxl_clc_fh_makeheap();
+  //fh_setcmp(cl->heap, (voidcmp)gfsmxl_cascade_lookup_config_fh_compare);
+  gfsmxl_clc_fh_setneginf(cl->heap, &(cl->heap_neginf));
+  cl->configs  = g_hash_table_new_full((GHashFunc)gfsmxl_cascade_lookup_config_ht_hash,
+				       (GEqualFunc)gfsmxl_cascade_lookup_config_ht_equal,
+				       (GDestroyNotify)gfsmxl_cascade_lookup_config_free,
+				       (GDestroyNotify)NULL
+				       );
+  cl->otrie = gfsm_trie_new();
+  gfsmxl_cascade_lookup_set_cascade(cl,csc);
+  return cl;
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlCascadeLookup *gfsmxl_cascade_lookup_new(void)
+{ return gfsmxl_cascade_lookup_new_full(NULL,0,1,((guint)-1)); }
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_cascade_lookup_free(gfsmxlCascadeLookup *cl)
+{
+  gfsmxl_cascade_lookup_reset(cl);
+  gfsmxl_cascade_free(cl->csc,TRUE);
+  gfsmxl_clc_fh_deleteheap(cl->heap);
+  g_hash_table_destroy(cl->configs);
+  gfsm_automaton_free(cl->otrie);
+}
+
+/*======================================================================
+ * gfsmxlCascadeLookupConfig
+ */
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_config_new_full(gfsmxlCascade        *csc,
+							       gfsmxlCascadeStateId  qids,
+							       guint32              ipos,
+							       gfsmStateId          oid,
+							       gfsmStateId          rid,
+							       gfsmWeight           w
+							       //,gfsmxlCascadeLookupConfig *parent
+							       )
+{
+  gfsmxlCascadeLookupConfig *lc = (gfsmxlCascadeLookupConfig*)g_malloc(sizeof(gfsmxlCascadeLookupConfig)
+								     +
+								     (csc->depth*sizeof(gfsmStateId))
+								     );
+  lc->csc  = csc;
+  lc->qids = (gfsmxlCascadeStateId)( ((void*)lc) + sizeof(gfsmxlCascadeLookupConfig) );
+  lc->ipos   = ipos;
+  lc->oid    = oid;
+  lc->rid    = rid;
+  lc->w      = w;
+  //lc->parent = parent;
+  gfsmxl_cascade_stateid_sized_copy(lc->qids, qids, csc->depth);
+  return lc;
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_config_new(gfsmxlCascadeLookup *cl)
+{
+  return gfsmxl_cascade_lookup_config_new_full(cl->csc,
+					      gfsmxl_cascade_get_root(cl->csc),
+					      0,
+					      0,
+					      0,
+					      cl->csc->sr->one
+					      //,NULL //-- parent
+					      );
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_cascade_lookup_config_free_inline(gfsmxlCascadeLookupConfig *lc)
+{
+  //gfsmxl_cascade_stateid_free(lc->qids);
+  g_free(lc);
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_cascade_lookup_config_copy(gfsmxlCascadeLookupConfig *dst, gfsmxlCascadeLookupConfig *src)
+{
+  dst->csc    = src->csc;
+  dst->ipos   = src->ipos;
+  dst->oid    = src->oid;
+  dst->rid    = src->rid;
+  dst->w      = src->w;
+  //dst->parent = src->parent;
+  gfsmxl_cascade_stateid_sized_copy(dst->qids,src->qids,src->csc->depth);
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_config_clone(gfsmxlCascadeLookupConfig *src)
+{
+  return gfsmxl_cascade_lookup_config_new_full(src->csc, src->qids, src->ipos, src->oid, src->rid, src->w
+					      //, src->parent
+					      );
+}
+
+
+//--------------------------------------------------------------
+GFSM_INLINE
+int gfsmxl_cascade_lookup_config_fh_compare(gfsmxlCascadeLookupConfig *lc1, gfsmxlCascadeLookupConfig *lc2)
+{
+  //-- compare: weight
+  if (gfsm_sr_less(lc1->csc->sr, lc1->w, lc2->w)) return -1;
+  if (gfsm_sr_less(lc1->csc->sr, lc2->w, lc1->w)) return  1;
+  //
+  //-- compare: input position
+  if (lc1->ipos < lc2->ipos) return  1;
+  if (lc1->ipos > lc2->ipos) return -1;
+  //
+  //-- default
+  return 0;
+}
+
+
+/*======================================================================
+ * END
+ */
+//--------------------------------------------------------------

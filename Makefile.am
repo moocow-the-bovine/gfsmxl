@@ -91,6 +91,7 @@ pkgdoc_DATA = \
 EXTRA_DIST = \
 	INSTALL \
 	AUTHORS \
+	Changes \
 	$(PODS) \
 	$(PODS:.pod=.txt) \
 	$(PODS:.pod=.html) \

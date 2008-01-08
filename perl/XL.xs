@@ -5,7 +5,9 @@
 #include "ppport.h"
 
 #include <gfsm.h>
-#include "GfsmPerl.h"
+#include "GfsmXLPerl.h"
+
+#define GFSMXL_DEBUG 1
 
 MODULE = Gfsm::XL		PACKAGE = Gfsm::XL
 
@@ -14,18 +16,44 @@ MODULE = Gfsm::XL		PACKAGE = Gfsm::XL
 ##=====================================================================
 BOOT:
  {
-   gfsmPerlAlphabet *a=NULL;
-   //
    //g_mem_set_vtable(&gfsm_perl_vtable); //-- shuld be done by Gfsm
    //gfsm_allocators_enable();
    //
+#ifdef GFSMXL_DEBUG
    g_printerr("Gfsm::XL::BOOT() called.\n");
-   a = (gfsmPerlAlphabet*)gfsm_perl_alphabet_new();
-   g_printerr("new alphabet a=%p\n", a);
-   gfsm_perl_alphabet_free(a);
+#endif
  } 
 
 ##=====================================================================
-## Whatever
+## Gfsm::XL (debug)
 ##=====================================================================
-#INCLUDE: Whatever.xs
+
+#ifdef GFSMXL_DEBUG
+
+int __refcnt(SV *sv)
+CODE:
+ if (sv && SvOK(sv)) {
+   RETVAL = SvREFCNT(sv);
+ } else {
+   XSRETURN_UNDEF;
+ }
+OUTPUT:
+ RETVAL
+
+#endif
+
+##=====================================================================
+## Gfsm::XL (global)
+##=====================================================================
+
+const char *
+library_version()
+CODE:
+ RETVAL = PACKAGE_VERSION;
+OUTPUT:
+ RETVAL
+
+##=====================================================================
+## Gfsm::XL::Cascade
+##=====================================================================
+INCLUDE: Cascade.xs

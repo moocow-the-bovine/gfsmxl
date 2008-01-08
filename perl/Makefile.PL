@@ -3,8 +3,9 @@ use ExtUtils::MakeMaker;
 ##----------------------------------------------------------------------
 ## Configuration
 ##----------------------------------------------------------------------
-if (system("pkg-config --atleast-version=0.0.1 gfsmxl") != 0) {
-  die("Required module gfsmxl >= v0.0.1 not found!\n");
+our $gfsmxl_min_version = "0.0.2";
+if (system("pkg-config --atleast-version=$gfsmxl_min_version gfsmxl") != 0) {
+  die("Required module gfsmxl >= v$gfsmxl_min_version not found!\n");
 }
 
 $GFSMXL_IFLAGS = join(' ', map { $s=`pkg-config --cflags-only-I $_`; chomp($s); $s } qw(gfsmxl));
@@ -29,8 +30,7 @@ WriteMakefile
    DEFINE       => '-DHAVE_CONFIG_H',   ##-- additional defines
    INC          => $GFSMXL_IFLAGS,      ##-- additional includes
    CCFLAGS      => '',                  ##-- additional flags
-   #OBJECT       => 'XL.o GfsmPerl.o',
-   OBJECT       => 'XL.o',
+   OBJECT       => 'XL.o GfsmXLPerl.o',
 
    ##-- DEBUG
    #MAKEAPERL=>1,
@@ -58,13 +58,14 @@ sub MY::depend {
 		 ##-- included xs dependencies
 		 ."XL.c: "
 		 .(''
+		   ." Cascade.xs"
 		   ." XL.xs"
 		  )
 		 ."\n\n"
 		 ##-- c->o dependencies
-		 ."XL.o: XL.c GfsmPerl.h\n"
+		 ."XL.o: XL.c GfsmXLPerl.h\n"
 		 ."\n"
-		 #."GfsmPerl.o: GfsmPerl.h GfsmPerl.c\n"
+		 ."GfsmXLPerl.o: GfsmXLPerl.h GfsmXLPerl.c\n"
 		 ."\n"
 		 ## -- more here
 		 ."\n"

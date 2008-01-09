@@ -40,16 +40,18 @@ gfsmxlCascadePerl *gfsmxl_perl_cascade_new(void)
 
 void gfsmxl_perl_cascade_clear(gfsmxlCascadePerl *cscp)
 {
-  gfsmxl_cascade_clear(cscp->csc,FALSE);
-  av_clear(cscp->av);
+  if (cscp->csc) gfsmxl_cascade_clear(cscp->csc,FALSE);
+  if (cscp->av) av_clear(cscp->av);
 }
 
 void gfsmxl_perl_cascade_free(gfsmxlCascadePerl *cscp)
 {
-  gfsmxl_perl_cascade_clear(cscp);
-  av_undef(cscp->av);
-  gfsmxl_cascade_free(cscp->csc,FALSE);
-  g_free(cscp);
+  if (cscp) {
+    gfsmxl_perl_cascade_clear(cscp);
+    av_undef(cscp->av);
+    if (cscp->csc) gfsmxl_cascade_free(cscp->csc,FALSE);
+    g_free(cscp);
+  }
 }
 
 void  gfsmxl_perl_cascade_append_sv(gfsmxlCascadePerl *cscp, SV *xfsm_sv)
@@ -86,6 +88,47 @@ void gfsmxl_perl_cascade_refresh_av(gfsmxlCascadePerl *cscp)
     sv_setref_pv(svrv, "Gfsm::Automaton::Indexed", (void*)xfsm);
     av_push(cscp->av, svrv);
   }
+}
+
+/*======================================================================
+ * Gfsm::XL::Cascade::Lookup Utilities
+ */
+
+void gfsmxl_perl_cascade_lookup_set_cascade_sv(gfsmxlCascadeLookupPerl *clp, SV *csc_sv)
+{
+  //g_printerr(": cl_set_cascade_sv[clp=%p, csc_sv=%p, clp->csc_sv=%p]: called\n", clp, csc_sv, clp->csc_sv);
+  if (clp->csc_sv && SvROK(clp->csc_sv)) {
+    //g_printerr(": cl_set_cascade_sv[clp=%p, csc_sv=%p, clp->csc_sv=%p]: SvREFCNT_dec()\n", clp, csc_sv, clp->csc_sv);
+    SvREFCNT_dec(clp->csc_sv);
+  }
+  if (csc_sv && SvROK(csc_sv)) {
+    gfsmxlCascadePerl *cscp = (gfsmxlCascadePerl*)SvIV((SV*)SvRV(csc_sv));
+    //g_printerr(": cl_set_cascade_sv[clp=%p, csc_sv=%p, clp->csc_sv=%p]: copy()\n", clp, csc_sv, clp->csc_sv);
+    clp->csc_sv = sv_mortalcopy(csc_sv);
+    SvREFCNT_inc(clp->csc_sv);
+    gfsmxl_cascade_lookup_set_cascade(clp->cl, cscp->csc);
+  } else {
+    //g_printerr(": cl_set_cascade_sv[clp=%p, csc_sv=%p, clp->csc_sv=%p]: clp->csc_sv=NULL\n", clp, csc_sv, clp->csc_sv);
+    clp->csc_sv  = NULL;
+    clp->cl->csc = NULL; //-- must be explicit, or else madness may ensue
+    gfsmxl_cascade_lookup_set_cascade(clp->cl, NULL);
+  }
+  //g_printerr(": cl_set_cascade_sv[clp=%p, csc_sv=%p, clp->csc_sv=%p]: exiting.\n", clp, csc_sv, clp->csc_sv);
+}
+
+gfsmxlCascadeLookupPerl *gfsmxl_perl_cascade_lookup_new(SV *csc_sv, gfsmWeight max_w, guint max_paths, guint max_ops)
+{
+  gfsmxlCascadeLookupPerl *clp = (gfsmxlCascadeLookupPerl*)g_new0(gfsmxlCascadeLookupPerl,1);
+  clp->cl                      = gfsmxl_cascade_lookup_new_full(NULL, max_w, max_paths, max_ops);
+  gfsmxl_perl_cascade_lookup_set_cascade_sv(clp, csc_sv);
+  return clp;
+}
+
+void gfsmxl_perl_cascade_lookup_free (gfsmxlCascadeLookupPerl *clp)
+{
+  gfsmxl_perl_cascade_lookup_set_cascade_sv(clp, NULL);
+  gfsmxl_cascade_lookup_free(clp->cl);
+  g_free(clp);
 }
 
 /*======================================================================

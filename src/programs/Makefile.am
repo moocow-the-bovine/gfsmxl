@@ -18,7 +18,8 @@
 ## --- executable programs
 #bin_PROGRAMS = ${prog_1} ... ${prog_N}
 bin_PROGRAMS = \
-	gfsmxl_cascade_compile
+	gfsmxl_cascade_compile \
+	gfsmxl_cascade_nth
 
 EXTRA_DIST =
 
@@ -89,6 +90,19 @@ gfsmxl_cascade_compile_LDFLAGS = $(LDFLAGS_COMMON)
 gfsmxl_cascade_compile_LDADD = $(LDADD_COMMON)
 
 EXTRA_DIST += gfsmxl_cascade_compile.gog
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+gfsmxl_cascade_nth_SOURCES = \
+	gfsmxl_cascade_nth_main.c \
+	gfsmxl_cascade_nth_cmdparser.c gfsmxl_cascade_nth_cmdparser.h
+
+gfsmxl_cascade_nth_main.o: gfsmxl_cascade_nth_cmdparser.h
+
+gfsmxl_cascade_nth_LDFLAGS = $(LDFLAGS_COMMON)
+gfsmxl_cascade_nth_LDADD = $(LDADD_COMMON)
+
+EXTRA_DIST += gfsmxl_cascade_nth.gog
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -172,7 +186,7 @@ fsmclean:
 ## -- maintainerclean: built by maintainer / by hand
 MAINTAINERCLEANFILES = \
 	*~ .*~ Makefile Makefile.in \
-	*_cmdparser.cc *_cmdparser.h \
+	*_cmdparser.c *_cmdparser.h \
 	*.man *.1 *.html *.txt *.tex \
 	*.afs[atm] *.gfs[atmxc] *.thfs[atm] *.pfs[atm] \
 	*.dot *.ps *.vcg

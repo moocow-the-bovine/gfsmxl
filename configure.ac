@@ -498,6 +498,8 @@ if test "$gfsmxl_doc_formats" != "none" ; then
   ##-- docs: .gog sources
   ##
   DOC_MAN1_GOGS="\
+	gfsmxl_cascade_compile.gog \
+	gfsmxl_cascade_nth.gog \
 	"
  DOC_MAN1_GOGS="$DOC_MAN1_GOGS"
   for g in $DOC_MAN1_GOGS ; do

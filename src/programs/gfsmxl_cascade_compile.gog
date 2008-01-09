@@ -109,5 +109,5 @@ None known.
 #acknowledge `cat acknowledge.pod`
 
 seealso "
-L<gfsmutils>
+gfsmutils(1)
 "

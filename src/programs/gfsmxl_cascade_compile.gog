@@ -23,9 +23,10 @@ details ""
 #-----------------------------------------------------------------------------
 # Arguments
 #-----------------------------------------------------------------------------
-argument "GFSM_FILE(s)" "Stored binary gfsm indexed automaton file(s)" \
+argument "GFSM_FILE(s)" "Stored binary gfsm (indexed) automaton file(s)" \
     details="
-Required.
+Argument automata can be read either as gfsm indexed automaton files
+or as plain (unindexed) gfsm automaton files.
 "
 
 #-----------------------------------------------------------------------------

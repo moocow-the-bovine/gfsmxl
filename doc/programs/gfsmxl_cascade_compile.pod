@@ -12,7 +12,7 @@ gfsmxl_cascade_compile - Create a gfsmxl cascade from indexed gfsm automata
 gfsmxl_cascade_compile [OPTIONS] GFSM_FILE(s)
 
  Arguments:
-    GFSM_FILE(s)  Stored binary gfsm indexed automaton file(s)
+    GFSM_FILE(s)  Stored binary gfsm (indexed) automaton file(s)
 
  Options
     -h        --help             Print help and exit.
@@ -49,10 +49,11 @@ Create a gfsmxl cascade from indexed gfsm automata
 
 =item C<GFSM_FILE(s)>
 
-Stored binary gfsm indexed automaton file(s)
+Stored binary gfsm (indexed) automaton file(s)
 
 
-Required.
+Argument automata can be read either as gfsm indexed automaton files
+or as plain (unindexed) gfsm automaton files.
 
 
 =back

@@ -219,7 +219,7 @@ Bryan Jurish E<lt>moocow@ling.uni-potsdam.deE<gt>
 =head1 SEE ALSO
 
 
-L<gfsmutils>
+gfsmutils(1)
 
 
 =cut

@@ -41,12 +41,12 @@ typedef struct gfsmxlCLCFibHeap gfsmxlFibHeap;
 
 /// struct for cascade lookup heap element data
 typedef struct gfsmxlCascadeLookupConfig_ {
-  gfsmxlCascade        *csc;     /**< Underlying cascade */
-  gfsmxlCascadeStateId  qids;    /**< current state in cascade */
-  guint32              ipos;    /**< current position in input string */
-  gfsmStateId          oid;     /**< current state in output trie (identifies output string) */
-  gfsmStateId          rid;     /**< current state in output automaton */
-  gfsmWeight           w;       /**< accumulated weight */
+  gfsmxlCascade         *csc;     /**< Underlying cascade */
+  gfsmxlCascadeStateId   qids;    /**< current state in cascade */
+  guint32                ipos;    /**< current position in input string */
+  gfsmStateId            oid;     /**< current state in output trie (identifies output string) */
+  gfsmStateId            rid;     /**< current state in output automaton */
+  gfsmWeight             w;       /**< accumulated weight */
   //struct gfsmxlCascadeLookupConfig_ *parent; /* parent configuration, for backtracking */
 } gfsmxlCascadeLookupConfig;
 
@@ -54,16 +54,16 @@ typedef struct gfsmxlCascadeLookupConfig_ {
 typedef struct {
   //
   //-- user data
-  gfsmxlCascade  *csc;        /**< Underlying cascade */
+  gfsmxlCascade  *csc;       /**< Underlying cascade */
   gfsmWeight     max_w;      /**< Maximum weight */
   guint          max_paths;  /**< Maximum number of output paths to create */
   guint          max_ops;    /**< Maximum number of elementary lookup operations */
   //
   //-- low-level data
   gfsmxlFibHeap             *heap;        /**< Heap for storing lookup configurations */
-  GHashTable               *configs;     /**< Set of extant lookup-configurations */
-  gfsmAutomaton            *otrie;       /**< output-string trie */
-  guint                     n_ops;       /**< Number of elementary operations in current run */
+  GHashTable                *configs;     /**< Set of extant lookup-configurations */
+  gfsmAutomaton             *otrie;       /**< output-string trie */
+  guint                      n_ops;       /**< Number of elementary operations in current run */
   gfsmxlCascadeLookupConfig  heap_neginf; /**< "Negative infinity" element for heap comparison */
 } gfsmxlCascadeLookup;
 

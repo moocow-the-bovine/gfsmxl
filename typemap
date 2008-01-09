@@ -1,10 +1,11 @@
 # -*- Mode: Perl -*-
 
-gfsmSemiring*          O_OBJECT
-gfsmAutomaton*         O_OBJECT
-gfsmIndexedAutomaton*  O_OBJECT
-#gfsmxlCascade*         O_OBJECT
-gfsmxlCascadePerl*     O_OBJECT
+gfsmSemiring*             O_OBJECT
+gfsmAutomaton*            O_OBJECT
+gfsmIndexedAutomaton*     O_OBJECT
+#gfsmxlCascade*            O_OBJECT
+gfsmxlCascadePerl*        O_OBJECT
+gfsmxlCascadeLookupPerl*  O_OBJECT
 
 gfsmLabelVector*   T_LABELID_VECTOR
 

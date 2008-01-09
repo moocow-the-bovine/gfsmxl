@@ -31,6 +31,18 @@ SV*  gfsmxl_perl_cascade_get_sv(gfsmxlCascadePerl *cscp, int i);
 void gfsmxl_perl_cascade_refresh_av(gfsmxlCascadePerl *cscp); //-- create cscp->av from csc->csc->xfsms
 
 /*======================================================================
+ * Gfsm::XL::Cascade::Lookup Utilities
+ */
+typedef struct {
+  gfsmxlCascadeLookup *cl;     //-- underlying gfsmxlCascadeLookup struct
+  SV                  *csc_sv; //-- holds SV* for underlying cascade
+} gfsmxlCascadeLookupPerl;
+
+gfsmxlCascadeLookupPerl *gfsmxl_perl_cascade_lookup_new(SV *csc_sv, gfsmWeight max_w, guint max_paths, guint max_ops);
+void gfsmxl_perl_cascade_lookup_set_cascade_sv(gfsmxlCascadeLookupPerl *clp, SV *csc_sv);
+void gfsmxl_perl_cascade_lookup_free (gfsmxlCascadeLookupPerl *clp);
+
+/*======================================================================
  * Type conversions
  */
 AV *gfsm_perl_paths_to_av(gfsmSet *paths_s);

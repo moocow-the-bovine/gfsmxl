@@ -59,6 +59,7 @@ sub MY::depend {
 		 ."XL.c: "
 		 .(''
 		   ." Cascade.xs"
+		   ." Lookup.xs"
 		   ." XL.xs"
 		  )
 		 ."\n\n"

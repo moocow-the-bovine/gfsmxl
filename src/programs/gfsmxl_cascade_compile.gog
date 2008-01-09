@@ -1,0 +1,113 @@
+# -*- Mode: Shell-Script -*-
+#
+# Getopt::Gen specification
+#-----------------------------------------------------------------------------
+program "gfsmxl_cascade_compile"
+#program_version "0.01"
+
+purpose	"Create a gfsmxl cascade from indexed gfsm automata"
+author  "Bryan Jurish <moocow@ling.uni-potsdam.de>"
+on_reparse "warn"
+
+#-----------------------------------------------------------------------------
+# Details
+#-----------------------------------------------------------------------------
+details ""
+
+#-----------------------------------------------------------------------------
+# Files
+#-----------------------------------------------------------------------------
+#rcfile "/etc/gfsmrc"
+#rcfile "~/.gfsmrc"
+
+#-----------------------------------------------------------------------------
+# Arguments
+#-----------------------------------------------------------------------------
+argument "GFSM_FILE(s)" "Stored binary gfsm indexed automaton file(s)" \
+    details="
+Required.
+"
+
+#-----------------------------------------------------------------------------
+# Options
+#-----------------------------------------------------------------------------
+#group "Basic Options"
+
+string "mode" m "Sort cascaded automata by explicit mode string" \
+  arg="MODE" \
+  default="" \
+  details="
+Sort by a mode string over the characters \"luwstLUWST_\", as accepted
+by gfsm_acmask_from_chars().  Each character in the string represents
+a single elementary arc field comparison, and the comparison with the
+highest priority should occur leftmost in the string.  Correspondence
+between characters in MODE and arc comparisons is:
+
+  CHAR : COMPARISON
+     l : sort by lower labels in ascending order
+     u : sort by upper labels in ascending order
+     w : sort by arc weight in semiring-ascending order
+     s : sort by source state in ascending order (useless here)
+     t : sort by target state in ascending order
+
+     L : sort by lower labels in descending order
+     U : sort by upper labels in descending order
+     W : sort by arc weight in semiring-descending order
+     S : sort by source state in descending order (useless here)
+     T : sort by target state in descending order
+
+     _ : no comparison at the corresponding priority level
+     x : user-specified comparison (useless here)
+
+"
+
+string "semiring" s "Specify semiring type." \
+   arg="SRTYPE" \
+   default="tropical" \
+   details="
+Specify one of the following:
+
+ boolean
+ log
+ plog
+ real
+ trivial
+ tropical
+
+"
+
+int "compress" z "Specify compression level of output file." \
+    arg="LEVEL" \
+    default="-1" \
+    details="
+Specify zlib compression level of output file. -1 (default) indicates
+the default compression level, 0 (zero) indicates no zlib compression at all,
+and 9 indicates the best possible compression.
+"
+
+string "output" F "Specifiy output file (default=stdout)." \
+    arg="FILE" \
+    default="-"
+
+#-----------------------------------------------------------------------------
+# Addenda
+#-----------------------------------------------------------------------------
+#addenda ""
+
+#-----------------------------------------------------------------------------
+# Bugs
+#-----------------------------------------------------------------------------
+bugs "
+
+None known.
+
+"
+
+#-----------------------------------------------------------------------------
+# Footer
+#-----------------------------------------------------------------------------
+#acknowledge `cat acknowledge.pod`
+
+seealso "
+L<gfsmutils>
+"

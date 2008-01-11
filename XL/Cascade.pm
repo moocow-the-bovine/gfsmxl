@@ -14,8 +14,12 @@ our $NULL = bless \(my $x=0), 'Gfsm::XL::Cascade';
 
 ## $csc = $csc->append(@fsms_or_xfsms)
 sub append {
-  my $csc = shift;
-  $csc->_append(map { (UNIVERSAL::isa(ref($_),'Gfsm::Automaton::Indexed') ? $_ : $_->to_indexed()) } @_);
+  my $csc   = shift;
+  my @xfsms = map { (UNIVERSAL::isa(ref($_),'Gfsm::Automaton::Indexed') ? $_ : $_->to_indexed()) } @_;
+  foreach (@xfsms) {
+    $_->arcsort($Gfsm::ACLower) if (Gfsm::acmask_nth($_->sort_mode,0) != $Gfsm::ACLower);
+  }
+  $csc->_append(@xfsms);
   return $csc;
 }
 

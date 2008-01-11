@@ -30,23 +30,11 @@ CODE:
 
 
 ##=====================================================================
-## High-level Access
+## High-level Access: Attributes
 ##=====================================================================
 
-SV*
-cascade(gfsmxlCascadeLookupPerl *clp, ...)
-CODE:
- g_printerr("cascade(): items=%d\n", items);
- if (items > 1) {
-   gfsmxl_perl_cascade_lookup_set_cascade_sv(clp,ST(1));
- }
- if (clp->csc_sv) {
-   RETVAL = sv_mortalcopy(clp->csc_sv);
-   SvREFCNT_inc(RETVAL);
- }
- else { XSRETURN_UNDEF; }
-OUTPUT:
- RETVAL
+##--------------------------------------------------------------
+## Attributes: cascade
 
 SV*
 _cascade_get(gfsmxlCascadeLookupPerl *clp)
@@ -61,6 +49,88 @@ _cascade_set(gfsmxlCascadeLookupPerl *clp, SV *cascade_sv)
 CODE:
  gfsmxl_perl_cascade_lookup_set_cascade_sv(clp,cascade_sv);
 
+
+##--------------------------------------------------------------
+## Attributes: max_weight
+
+gfsmWeight
+_max_weight_get(gfsmxlCascadeLookupPerl *clp)
+CODE:
+ RETVAL = clp->cl->max_w;
+OUTPUT:
+ RETVAL
+
+void
+_max_weight_set(gfsmxlCascadeLookupPerl *clp, gfsmWeight w)
+CODE:
+ clp->cl->max_w = w;
+
+
+##--------------------------------------------------------------
+## Attributes: max_paths
+
+guint
+_max_paths_get(gfsmxlCascadeLookupPerl *clp)
+CODE:
+ RETVAL = clp->cl->max_paths;
+OUTPUT:
+ RETVAL
+
+void
+_max_paths_set(gfsmxlCascadeLookupPerl *clp, guint n)
+CODE:
+ clp->cl->max_paths = n;
+
+##--------------------------------------------------------------
+## Attributes: max_ops
+
+guint
+_max_ops_get(gfsmxlCascadeLookupPerl *clp)
+CODE:
+ RETVAL = clp->cl->max_ops;
+OUTPUT:
+ RETVAL
+
+void
+_max_ops_set(gfsmxlCascadeLookupPerl *clp, guint n)
+CODE:
+ clp->cl->max_ops = n;
+
+
+##--------------------------------------------------------------
+## Attributes: n_ops
+
+guint
+_n_ops_get(gfsmxlCascadeLookupPerl *clp)
+CODE:
+ RETVAL = clp->cl->n_ops;
+OUTPUT:
+ RETVAL
+
+void
+_n_ops_set(gfsmxlCascadeLookupPerl *clp, guint n)
+CODE:
+ clp->cl->n_ops = n;
+
+
 ##=====================================================================
-## Component Access
+## Operations
 ##=====================================================================
+
+##--------------------------------------------------------------
+## Operations: reset
+
+void
+reset(gfsmxlCascadeLookupPerl *clp)
+CODE:
+ gfsmxl_cascade_lookup_reset(clp->cl);
+
+##--------------------------------------------------------------
+## Operations: n-best lookup
+
+void
+_lookup_nbest(gfsmxlCascadeLookupPerl *clp, gfsmLabelVector *input, gfsmAutomaton *result)
+CODE:
+ gfsmxl_cascade_lookup_nbest(clp->cl, input, result);
+CLEANUP:
+ g_ptr_array_free(input,TRUE);

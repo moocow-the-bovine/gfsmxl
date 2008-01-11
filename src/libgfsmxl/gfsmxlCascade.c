@@ -85,6 +85,19 @@ void gfsmxl_cascade_sort_all(gfsmxlCascade *csc, gfsmArcCompMask sort_mask)
     gfsmIndexedAutomaton *xfsm = gfsmxl_cascade_index(csc,i);
     if (!xfsm) continue;
     gfsm_indexed_automaton_sort(xfsm,sort_mask);
+#if defined(CASCADE_USE_BLOCK_INDEX) || defined(CASCADE_USE_BLOCK_HASH)
+    if (g_ptr_array_index(csc->xblks,i)) {
+# if defined(CASCADE_USE_BLOCK_INDEX)
+      gfsmxlArcBlockIndex *abi = (gfsmxlArcBlockIndex*)g_ptr_array_index(csc->xblks, i);
+      gfsmxl_arc_block_index_free(abi);
+      g_ptr_array_index(csc->xblks,i) = gfsmxl_arc_block_index_new_lower(xfsm);
+# elif defined(CASCADE_USE_BLOCK_HASH)
+      gfsmxlArcBlockHash  *abi = (gfsmxlArcBlockHash*)g_ptr_array_index(csc->xblks, i);
+      gfsmxl_arc_block_hash_free(abi);
+      g_ptr_array_index(csc->xblks,i) = gfsmxl_arc_block_hash_new_lower(xfsm);
+# endif
+    }
+#endif
   }
 }
 
@@ -268,9 +281,9 @@ void gfsmxl_cascade_expand_arcs_(gfsmxlCascadeArcIter *cai,
 
 static inline
 void gfsmxl_cascade_expand_arcs_(gfsmxlCascadeArcIter *cai,
-				gfsmxlArcPP           arcpp,
-				gint                 ix,
-				gfsmLabelId          lo)
+				 gfsmxlArcPP           arcpp,
+				 gint                 ix,
+				 gfsmLabelId          lo)
 {
   gint                    i = ix;
   gfsmxlCascade         *csc = cai->csc;

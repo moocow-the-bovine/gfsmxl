@@ -23,6 +23,12 @@ sub append {
   return $csc;
 }
 
+## @xfsms = $csc->get_all()
+sub get_all {
+  my $csc = shift;
+  return map { $csc->get($_) } (0..($csc->depth-1));
+}
+
 ##======================================================================
 ## I/O: Wrappers
 ##======================================================================
@@ -143,8 +149,9 @@ Gfsm::XL::Cascade - object-oriented interface to libgfsmxl finite-state cascades
  ##------------------------------------------------------------
  ## Accessors/Manipulators: Properties
 
- $csc  = $csc->append(@fsms);             # append a Gfsm::Automaton::Indexed (by reference if possible)
- $xfsm = $csc->get($nth);                 # retrieve reference to $nth automaton in the cascade (indexed)
+ $csc   = $csc->append(@fsms);            # append a Gfsm::Automaton::Indexed (by reference if possible)
+ $xfsm  = $csc->get($nth);                # retrieve reference to $nth automaton in the cascade (indexed)
+ @xfsms = $csc->get_all();                # retrieve list of references to all automata in cascade
 
  $depth  = $csc->depth();                 # get cascade depth
  $srtype = $csc->semiring_type(?$srtype); # get/set semiring type

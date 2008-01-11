@@ -4,8 +4,6 @@
 #undef VERSION
 #include <gfsmxlConfig.h>
 
-/*#define GFSMDEBUG 1*/
-
 /*======================================================================
  * Memory Stuff
  */
@@ -58,7 +56,7 @@ void  gfsmxl_perl_cascade_append_sv(gfsmxlCascadePerl *cscp, SV *xfsm_sv)
 {
   gfsmIndexedAutomaton *xfsm = (gfsmIndexedAutomaton*)SvIV((SV*)SvRV(xfsm_sv));
   SV *xfsm_sv_copy;
-  //g_printerr("cascade_append_sv(cscp=%p, cscp->csc=%p): xfsm_sv=%p, xfsm=%p\n", cscp, cscp->csc, xfsm_sv, xfsm);
+  GFSMXL_DEBUG_EVAL( g_printerr("cascade_append_sv(cscp=%p, cscp->csc=%p): xfsm_sv=%p, xfsm=%p\n", cscp, cscp->csc, xfsm_sv, xfsm); )
   //
   xfsm_sv_copy = sv_mortalcopy(xfsm_sv);     //-- array-stored value (mortal)
   SvREFCNT_inc(xfsm_sv_copy);                //   : mortal needs incremented refcnt
@@ -100,13 +98,13 @@ void gfsmxl_perl_cascade_lookup_set_cascade_sv(gfsmxlCascadeLookupPerl *clp, SV 
   clp->cl->csc = NULL;  //-- must be explicit, or else madness may ensue
   if (csc_sv && SvROK(csc_sv)) {
     gfsmxlCascadePerl *cscp = (gfsmxlCascadePerl*)SvIV((SV*)SvRV(csc_sv));
-    //g_printerr(": cl_set_cascade_sv[clp=%p, csc_sv=%p, clp->csc_sv=%p]: copy()\n", clp, csc_sv, clp->csc_sv);
+    //GFSMXL_DEBUG_EVAL(g_printerr(": cl_set_cascade_sv[clp=%p, csc_sv=%p, clp->csc_sv=%p]: copy()\n", clp, csc_sv, clp->csc_sv);)
     gfsmxl_cascade_lookup_set_cascade(clp->cl, cscp->csc);
   } else {
-    //g_printerr(": cl_set_cascade_sv[clp=%p, csc_sv=%p, clp->csc_sv=%p]: clp->csc_sv=NULL\n", clp, csc_sv, clp->csc_sv);
+    //GFSMXL_DEBUG_EVAL(g_printerr(": cl_set_cascade_sv[clp=%p, csc_sv=%p, clp->csc_sv=%p]: clp->csc_sv=NULL\n", clp, csc_sv, clp->csc_sv);)
     gfsmxl_cascade_lookup_set_cascade(clp->cl, NULL);
   }
-  //g_printerr(": cl_set_cascade_sv[clp=%p, csc_sv=%p, clp->csc_sv=%p]: exiting.\n", clp, csc_sv, clp->csc_sv);
+  //GFSMXL_DEBUG_EVAL(g_printerr(": cl_set_cascade_sv[clp=%p, csc_sv=%p, clp->csc_sv=%p]: exiting.\n", clp, csc_sv, clp->csc_sv);)
 }
 
 gfsmxlCascadeLookupPerl *gfsmxl_perl_cascade_lookup_new(SV *csc_sv, gfsmWeight max_w, guint max_paths, guint max_ops)

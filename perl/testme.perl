@@ -96,7 +96,7 @@ sub test_lookup_1 {
 
   print "test_lookup_1(): done.\n";
 }
-#test_lookup_1();
+test_lookup_1();
 
 ##--------------------------------------------------------------
 ## test lookup 2 (big)
@@ -140,7 +140,7 @@ sub test_lookup_2 {
   $result->_connect;
   $result->viewps(labels=>$abet);
 }
-test_lookup_2();
+#test_lookup_2();
 
 
 ##--------------------------------------------------------------

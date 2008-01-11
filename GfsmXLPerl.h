@@ -7,6 +7,17 @@
 #include <gfsmxl.h>
 
 /*======================================================================
+ * Debugging
+ */
+//#define GFSMXL_DEBUG 1
+
+#ifdef GFSMXL_DEBUG
+# define GFSMXL_DEBUG_EVAL(code_) code_
+#else
+# define GFSMXL_DEBUG_EVAL(code_)
+#endif
+
+/*======================================================================
  * Memory Stuff
  */
 gpointer gfsm_perl_malloc(gsize n_bytes);

@@ -7,7 +7,11 @@
 #include <gfsm.h>
 #include "GfsmXLPerl.h"
 
-#define GFSMXL_DEBUG 1
+#ifdef GFSMXL_DEBUG
+# define GFSMXL_DEBUG_EVAL(code_) code_
+#else
+# define GFSMXL_DEBUG_EVAL(code_)
+#endif
 
 MODULE = Gfsm::XL		PACKAGE = Gfsm::XL
 
@@ -19,9 +23,7 @@ BOOT:
    //g_mem_set_vtable(&gfsm_perl_vtable); //-- shuld be done by Gfsm
    //gfsm_allocators_enable();
    //
-#ifdef GFSMXL_DEBUG
-   g_printerr("Gfsm::XL::BOOT() called.\n");
-#endif
+   GFSMXL_DEBUG_EVAL(g_printerr("Gfsm::XL::BOOT() called.\n");)
  } 
 
 ##=====================================================================

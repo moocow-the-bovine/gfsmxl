@@ -83,34 +83,13 @@ sub test_lookup_1 {
     $csc->append($fsm0,$fsm1);
   }
 
-  our $cl = Gfsm::XL::Cascade::Lookup->new($csc);
+  our $cl = Gfsm::XL::Cascade::Lookup->new($csc, 1.0, 1);
   showref('cl', $cl);
 
-  $cl->_cascade_set($csc); ##-- repeat until crash:
-  # *** glibc detected *** /usr/local/bin/perl: free(): invalid pointer: 0x0857db90 ***
-  # ======= Backtrace: =========
-  # /lib/i686/cmov/libc.so.6[0xb7e5e735]
-  # /lib/i686/cmov/libc.so.6(cfree+0x90)[0xb7e621a0]
-  # /usr/local/lib/perl/5.8.8/auto/Gfsm/Gfsm.so(gfsm_perl_free+0x1d)[0xb7a7001d]
-  # /usr/lib/libglib-2.0.so.0(g_free+0x31)[0xb797b961]
-  # /usr/lib/libglib-2.0.so.0(g_array_free+0x5c)[0xb795614c]
-  # /usr/local/lib/libgfsmxl.so.0(gfsmxl_cascade_clear+0xd7)[0xb79fe5e7]
-  # ./blib/arch/auto/Gfsm/XL/XL.so[0xb7f8a7a7]
-  # ./blib/arch/auto/Gfsm/XL/XL.so[0xb7f8ad3e]
-  # ./blib/arch/auto/Gfsm/XL/XL.so(gfsmxl_perl_cascade_lookup_set_cascade_sv+0x12d)[0xb7f8ace7]
-  # ./blib/arch/auto/Gfsm/XL/XL.so(XS_Gfsm__XL__Cascade__Lookup__cascade_set+0x270)[0xb7f89b6a]
-  # /usr/local/bin/perl(Perl_pp_entersub+0x313)[0x80c0923]
-  # /usr/local/bin/perl(Perl_runops_standard+0x1b)[0x80bf2fb]
-  # /usr/local/bin/perl(perl_run+0x25c)[0x806719c]
-  # /usr/local/bin/perl(main+0x112)[0x8063752]
-  # /lib/i686/cmov/libc.so.6(__libc_start_main+0xe0)[0xb7e09450]
-  # /usr/local/bin/perl[0x80635d1]
-  ##--
-  #$cl->_cascade_set(undef); $cl->_cascade_set($csc); ##-- repeat with NO crash..
-  ##
-  ##-- IDEA: probably related to $csc-identity: use newSV() and SvSetSV() instead of mortalcopy() ?
-
-
+  ##-- test
+  our $input = [1,1,2,1];
+  $cl->cascade->sort_all(Gfsm::acmask_from_chars('lwut'));
+  our $result = $cl->lookup_nbest($input);
 
   undef($csc);
   undef($cl);

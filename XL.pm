@@ -19,6 +19,7 @@ XSLoader::load('Gfsm::XL', $VERSION);
 
 # Preloaded methods go here.
 require Gfsm::XL::Cascade;
+require Gfsm::XL::Cascade::Lookup;
 
 # Autoload methods go after =cut, and are processed by the autosplit program.
 

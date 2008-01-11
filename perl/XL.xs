@@ -7,11 +7,6 @@
 #include <gfsm.h>
 #include "GfsmXLPerl.h"
 
-#ifdef GFSMXL_DEBUG
-# define GFSMXL_DEBUG_EVAL(code_) code_
-#else
-# define GFSMXL_DEBUG_EVAL(code_)
-#endif
 
 MODULE = Gfsm::XL		PACKAGE = Gfsm::XL
 

@@ -2,6 +2,7 @@
 .*~
 
 Gfsm
+lb-data
 
 Makefile
 pm_to_blib

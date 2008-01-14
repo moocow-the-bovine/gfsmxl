@@ -83,7 +83,7 @@ cmdline_parser_print_help (void)
   
   printf("\n");
   printf(" Arguments:\n");
-  printf("   GFSM_FILE(s)  Stored binary gfsm indexed automaton file(s)\n");
+  printf("   GFSM_FILE(s)  Stored binary gfsm (indexed) automaton file(s)\n");
   
   printf("\n");
   printf(" Options:\n");

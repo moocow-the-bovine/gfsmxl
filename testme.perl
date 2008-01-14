@@ -76,9 +76,12 @@ sub test_lookup_1 {
   showref('csc',$csc);
 
   if (1) {
+    our $abet = Gfsm::Alphabet->new();
+    $abet->fromArray(['<eps>', 'a', 'b']);
     our $fsm0 = Gfsm::Automaton->new();
     our $fsm1 = Gfsm::Automaton->new();
-    $fsm0->compile('csc0.tfst');
+    #$fsm0->compile('csc0.tfst');
+    $fsm0->compile('csc0b.tfst');
     $fsm1->compile('csc1.tfst');
     $csc->append($fsm0,$fsm1);
   }
@@ -90,6 +93,7 @@ sub test_lookup_1 {
   our $input = [1,1,2,1];
   $cl->cascade->sort_all(Gfsm::acmask_from_chars('lw'));
   our $result = $cl->lookup_nbest($input);
+  #$result->viewps(labels=>$abet);
 
   undef($csc);
   undef($cl);
@@ -100,41 +104,56 @@ test_lookup_1();
 
 ##--------------------------------------------------------------
 ## test lookup 2 (big)
+sub dolookup_str {
+  my ($cl,$abet,$str,%args) = @_;
+  my @labs = @{$abet->asHash}{split(//,$str)};
+  $cl->max_weight($args{max_weight}) if (defined($args{max_weight}));
+  $cl->max_paths($args{max_paths}) if (defined($args{max_paths}));
+  $cl->max_ops($args{max_ops}) if (defined($args{max_ops}));
+  my $result = $cl->lookup_nbest(\@labs);
+  return $result;
+}
+
 sub test_lookup_2 {
+  my $CREATE_CASCADE=0;
   my $edit_file = "lb-data/mootm.editor.taxi3.gfst";
   my $tagh_file = "lb-data/mootm.gfst";
   my $abet_file = "lb-data/mootm.lab";
+  my $csc_file  = "lb-data/mootm.taxi3.gfsc";
 
   ##-- load & prepare: alphabet
   my $abet = Gfsm::Alphabet->new();
   $abet->load($abet_file) or die("$0: load failed for alphabet '$abet_file': $!");
-  my $sym2lab = $abet->asHash();
 
-  ##-- load & prepare: editor
-  my $edit_fst = Gfsm::Automaton->new();
-  $edit_fst->load($edit_file) or die("$0: load failed for '$edit_file': $!");
-  my $edit_xfst = $edit_fst->to_indexed;
-  $edit_xfst->arcsort(Gfsm::acmask_from_chars('lwut'));
-
-  ##-- load & prepare: morph
-  my $tagh_fst = Gfsm::Automaton->new();
-  $tagh_fst->load($tagh_file) or die("$0: load failed for '$tagh_file': $!");
-  my $tagh_xfst = $tagh_fst->to_indexed;
-  $tagh_xfst->arcsort(Gfsm::acmask_from_chars('lwut'));
-
-  ##-- prepare: cascade
   my $csc = Gfsm::XL::Cascade->new();
-  $csc->append($edit_xfst, $tagh_xfst);
+
+  if ($CREATE_CASCADE) {
+    ##-- load & prepare: editor
+    my $edit_fst = Gfsm::Automaton->new();
+    $edit_fst->load($edit_file) or die("$0: load failed for '$edit_file': $!");
+    my $edit_xfst = $edit_fst->to_indexed;
+    $edit_xfst->arcsort(Gfsm::acmask_from_chars('lwut'));
+
+    ##-- load & prepare: morph
+    my $tagh_fst = Gfsm::Automaton->new();
+    $tagh_fst->load($tagh_file) or die("$0: load failed for '$tagh_file': $!");
+    my $tagh_xfst = $tagh_fst->to_indexed;
+    $tagh_xfst->arcsort(Gfsm::acmask_from_chars('lwut'));
+
+    ##-- prepare: cascade
+    my $csc = Gfsm::XL::Cascade->new();
+    $csc->append($edit_xfst, $tagh_xfst);
+    $csc->save($csc_file);
+  } else {
+    $csc->load($csc_file) or die("$0: load failed for '$csc_file': $!");
+  }
 
   ##-- prepare: cascade lookup-best
-  our $cl = Gfsm::XL::Cascade::Lookup->new($csc, 1.0, 1);
-
-  ##-- prepare: input
-  my $input_chars = 'gieng';
-  my @input_labs  = @$sym2lab{split(//,$input_chars)};
+  our $cl    = Gfsm::XL::Cascade::Lookup->new($csc, 1.0, 1);
 
   ##-- lookup
-  my $result = $cl->lookup_nbest(\@input_labs);
+  my %opts   = (max_weight=>4.0, max_paths=>1, max_ops=>(-1));
+  my $result = dolookup_str($cl,$abet,'gieng',%opts);
   $result->_connect;
   $result->_rmepsilon;
   $result->_connect;

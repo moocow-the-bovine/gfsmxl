@@ -21,7 +21,7 @@ gfsmxl_cascade_compile [OPTIONS] GFSM_FILE(s)
     -mMODE    --mode=MODE        Sort cascaded automata by explicit mode string
     -sSRTYPE  --semiring=SRTYPE  Specify semiring type.
     -zLEVEL   --compress=LEVEL   Specify compression level of output file.
-    -FFILE    --output=FILE      Specifiy output file (default=stdout).
+    -FFILE    --output=FILE      Specify output file (default=stdout).
 
 =cut
 
@@ -173,7 +173,7 @@ and 9 indicates the best possible compression.
 
 =item C<--output=FILE> , C<-FFILE>
 
-Specifiy output file (default=stdout).
+Specify output file (default=stdout).
 
 Default: '-'
 

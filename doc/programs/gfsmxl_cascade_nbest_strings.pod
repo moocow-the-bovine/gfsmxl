@@ -3,24 +3,27 @@
 
 =head1 NAME
 
-gfsmxl_cascade_nth - Extract the nth transducer from a compile gfsmxl cascade
+gfsmxl_cascade_nbest_strings - Lookup N-best string path in a gfsmxl cascade for line-buffered input
 
 
 
 =head1 SYNOPSIS
 
-gfsmxl_cascade_nth [OPTIONS] CASCADE_FILE
+gfsmxl_cascade_nbest_strings [OPTIONS] TEXT_FILE
 
  Arguments:
-    CASCADE_FILE  Stored binary gfsmxl cascade file
+    TEXT_FILE  Input text file
 
  Options
-    -h       --help            Print help and exit.
-    -V       --version         Print version and exit.
-    -cFILE   --rcfile=FILE     Read an alternate configuration file.
-    -nN      --index=N         Extract the N-th automaton in the cascade
-    -zLEVEL  --compress=LEVEL  Specify compression level of output file.
-    -FFILE   --output=FILE     Specify output file (default=stdout).
+    -h         --help               Print help and exit.
+    -V         --version            Print version and exit.
+    -cFILE     --rcfile=FILE        Read an alternate configuration file.
+    -CCASCADE  --cascade=CASCADE    Specify cascade for lookup
+    -lLABFILE  --labels=LABFILE     Specify alphabet for string->label lookup
+    -pN_PATHS  --max-paths=N_PATHS  Specify maximum number of paths to extract
+    -oN_OPS    --max-ops=N_OPS      Specify maximum number of configuration-pop operations
+    -wFLOAT    --max-weight=FLOAT   Specify maximum weight of extractable paths
+    -FFILE     --output=FILE        Specify output file (default=stdout).
 
 =cut
 
@@ -31,7 +34,7 @@ gfsmxl_cascade_nth [OPTIONS] CASCADE_FILE
 
 =head1 DESCRIPTION
 
-Extract the nth transducer from a compile gfsmxl cascade
+Lookup N-best string path in a gfsmxl cascade for line-buffered input
 
 
 
@@ -46,12 +49,12 @@ Extract the nth transducer from a compile gfsmxl cascade
 
 =over 4
 
-=item C<CASCADE_FILE>
+=item C<TEXT_FILE>
 
-Stored binary gfsmxl cascade file
+Input text file
 
 
-If unspecified, standard input will be read.
+Required.  Input files are assumed to be in 1-word-per-line format.
 
 
 =back
@@ -99,29 +102,51 @@ See also: L<CONFIGURATION FILES>.
 
 
 
-=item C<--index=N> , C<-nN>
+=item C<--cascade=CASCADE> , C<-CCASCADE>
 
-Extract the N-th automaton in the cascade
+Specify cascade for lookup
 
-Default: '0'
-
-
+Default: 'cascade.gfsc'
 
 
+CASCADE should be primarily sorted on lower labels.
 
 
 
-=item C<--compress=LEVEL> , C<-zLEVEL>
 
-Specify compression level of output file.
+
+=item C<--labels=LABFILE> , C<-lLABFILE>
+
+Specify alphabet for string-E<gt>label lookup
+
+Default: 'cascade.lab'
+
+
+
+
+=item C<--max-paths=N_PATHS> , C<-pN_PATHS>
+
+Specify maximum number of paths to extract
+
+Default: '1'
+
+
+
+
+=item C<--max-ops=N_OPS> , C<-oN_OPS>
+
+Specify maximum number of configuration-pop operations
 
 Default: '-1'
 
 
-Specify zlib compression level of output file. -1 (default) indicates
-the default compression level, 0 (zero) indicates no zlib compression at all,
-and 9 indicates the best possible compression.
 
+
+=item C<--max-weight=FLOAT> , C<-wFLOAT>
+
+Specify maximum weight of extractable paths
+
+Default: '1e+38'
 
 
 
@@ -181,7 +206,7 @@ using Getopt::Gen version 0.11.
 Translation was initiated
 as:
 
-   optgen.perl -l --nocfile --nohfile --notimestamp -F gfsmxl_cascade_nth gfsmxl_cascade_nth.gog
+   optgen.perl -l --nocfile --nohfile --notimestamp -F gfsmxl_cascade_nbest_strings gfsmxl_cascade_nbest_strings.gog
 
 =cut
 

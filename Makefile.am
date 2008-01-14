@@ -45,6 +45,7 @@ DISTCLEANFILES = \
 ## -- maintainerclean: built by maintainer / by hand
 MAINTAINERCLEANFILES = *~ \
 	$(PODS:.pod=.txt) \
+	$(PODS:.pod=.html) \
 	Makefile Makefile.in \
 	aclocal.m4 \
 	configure \
@@ -90,6 +91,7 @@ pkgdoc_DATA = \
 EXTRA_DIST = \
 	INSTALL \
 	AUTHORS \
+	Changes \
 	$(PODS) \
 	$(PODS:.pod=.txt) \
 	$(PODS:.pod=.html) \

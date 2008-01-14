@@ -74,7 +74,8 @@ pkginclude_HEADERS = \
 	gfsmxlCLCFib.h \
 	gfsmxlCLCFibPriv.h \
 	gfsmxlLabelIndex.h \
-	gfsmxlLabelIndex.hi
+	gfsmxlLabelIndex.hi \
+	gfsmxl.h
 
 ## --- no-install headers
 #noinst_HEADERS = nopackage.h

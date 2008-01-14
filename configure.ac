@@ -3,7 +3,7 @@ AC_PREREQ(2.5)
 
 dnl Some handy macros
 define([THE_PACKAGE_NAME],    [gfsmxl])
-define([THE_PACKAGE_VERSION], [0.0.1])
+define([THE_PACKAGE_VERSION], [0.0.2])
 define([THE_PACKAGE_MAINTAINER],  [moocow@ling.uni-potsdam.de])
 
 AC_INIT(THE_PACKAGE_NAME, THE_PACKAGE_VERSION, THE_PACKAGE_MAINTAINER)
@@ -498,6 +498,8 @@ if test "$gfsmxl_doc_formats" != "none" ; then
   ##-- docs: .gog sources
   ##
   DOC_MAN1_GOGS="\
+	gfsmxl_cascade_compile.gog \
+	gfsmxl_cascade_nth.gog \
 	"
  DOC_MAN1_GOGS="$DOC_MAN1_GOGS"
   for g in $DOC_MAN1_GOGS ; do

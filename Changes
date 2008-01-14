@@ -1,8 +1,0 @@
-Change log for gfsmxl
-
-v0.0.2 Tue, 08 Jan 2008 13:30:33 +0100
-  + various updates for Gfsm::XL perl wrapper
-  + added programs: gfsmxl_cascade_compile, gfsmxl_cascade_nth
-
-v0.0.1 Mon, 07 Jan 2008 13:05:47 +0100
-  + created

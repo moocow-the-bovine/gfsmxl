@@ -92,7 +92,7 @@ cmdline_parser_print_help (void)
   printf("   -mMODE    --mode=MODE        Sort cascaded automata by explicit mode string\n");
   printf("   -sSRTYPE  --semiring=SRTYPE  Specify semiring type.\n");
   printf("   -zLEVEL   --compress=LEVEL   Specify compression level of output file.\n");
-  printf("   -FFILE    --output=FILE      Specifiy output file (default=stdout).\n");
+  printf("   -FFILE    --output=FILE      Specify output file (default=stdout).\n");
 }
 
 #if !defined(HAVE_STRDUP) && !defined(strdup)
@@ -252,7 +252,7 @@ cmdline_parser_parse_option(char oshort, const char *olong, const char *val,
           args_info->compress_arg = (int)atoi(val);
           break;
         
-        case 'F':	 /* Specifiy output file (default=stdout). */
+        case 'F':	 /* Specify output file (default=stdout). */
           if (args_info->output_given) {
             fprintf(stderr, "%s: `--output' (`-F') option given more than once\n", PROGRAM);
           }
@@ -313,7 +313,7 @@ cmdline_parser_parse_option(char oshort, const char *olong, const char *val,
             args_info->compress_arg = (int)atoi(val);
           }
           
-          /* Specifiy output file (default=stdout). */
+          /* Specify output file (default=stdout). */
           else if (strcmp(olong, "output") == 0) {
             if (args_info->output_given) {
               fprintf(stderr, "%s: `--output' (`-F') option given more than once\n", PROGRAM);

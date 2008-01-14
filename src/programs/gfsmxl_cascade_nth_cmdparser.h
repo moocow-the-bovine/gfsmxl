@@ -21,7 +21,7 @@ extern "C" {
 struct gengetopt_args_info {
   int index_arg;	 /* Extract the N-th automaton in the cascade (default=0). */
   int compress_arg;	 /* Specify compression level of output file. (default=-1). */
-  char * output_arg;	 /* Specifiy output file (default=stdout). (default=-). */
+  char * output_arg;	 /* Specify output file (default=stdout). (default=-). */
 
   int help_given;	 /* Whether help was given */
   int version_given;	 /* Whether version was given */

@@ -86,7 +86,7 @@ the default compression level, 0 (zero) indicates no zlib compression at all,
 and 9 indicates the best possible compression.
 "
 
-string "output" F "Specifiy output file (default=stdout)." \
+string "output" F "Specify output file (default=stdout)." \
     arg="FILE" \
     default="-"
 

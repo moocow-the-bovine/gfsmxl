@@ -2,10 +2,10 @@
 #
 # Getopt::Gen specification
 #-----------------------------------------------------------------------------
-program "gfsmxl_cascade_nth"
+program "gfsmxl_cascade_nbest_strings"
 #program_version "0.01"
 
-purpose	"Extract the nth transducer from a compile gfsmxl cascade"
+purpose	"Lookup N-best string path in a gfsmxl cascade for line-buffered input"
 author  "Bryan Jurish <moocow@ling.uni-potsdam.de>"
 on_reparse "warn"
 
@@ -23,9 +23,9 @@ details ""
 #-----------------------------------------------------------------------------
 # Arguments
 #-----------------------------------------------------------------------------
-argument "CASCADE_FILE" "Stored binary gfsmxl cascade file" \
+argument "TEXT_FILE" "Input text file" \
     details="
-If unspecified, standard input will be read.
+Required.  Input files are assumed to be in 1-word-per-line format.
 "
 
 #-----------------------------------------------------------------------------
@@ -33,20 +33,28 @@ If unspecified, standard input will be read.
 #-----------------------------------------------------------------------------
 #group "Basic Options"
 
-int "index"    n "Extract the N-th automaton in the cascade" \
-    arg="N" \
-    default="0" \
+string "cascade" C "Specify cascade for lookup" \
+    arg="CASCADE" \
+    default="cascade.gfsc" \
     details="
+CASCADE should be primarily sorted on lower labels.
 "
 
-int "compress" z "Specify compression level of output file." \
-    arg="LEVEL" \
-    default="-1" \
-    details="
-Specify zlib compression level of output file. -1 (default) indicates
-the default compression level, 0 (zero) indicates no zlib compression at all,
-and 9 indicates the best possible compression.
-"
+string "labels" l "Specify alphabet for string->label lookup" \
+    arg="LABFILE" \
+    default="cascade.lab"
+
+int "max-paths" p "Specify maximum number of paths to extract" \
+  arg="N_PATHS" \
+  default="1"
+
+int "max-ops" o "Specify maximum number of configuration-pop operations" \
+  arg="N_OPS" \
+  default="-1"
+
+float "max-weight" w "Specify maximum weight of extractable paths" \
+  arg="WEIGHT" \
+  default="1e+38"
 
 string "output" F "Specify output file (default=stdout)." \
     arg="FILE" \

@@ -21,12 +21,13 @@
 # include <config.h>
 #endif
 
+#include <gfsm.h>
+#include <gfsmxl.h>
+
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
-
-#include <gfsmxl.h>
 
 #include "gfsmxl_cascade_compile_cmdparser.h"
 

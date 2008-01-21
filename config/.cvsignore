@@ -12,3 +12,10 @@ Makefile.in
 README.txt
 configure
 .deps
+
+depcomp
+missing
+config.guess
+config.sub
+ltmain.sh
+install-sh

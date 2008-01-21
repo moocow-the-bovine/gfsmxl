@@ -3,6 +3,7 @@
 use lib qw(./blib/lib ./blib/arch);
 use Gfsm;
 use Gfsm::XL;
+use Time::HiRes qw(tv_interval gettimeofday);
 
 BEGIN { *refcnt = *__refcnt = \&Gfsm::XL::__refcnt; }
 
@@ -100,7 +101,7 @@ sub test_lookup_1 {
 
   print "test_lookup_1(): done.\n";
 }
-test_lookup_1();
+#test_lookup_1();
 
 ##--------------------------------------------------------------
 ## test lookup 2 (big)
@@ -161,6 +162,61 @@ sub test_lookup_2 {
 }
 #test_lookup_2();
 
+##--------------------------------------------------------------
+## test Gfsm::Automaton::lookup() vs. Gfsm::XL::Cascade::lookup_nbest()
+##
+sub bench_lookup_vs_nbest {
+  my $xfsmfile = "hacks/mootm.gfsx";
+  my $abetfile = "hacks/mootm.lab";
+  my $tfile    = "hacks/negra-1k.t";
+
+  my $abet = Gfsm::Alphabet->new();
+  $abet->load($abetfile) or die("$0: load failed for alphabet file '$abetfile': $!");
+
+  my $xfsm = Gfsm::Automaton::Indexed->new();
+  $xfsm->load($xfsmfile) or die("$0: load failed for indexed automaton file '$xfsmfile': $!");
+  $xfsm->arcsort(Gfsm::acmask_from_chars('lwut'));
+  my $fsm = $xfsm->to_automaton();
+
+  my $csc = Gfsm::XL::Cascade->new();
+  $csc->append($xfsm);
+  my $lb = Gfsm::XL::Cascade::Lookup->new($csc);
+  #$lb->max_weight(Gfsm::Semiring->new($xfsm->semiring_type)->zero);
+  $lb->max_weight(Gfsm::Semiring->new($xfsm->semiring_type)->one);
+  $lb->max_paths(-1);
+  $lb->max_ops(-1);
+
+  ##-- get tokens
+  open(TFILE,"<$tfile") or die("$0: open failed for test file '$tfile': $!");
+  my @toks = grep { $_ !~ /^\s*$/ } map { chomp; $_ } <TFILE>;
+  close(TFILE);
+
+  my $tps_fsm = dobench_lookup('fsm',    \@toks, $abet, sub { return $fsm->lookup(@_) });
+  my $tps_lb  = dobench_lookup('csc:lb', \@toks, $abet, sub { return $lb->lookup_nbest(@_); });
+
+  print STDERR
+    (
+     sprintf("%8s: %8.2f tok/sec\n", 'fsm',    $tps_fsm), ##-- ~14831 tok/sec
+     sprintf("%8s: %8.2f tok/sec\n", 'csc:lb', $tps_lb),  ##-- ~ 6553 tok/sec
+    );
+}
+bench_lookup_vs_nbest();
+
+sub dobench_lookup {
+  my ($name,$toks,$abet,$sub) = @_;
+  my ($sym2id,$tok,$result,@labs,$paths);
+  $sym2id = $abet->asHash;
+  $result = Gfsm::Automaton->new();
+  my $started = [gettimeofday];
+  my $ntoks   = @$toks;
+  foreach $tok (@$toks) {
+    @labs = @$sym2id{split(//,$tok)};
+    $result = $sub->(\@labs,$result);
+    #$result->_connect();
+    $paths  = $result->paths;
+  }
+  return $ntoks / tv_interval($started);
+}
 
 ##--------------------------------------------------------------
 ## MAIN

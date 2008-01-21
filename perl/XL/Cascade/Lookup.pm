@@ -38,6 +38,7 @@ BEGIN {
 
 ## $result = $cl->lookup_nbest($input)
 ## $result = $cl->lookup_nbest($input,$result)
+*lookup = \&lookup_nbest;
 sub lookup_nbest {
   my ($cl,$input,$result) = @_;
   $result = Gfsm::Automaton->new() if (!$result);

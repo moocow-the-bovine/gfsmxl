@@ -578,6 +578,7 @@ gboolean gfsmxl_cascade_load_bin_handle_0_0_10(gfsmxlCascadeHeader *hdr,
 
     //-- hack: re-generate arc-block index
 #if defined(CASCADE_USE_BLOCK_INDEX)
+    if (g_ptr_array_index(csc->xblks,i)) { gfsmxl_arc_block_index_free(g_ptr_array_index(csc->xblks,i)); }
     g_ptr_array_index(csc->xblks,i) = gfsmxl_arc_block_index_new_lower(xfsm);
 #elif defined(CASCADE_USE_BLOCK_HASH)
     g_ptr_array_index(csc->xblks,i) = gfsmxl_arc_block_hash_new_lower(xfsm);

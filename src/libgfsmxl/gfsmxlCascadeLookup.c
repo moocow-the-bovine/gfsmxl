@@ -165,6 +165,7 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
     for (; gfsmxl_cascade_arciter_ok(&cai); gfsmxl_cascade_arciter_next(&cai)) {
       gfsmxlCascadeArc            *carc = gfsmxl_cascade_arciter_arc(&cai);
       gfsmxlCascadeLookupConfig cfg_tmp = { csc, carc->targets, cfg->ipos, cfg->oid, cfg->rid, cfg->w };
+      gfsmxlCascadeLookupConfig *cfg_new = NULL;
 
       //-- adjust cfg_tmp.w
       cfg_tmp.w = gfsm_sr_times(sr,cfg->w,carc->weight);
@@ -200,8 +201,10 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
       //-- add arc in output automaton
       gfsm_automaton_add_arc(result, cfg->rid, cfg_tmp.rid, carc->lower, carc->upper, carc->weight);
 
-      //-- add new config to the heap
-      gfsmxl_clc_fh_insert(cl->heap, gfsmxl_cascade_lookup_config_clone(&cfg_tmp));
+      //-- add new config to the heap & config-tracker
+      cfg_new = gfsmxl_cascade_lookup_config_clone(&cfg_tmp);
+      gfsmxl_clc_fh_insert(cl->heap, cfg_new);
+      g_hash_table_insert(cl->configs, cfg_new, NULL);
     }
     gfsmxl_cascade_arciter_close(&cai);
   }

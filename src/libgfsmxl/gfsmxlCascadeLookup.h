@@ -143,13 +143,13 @@ gboolean gfsmxl_cascade_lookup_config_ht_equal(gfsmxlCascadeLookupConfig *lc1, g
  */
 GFSM_INLINE
 gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_config_new_full(gfsmxlCascade        *csc,
-							       gfsmxlCascadeStateId  qids,
-							       guint32              ipos,
-							       gfsmStateId          oid,
-							       gfsmStateId          rid,
-							       gfsmWeight           w
-							       //,gfsmxlCascadeLookupConfig *parent
-							       );
+								 gfsmxlCascadeStateId  qids,
+								 guint32              ipos,
+								 gfsmStateId          oid,
+								 gfsmStateId          rid,
+								 gfsmWeight           w
+								 //,gfsmxlCascadeLookupConfig *parent
+								 );
 
 /** Allocate a ::gfsmxlCascadeLookupConfig for \a cl, including state-id data */
 GFSM_INLINE

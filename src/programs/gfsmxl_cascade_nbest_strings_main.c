@@ -300,9 +300,15 @@ int main (int argc, char **argv)
   fprintf(stderr, "%s: elapsed     : %8.2f sec\n", prog, elapsed);
   fprintf(stderr, "%s: throughput  : %8.2f tok/sec\n", prog, toks_per_sec);
 
-  //-- finish
+  //-- cleanup & finish
+  gfsmio_close(ih);
   gfsmio_close(outh);
   gfsmio_handle_free(outh);
+
+  if (linebuf)  { g_free(linebuf); }
+  if (cl)       { gfsmxl_cascade_lookup_free(cl); }
+  if (csc)      { gfsmxl_cascade_free(csc); }
+  if (timer)    { g_timer_destroy(timer); }
 
   return 0;
 }

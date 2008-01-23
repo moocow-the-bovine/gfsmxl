@@ -307,7 +307,7 @@ int main (int argc, char **argv)
 
   if (linebuf)  { g_free(linebuf); }
   if (cl)       { gfsmxl_cascade_lookup_free(cl); }
-  if (csc)      { gfsmxl_cascade_free(csc); }
+  if (csc)      { gfsmxl_cascade_free(csc,TRUE); }
   if (timer)    { g_timer_destroy(timer); }
 
   return 0;

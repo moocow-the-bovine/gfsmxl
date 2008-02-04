@@ -302,13 +302,17 @@ int main (int argc, char **argv)
 
   //-- cleanup & finish
   gfsmio_close(ih);
+  gfsmio_handle_free(ih);
+
   gfsmio_close(outh);
   gfsmio_handle_free(outh);
 
   if (linebuf)  { g_free(linebuf); }
-  if (cl)       { gfsmxl_cascade_lookup_free(cl); }
-  if (csc)      { gfsmxl_cascade_free(csc,TRUE); }
+  if (labvec)   { g_ptr_array_free(labvec,TRUE); }
+  if (gstr)     { g_string_free(gstr,TRUE); }
   if (timer)    { g_timer_destroy(timer); }
+  if (cl)       { gfsmxl_cascade_lookup_free(cl); csc=NULL; }
+  if (csc)      { gfsmxl_cascade_free(csc,TRUE); }
 
   return 0;
 }

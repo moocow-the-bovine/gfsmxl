@@ -33,6 +33,9 @@ KNOWN_TARGETS = \
 	mootm.gfsc
 
 
+#CASCADE_COMPILE = ../../src/programs/gfsmxl_cascade_compile
+CASCADE_COMPILE  = gfsmxl_cascade_compile
+
 all: $(TARGETS)
 
 ##----------------------------------------------------------------------
@@ -57,28 +60,28 @@ mootm.editor.taxi.gfst: taxi-align.taxi-words.text.align.tfst mootm.lab
 	gfsmcompile -i mootm.lab -o mootm.lab -F $@ $< 
 
 mootm.taxi.gfsc: mootm.editor.taxi.gfsx mootm.gfsx
-	../gfsmx-make-cascade $^ > $@ || (rm -f $@; false)
+	$(CASCADE_COMPILE) $^ -F $@ || (rm -f $@; false)
 
 ##-- v2
 mootm.editor.taxi2.gfst: taxi-align.taxi-words.text.align2.tfst mootm.lab
 	gfsmcompile -i mootm.lab -o mootm.lab -F $@ $< 
 
 mootm.taxi2.gfsc: mootm.editor.taxi2.gfsx mootm.gfsx
-	../gfsmx-make-cascade $^ > $@ || (rm -f $@; false)
+	$(CASCADE_COMPILE) $^ -F $@ || (rm -f $@; false)
 
 ##-- v3
 mootm.editor.taxi3.gfst: taxi-align.taxi-words.text.align3.tfst mootm.lab
 	gfsmcompile -i mootm.lab -o mootm.lab -F $@ $< 
 
 mootm.taxi3.gfsc: mootm.editor.taxi3.gfsx mootm.gfsx
-	../gfsmx-make-cascade $^ > $@ || (rm -f $@; false)
+	$(CASCADE_COMPILE) $^ -F $@ || (rm -f $@; false)
 
 ##-- v3, bytype
 mootm.editor.taxi3.bytype.gfst: taxi-align.taxi-words.text.align3.bytype.tfst mootm.lab
 	gfsmcompile -i mootm.lab -o mootm.lab -F $@ $< 
 
 mootm.taxi3.bytype.gfsc: mootm.editor.taxi3.bytype.gfsx mootm.gfsx
-	../gfsmx-make-cascade $^ > $@ || (rm -f $@; false)
+	$(CASCADE_COMPILE) $^ -F $@ || (rm -f $@; false)
 
 ##----------------------------------------------------------------------
 ## LTS: letters-only
@@ -120,21 +123,21 @@ lts-grimm.hi.editor.no-subst.gfst: lts-grimm.hi.lab
 
 ##-- (LTS --> LTS^(-1) --> morph): identity cascade
 lts-cascade.id.gfsc: lts-grimm.letters.gfsx lts-grimm.letters.inv.gfsx lts-mootm.gfsx
-	../gfsmx-make-cascade $^ > $@ || (rm -f $@; false)
+	$(CASCADE_COMPILE) $^ -F $@ || (rm -f $@; false)
 
 ##-- (LTS --> PHO_EDITOR --> LTS^(-1) --> morph): editor cascade
 lts-cascade.gfsc:  lts-grimm.letters.gfsx lts-grimm.hi.editor.gfsx lts-grimm.letters.inv.gfsx lts-mootm.gfsx
-	../gfsmx-make-cascade $^ > $@ || (rm -f $@; false)
+	$(CASCADE_COMPILE) $^ -F $@ || (rm -f $@; false)
 
 lts-cascade.no-subst.gfsc:  lts-grimm.letters.gfsx lts-grimm.hi.editor.no-subst.gfsx lts-grimm.letters.inv.gfsx lts-mootm.gfsx
-	../gfsmx-make-cascade $^ > $@ || (rm -f $@; false)
+	$(CASCADE_COMPILE) $^ -F $@ || (rm -f $@; false)
 
 ##-- (LTS --> PHO_EDITOR --> PHO_MORPH): editor cascade to phonetic target language
 lts-cascade.pho.gfsc: lts-grimm.letters.gfsx lts-grimm.hi.editor.gfsx lts-mootm.pho.gfsx
-	../gfsmx-make-cascade $^ > $@ || (rm -f $@; false)
+	$(CASCADE_COMPILE) $^ -F $@ || (rm -f $@; false)
 
 lts-cascade.pho.no-subst.gfsc: lts-grimm.letters.gfsx lts-grimm.hi.editor.no-subst.gfsx lts-mootm.pho.gfsx
-	../gfsmx-make-cascade $^ > $@ || (rm -f $@; false)
+	$(CASCADE_COMPILE) $^ -F $@ || (rm -f $@; false)
 
 
 ##----------------------------------------------------------------------
@@ -157,10 +160,10 @@ mootm.lo.editor.max1.gfst: mootm.lo.lab
 ##----------------------------------------------------------------------
 ## "robust" morphology cascades
 mootm.robust.gfsc: mootm.lo.editor.gfsx mootm.gfsx
-	../gfsmx-make-cascade $^ > $@ || (rm -f $@; false)
+	$(CASCADE_COMPILE) $^ -F $@ || (rm -f $@; false)
 
 mootm.robust.%.gfsc: mootm.lo.editor.%.gfsx mootm.gfsx
-	../gfsmx-make-cascade $^ > $@ || (rm -f $@; false)
+	$(CASCADE_COMPILE) $^ -F $@ || (rm -f $@; false)
 
 
 ##----------------------------------------------------------------------
@@ -169,7 +172,7 @@ mootm.robust.%.gfsc: mootm.lo.editor.%.gfsx mootm.gfsx
 	gfsmindex -F $@ $<
 
 %.gfsc: %.gfsx
-	../gfsmx-make-cascade $^ > $@ || (rm -f $@; false)
+	$(CASCADE_COMPILE) $^ -F $@ || (rm -f $@; false)
 
 ##----------------------------------------------------------------------
 ## cleanup

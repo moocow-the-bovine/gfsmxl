@@ -61,11 +61,16 @@ typedef struct {
   //
   //-- low-level data
   gfsmxlFibHeap             *heap;        /**< Heap for storing lookup configurations */
-  GHashTable                *configs;     /**< Set of extant lookup-configurations */
+  GHashTable                *configs;     /**< Set of extant lookup-configurations: cfg_key => GSList(configs_for_key) */
   gfsmAutomaton             *otrie;       /**< output-string trie */
   guint                      n_ops;       /**< Number of elementary operations in current run */
   gfsmxlCascadeLookupConfig  heap_neginf; /**< "Negative infinity" element for heap comparison */
 } gfsmxlCascadeLookup;
+
+/** \brief Singly-linked list of ::gfsmxlCascadeLookupConfig elements.
+ *  \detail Used by ::gfsmxlCascadeLookup.configs
+ */
+typedef GSList gfsmxlCascadeLookupConfigList;
 
 /*======================================================================
  * Constructors, etc.
@@ -95,8 +100,9 @@ void gfsmxl_cascade_lookup_free(gfsmxlCascadeLookup *cl);
 //@}
 
 /*======================================================================
- * Usage
+ * gfsmxlCascadeLookup API
  */
+/// \name gfsmxlCascadeLookup API
 //@{
 
 /** Resets state of a ::gfsmxlCascadeLookup, preparing it for another lookup
@@ -116,6 +122,7 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
 /*======================================================================
  * Low-level: gfsmxlCascadeLookupConfig
  */
+/// \name Low-level: gfsmxlCascadeLookupConfig
 //@{
 
 /** Heap-element comparison function for ::gfsmxlCascadeLookupConfig (inline)
@@ -175,6 +182,18 @@ void gfsmxl_cascade_lookup_config_free_inline(gfsmxlCascadeLookupConfig *lc);
 void gfsmxl_cascade_lookup_config_free(gfsmxlCascadeLookupConfig *lc);
 
 //@}
+
+/*======================================================================
+ * Low-level: gfsmxlCascadeLookupConfigList
+ */
+/// \name Low-level: gfsmxlCascadeLookupConfigList
+//@{
+
+/** Destroy a ::GSList of ::gfsmxlCascadeLookupConfig. Calls gfsmxl_cascade_lookup_config_free_inline()  */
+void gfsmxl_cascade_lookup_config_list_free(gfsmxlCascadeLookupConfigList *lcl);
+
+//@}
+
 
 /*======================================================================
  * END

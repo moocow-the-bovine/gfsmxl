@@ -56,8 +56,12 @@ gfsmxlCascadeLookup *gfsmxl_cascade_lookup_new_full(gfsmxlCascade *csc, gfsmWeig
   gfsmxl_clc_fh_setneginf(cl->heap, &(cl->heap_neginf));
   cl->configs  = g_hash_table_new_full((GHashFunc)gfsmxl_cascade_lookup_config_ht_hash,
 				       (GEqualFunc)gfsmxl_cascade_lookup_config_ht_equal,
+				       /*
 				       (GDestroyNotify)gfsmxl_cascade_lookup_config_free,
 				       (GDestroyNotify)NULL
+				       */
+				       (GDestroyNotify)NULL,
+				       (GDestroyNotify)gfsmxl_cascade_lookup_config_list_free
 				       );
   cl->otrie = gfsm_trie_new();
   gfsmxl_cascade_lookup_set_cascade(cl,csc);

@@ -92,8 +92,25 @@ void gfsmxl_cascade_lookup_config_free(gfsmxlCascadeLookupConfig *lc)
 { gfsmxl_cascade_lookup_config_free_inline(lc); }
 
 
+
 /*======================================================================
- * Usage
+ * Low-level: gfsmxlCascadeLookupConfigList
+ */
+
+//--------------------------------------------------------------
+void gfsmxl_cascade_lookup_config_list_free(gfsmxlCascadeLookupConfigList *lcl)
+{
+  gfsmxlCascadeLookupConfigList *l = lcl;
+  while (l != NULL) {
+    gfsmxl_cascade_lookup_config_free_inline((gfsmxlCascadeLookupConfig*)l->data);
+    l = l->next;
+  }
+  g_slist_free(lcl);
+}
+
+
+/*======================================================================
+ * gfsmxlCascadeLookup API
  */
 
 //--------------------------------------------------------------
@@ -104,7 +121,8 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
   gfsmSemiring             *sr  = csc->sr;
   gfsmxlCascadeArcIter       cai;
   guint                     n_paths = 0;
-  gfsmxlCascadeLookupConfig *cfg_new = NULL;
+  gfsmxlCascadeLookupConfig     *cfg_new  = NULL;
+  gfsmxlCascadeLookupConfigList *cfg_list = NULL; //-- list of extant configs which are hash-equal to cfg_new
 
   //-- implicit reset
   gfsmxl_cascade_lookup_reset(cl);
@@ -128,7 +146,7 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
 					     gfsm_automaton_get_root(result),
 					     sr->one);
   gfsmxl_clc_fh_insert(cl->heap, cfg);
-  g_hash_table_insert(cl->configs, cfg, NULL);
+  g_hash_table_insert(cl->configs, cfg, g_slist_prepend(NULL, cfg));
   //
   //-- ye olde loope
   while ( (cl->n_ops <= cl->max_ops) && (cfg=gfsmxl_clc_fh_extractmin(cl->heap)) ) {
@@ -187,7 +205,8 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
       //-- check whether an equal-or-better new config already exists
       if (g_hash_table_lookup_extended(cl->configs, &cfg_tmp, &old_cfg_key, &old_cfg_val)) {
 	//-- an old config exists...
-	gfsmxlCascadeLookupConfig *old_cfg = (gfsmxlCascadeLookupConfig*)old_cfg_key;
+	gfsmxlCascadeLookupConfig     *old_cfg  = (gfsmxlCascadeLookupConfig    *)old_cfg_key;
+	gfsmxlCascadeLookupConfigList *old_list = (gfsmxlCascadeLookupConfigList*)old_cfg_val;
 	/*-- BUG: 2008-03-10
 	 * + hash table funcs (hash,equal) necessarily test only (ipos,oid,qids)
 	 * + g_hash_table_insert(new_key,new_data) deletes new_key if a hash-equal old_key exists
@@ -224,10 +243,14 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
 	} else {
 	  //-- ... new config (cfg_tmp) is better: grab old result-id into new config
 	  cfg_tmp.rid = old_cfg->rid;
+	  cfg_list    = old_list;
+	  //-- ... and steal the old config from the hash table (will be re-inserted later)
+	  g_hash_table_steal(cl->configs, old_cfg);
 	}
       } else {
 	//-- no old config exists: add a state for this one
 	cfg_tmp.rid = gfsm_automaton_add_state(result);
+	cfg_list    = NULL;
       }
 
       //-- add arc in output automaton
@@ -236,7 +259,7 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
       //-- add new config to the heap & config-tracker
       cfg_new = gfsmxl_cascade_lookup_config_clone(&cfg_tmp);
       gfsmxl_clc_fh_insert(cl->heap, cfg_new);
-      g_hash_table_insert(cl->configs, cfg_new, NULL); /*-- BUG: 2008-03-10: see above --*/
+      g_hash_table_insert(cl->configs, cfg_new, g_slist_prepend(cfg_list,cfg_new)); /*-- BUG: 2008-03-10: see above --*/
     }
     gfsmxl_cascade_arciter_close(&cai);
   }

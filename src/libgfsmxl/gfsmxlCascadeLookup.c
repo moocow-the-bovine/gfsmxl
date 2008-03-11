@@ -118,11 +118,9 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
 {
   gfsmxlCascadeLookupConfig *cfg;
   gfsmxlCascade             *csc = cl->csc;
-  gfsmSemiring             *sr  = csc->sr;
+  gfsmSemiring              *sr = csc->sr;
   gfsmxlCascadeArcIter       cai;
   guint                     n_paths = 0;
-  gfsmxlCascadeLookupConfig     *cfg_new  = NULL;
-  gfsmxlCascadeLookupConfigList *cfg_list = NULL; //-- list of extant configs which are hash-equal to cfg_new
 
   //-- implicit reset
   gfsmxl_cascade_lookup_reset(cl);
@@ -184,8 +182,8 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
     for (; gfsmxl_cascade_arciter_ok(&cai); gfsmxl_cascade_arciter_next(&cai)) {
       gfsmxlCascadeArc            *carc = gfsmxl_cascade_arciter_arc(&cai);
       gfsmxlCascadeLookupConfig cfg_tmp = { csc, carc->targets, cfg->ipos, cfg->oid, cfg->rid, cfg->w };
-      //gfsmxlCascadeLookupConfig *cfg_new = NULL;
-      //cfg_new=NULL;
+      gfsmxlCascadeLookupConfig     *cfg_new;
+      gfsmxlCascadeLookupConfigList *cfg_list;
 
       //-- adjust cfg_tmp.w
       cfg_tmp.w = gfsm_sr_times(sr,cfg->w,carc->weight);
@@ -206,49 +204,17 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
       if (g_hash_table_lookup_extended(cl->configs, &cfg_tmp, &old_cfg_key, &old_cfg_val)) {
 	//-- an old config exists...
 	gfsmxlCascadeLookupConfig     *old_cfg  = (gfsmxlCascadeLookupConfig    *)old_cfg_key;
-	gfsmxlCascadeLookupConfigList *old_list = (gfsmxlCascadeLookupConfigList*)old_cfg_val;
-	/*-- BUG: 2008-03-10
-	 * + hash table funcs (hash,equal) necessarily test only (ipos,oid,qids)
-	 * + g_hash_table_insert(new_key,new_data) deletes new_key if a hash-equal old_key exists
-	 * + leads to stale data pointers (fhe_data) in the Fib Heap
-	 *   - symptom(s): segfault
-	 *   - how to reproduce (gfsmxl_cascade_nbest_strings)
-	 *       dir=~/work/bbaw/arc/taxi-align/seeker-2008-03-10/graphemfilter/
-	 *       -C grimm-phon-ident.cfst [v "moo-1"]
-	 *       -p 5
-	 *       (input 'testme.t'): 'küene'
-	 * + fix idea:
-	 *   - use 'configs' hash to map config keys to fib-element values
-	 *   - in case of "new-is-better" duplicates (the current problem case),
-	 *     use gfsmxl_clc_fh_replacedata(heap, old_heap_elt, new_config) to "promote" the new config
-	 *     + need to destructively alter the old key (w, ??? rid ???)
-	 *     + need to avoid allocating a new config for such dups altogether
-	 *       - what about arcs in the result automaton?
-	 *       - best to add them even for dups (unless we store & hash these as well),
-	 *         because hash-identity of (ipos,oid,qids)~=rid_old + config_new, prev_config_new tells us nothing
-	 *         about how we originally got to rid_old
-	 * + stack backtrace:
-	 *   #0  0x0804ea7d in gfsmxl_cascade_lookup_config_fh_compare (lc1=0x80bb5b8, lc2=0x80bb5b8) at ./gfsmxlCascadeLookup.hi:163
-	 *   #1  0x0804ea64 in gfsmxl_clc_fh_compare (a=0x8097a20, b=0x805ff90) at gfsmxlCLCFib.c:47
-	 *   #2  0x0804ef82 in gfsmxl_clc_fh_consolidate (h=0x8062338) at gfsmxlCLCFib.c:435
-	 *   #3  0x0804ee76 in gfsmxl_clc_fh_extractminel (h=0x8062338) at gfsmxlCLCFib.c:376
-	 *   #4  0x0804ec85 in gfsmxl_clc_fh_extractmin (h=0x8062338) at gfsmxlCLCFib.c:251
-	 *   #5  0x0804e065 in gfsmxl_cascade_lookup_nbest (cl=0x805b4c0, input=0x805b290, result=0x8057ef8) at gfsmxlCascadeLookup.c:134
-	 *   #6  0x0804a080 in analyze_token (text=0x8057ea0 "küene", outh=0x8057e78) at gfsmxl_cascade_nbest_strings_main.c:90
-	 *   #7  0x0804acaf in main (argc=Cannot access memory at address 0x41200000
-	 */
 	if (!gfsm_sr_less(sr, cfg_tmp.w, old_cfg->w)) {
 	  //-- old config is better: skip new (cfg_tmp)
 	  continue;
 	} else {
-	  //-- ... new config (cfg_tmp) is better: grab old result-id into new config
-	  cfg_tmp.rid = old_cfg->rid;
-	  cfg_list    = old_list;
-	  //-- ... and steal the old config from the hash table (will be re-inserted later)
-	  g_hash_table_steal(cl->configs, old_cfg);
+	  //-- new config (cfg_tmp) is better:
+	  cfg_tmp.rid = old_cfg->rid;                                //-- grab old result-id into new config
+	  cfg_list    = (gfsmxlCascadeLookupConfigList*)old_cfg_val; //-- ... inherit list of matching configs
+	  g_hash_table_steal(cl->configs, old_cfg);                  //-- ... and steal the old hash entry
 	}
       } else {
-	//-- no old config exists: add a state for this one
+	//-- no old config exists: add a state for this one (with empty match-list)
 	cfg_tmp.rid = gfsm_automaton_add_state(result);
 	cfg_list    = NULL;
       }
@@ -259,7 +225,7 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
       //-- add new config to the heap & config-tracker
       cfg_new = gfsmxl_cascade_lookup_config_clone(&cfg_tmp);
       gfsmxl_clc_fh_insert(cl->heap, cfg_new);
-      g_hash_table_insert(cl->configs, cfg_new, g_slist_prepend(cfg_list,cfg_new)); /*-- BUG: 2008-03-10: see above --*/
+      g_hash_table_insert(cl->configs, cfg_new, g_slist_prepend(cfg_list,cfg_new));
     }
     gfsmxl_cascade_arciter_close(&cai);
   }

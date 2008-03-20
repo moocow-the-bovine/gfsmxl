@@ -24,6 +24,7 @@ struct gengetopt_args_info {
   int max_paths_arg;	 /* Specify maximum number of paths to extract (default=1). */
   int max_ops_arg;	 /* Specify maximum number of configuration-pop operations (default=-1). */
   float max_weight_arg;	 /* Specify maximum weight of extractable paths (default=1e+38). */
+  int att_mode_flag;	 /* Respect AT&T regex-style escapes in input strings (default=0). */
   char * output_arg;	 /* Specify output file (default=stdout). (default=-). */
 
   int help_given;	 /* Whether help was given */
@@ -33,6 +34,7 @@ struct gengetopt_args_info {
   int max_paths_given;	 /* Whether max-paths was given */
   int max_ops_given;	 /* Whether max-ops was given */
   int max_weight_given;	 /* Whether max-weight was given */
+  int att_mode_given;	 /* Whether att-mode was given */
   int output_given;	 /* Whether output was given */
   
   char **inputs;         /* unnamed arguments */

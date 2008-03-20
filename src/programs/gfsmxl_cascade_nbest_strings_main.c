@@ -44,6 +44,9 @@ const char *outfilename = "-";
 const char *cscfilename = NULL;
 const char *abetfilename = NULL;
 
+//-- flags
+gboolean att_mode = FALSE;
+
 //-- global structs
 gfsmAlphabet        *abet=NULL;
 gfsmxlCascade       *csc=NULL;
@@ -84,7 +87,7 @@ void analyze_token(char *text, gfsmIOHandle *outh)
 {
   //-- get labels
   if (labvec) g_ptr_array_set_size(labvec,0);
-  labvec = gfsm_alphabet_string_to_labels(abet, text, labvec, TRUE);
+  labvec = gfsm_alphabet_generic_string_to_labels(abet, text, labvec, TRUE, att_mode);
 
   //-- lookup & connect
   result = gfsmxl_cascade_lookup_nbest(cl, labvec, result);
@@ -224,6 +227,9 @@ void get_my_options(int argc, char **argv)
   }
   cl->max_paths  = args.max_paths_arg;
   cl->max_ops    = (guint)args.max_ops_arg;
+
+  //-- flags
+  att_mode = args.att_mode_flag;
 }
 
 /*======================================================================

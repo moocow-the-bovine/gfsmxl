@@ -56,6 +56,9 @@ float "max-weight" w "Specify maximum weight of extractable paths" \
   arg="WEIGHT" \
   default="1e+38"
 
+flag "att-mode" a "Respect AT&T regex-style escapes in input strings" \
+  default="0"
+
 string "output" F "Specify output file (default=stdout)." \
     arg="FILE" \
     default="-"

@@ -94,6 +94,7 @@ cmdline_parser_print_help (void)
   printf("   -pN_PATHS  --max-paths=N_PATHS  Specify maximum number of paths to extract\n");
   printf("   -oN_OPS    --max-ops=N_OPS      Specify maximum number of configuration-pop operations\n");
   printf("   -wFLOAT    --max-weight=FLOAT   Specify maximum weight of extractable paths\n");
+  printf("   -a         --att-mode           Respect AT&T regex-style escapes in input strings\n");
   printf("   -FFILE     --output=FILE        Specify output file (default=stdout).\n");
 }
 
@@ -120,6 +121,7 @@ clear_args(struct gengetopt_args_info *args_info)
   args_info->max_paths_arg = 1; 
   args_info->max_ops_arg = -1; 
   args_info->max_weight_arg = 1e+38; 
+  args_info->att_mode_flag = 0; 
   args_info->output_arg = strdup("-"); 
 }
 
@@ -137,6 +139,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
   args_info->max_paths_given = 0;
   args_info->max_ops_given = 0;
   args_info->max_weight_given = 0;
+  args_info->att_mode_given = 0;
   args_info->output_given = 0;
 
   clear_args(args_info);
@@ -161,6 +164,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
 	{ "max-paths", 1, NULL, 'p' },
 	{ "max-ops", 1, NULL, 'o' },
 	{ "max-weight", 1, NULL, 'w' },
+	{ "att-mode", 0, NULL, 'a' },
 	{ "output", 1, NULL, 'F' },
         { NULL,	0, NULL, 0 }
       };
@@ -172,6 +176,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
 	'p', ':',
 	'o', ':',
 	'w', ':',
+	'a',
 	'F', ':',
 	'\0'
       };
@@ -278,6 +283,15 @@ cmdline_parser_parse_option(char oshort, const char *olong, const char *val,
           args_info->max_weight_arg = (float)strtod(val, NULL);
           break;
         
+        case 'a':	 /* Respect AT&T regex-style escapes in input strings */
+          if (args_info->att_mode_given) {
+            fprintf(stderr, "%s: `--att-mode' (`-a') option given more than once\n", PROGRAM);
+          }
+          args_info->att_mode_given++;
+         if (args_info->att_mode_given <= 1)
+           args_info->att_mode_flag = !(args_info->att_mode_flag);
+          break;
+        
         case 'F':	 /* Specify output file (default=stdout). */
           if (args_info->output_given) {
             fprintf(stderr, "%s: `--output' (`-F') option given more than once\n", PROGRAM);
@@ -355,6 +369,16 @@ cmdline_parser_parse_option(char oshort, const char *olong, const char *val,
             }
             args_info->max_weight_given++;
             args_info->max_weight_arg = (float)strtod(val, NULL);
+          }
+          
+          /* Respect AT&T regex-style escapes in input strings */
+          else if (strcmp(olong, "att-mode") == 0) {
+            if (args_info->att_mode_given) {
+              fprintf(stderr, "%s: `--att-mode' (`-a') option given more than once\n", PROGRAM);
+            }
+            args_info->att_mode_given++;
+           if (args_info->att_mode_given <= 1)
+             args_info->att_mode_flag = !(args_info->att_mode_flag);
           }
           
           /* Specify output file (default=stdout). */

@@ -1,6 +1,6 @@
 
 /*=============================================================================*\
- * File: gfsxlm.h
+ * File: gfsmxl.h
  * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
  * Description: finite state cascade library: top-level
  *

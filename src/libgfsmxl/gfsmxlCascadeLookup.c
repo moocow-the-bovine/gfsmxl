@@ -192,11 +192,11 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
       if (gfsm_sr_less(sr,cl->max_w,cfg_tmp.w)) continue;
 
       if (carc->lower != gfsmEpsilon) {
-	//-- input-epsilon arc: adjust cfg_tmp.ipos
+	//-- non-input-epsilon arc: adjust cfg_tmp.ipos
 	cfg_tmp.ipos++;
       }
       if (carc->upper != gfsmEpsilon) {
-	//-- output-epsilon arc: adjust cfg_tmp.oid
+	//-- non-output-epsilon arc: adjust cfg_tmp.oid
 	cfg_tmp.oid = gfsm_trie_get_arc_lower(cl->otrie, cfg->oid, carc->upper, 0,FALSE);
       }
 

@@ -200,7 +200,7 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
 	cfg_tmp.oid = gfsm_trie_get_arc_lower(cl->otrie, cfg->oid, carc->upper, 0,FALSE);
       }
 
-      //-- check whether an equal-or-better new config already exists
+      //-- check whether an equal-or-better old config already exists
       if (g_hash_table_lookup_extended(cl->configs, &cfg_tmp, &old_cfg_key, &old_cfg_val)) {
 	//-- an old config exists...
 	gfsmxlCascadeLookupConfig     *old_cfg  = (gfsmxlCascadeLookupConfig    *)old_cfg_key;

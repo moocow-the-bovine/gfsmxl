@@ -1,5 +1,10 @@
 Change log for gfsmxl
 
+v0.0.7 Fri, 07 Nov 2008 12:00:04 +0100
+  + added program gfsmxl_cascade_nbest_lookup
+
+v0.0.6 (development only)
+
 v0.0.5 Tue, 11 Mar 2008 09:51:45 +0100
   + fixed bug in gfsmxl_cascade_lookup_nbest() causing segfaults on duplicate-configs
     - solution: store lists of hash-matching configs as values in cl->configs, steal

@@ -1,6 +1,7 @@
 gfsmxl_cascade_compile
 gfsmxl_cascade_nth
 gfsmxl_cascade_nbest_strings
+gfsmxl_cascade_nbest_lookup
 
 *.out
 *.tmp

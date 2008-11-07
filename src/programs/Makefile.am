@@ -20,6 +20,7 @@
 bin_PROGRAMS = \
 	gfsmxl_cascade_compile \
 	gfsmxl_cascade_nth \
+	gfsmxl_cascade_nbest_lookup \
 	gfsmxl_cascade_nbest_strings
 
 EXTRA_DIST =
@@ -104,6 +105,19 @@ gfsmxl_cascade_nth_LDFLAGS = $(LDFLAGS_COMMON)
 gfsmxl_cascade_nth_LDADD = $(LDADD_COMMON)
 
 EXTRA_DIST += gfsmxl_cascade_nth.gog
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+gfsmxl_cascade_nbest_lookup_SOURCES = \
+	gfsmxl_cascade_nbest_lookup_main.c \
+	gfsmxl_cascade_nbest_lookup_cmdparser.c gfsmxl_cascade_nbest_lookup_cmdparser.h
+
+gfsmxl_cascade_nbest_lookup_main.o: gfsmxl_cascade_nbest_lookup_cmdparser.h
+
+gfsmxl_cascade_nbest_lookup_LDFLAGS = $(LDFLAGS_COMMON)
+gfsmxl_cascade_nbest_lookup_LDADD = $(LDADD_COMMON)
+
+EXTRA_DIST += gfsmxl_cascade_nbest_lookup.gog
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

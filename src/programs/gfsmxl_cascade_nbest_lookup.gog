@@ -1,0 +1,87 @@
+# -*- Mode: Shell-Script -*-
+#
+# Getopt::Gen specification
+#-----------------------------------------------------------------------------
+program "gfsmxl_cascade_nbest_lookup"
+#program_version "0.01"
+
+purpose	"Lookup N-best paths in a gfsmxl cascade"
+author  "Bryan Jurish <moocow@ling.uni-potsdam.de>"
+on_reparse "warn"
+
+#-----------------------------------------------------------------------------
+# Details
+#-----------------------------------------------------------------------------
+details ""
+
+#-----------------------------------------------------------------------------
+# Files
+#-----------------------------------------------------------------------------
+#rcfile "/etc/gfsmrc"
+#rcfile "~/.gfsmrc"
+
+#-----------------------------------------------------------------------------
+# Arguments
+#-----------------------------------------------------------------------------
+argument "INPUT_WORDS..." "Input strings (implicitly concatenated)" \
+    details="
+Required.
+"
+
+#-----------------------------------------------------------------------------
+# Options
+#-----------------------------------------------------------------------------
+#group "Basic Options"
+
+string "cascade" C "Specify cascade for lookup" \
+    arg="CASCADE" \
+    default="cascade.gfsc" \
+    details="
+CASCADE should be primarily sorted on lower labels.
+"
+
+string "labels" l "Specify alphabet for string->label lookup" \
+    arg="LABFILE" \
+    default="cascade.lab"
+
+int "max-paths" p "Specify maximum number of paths to extract" \
+  arg="N_PATHS" \
+  default="1"
+
+int "max-ops" o "Specify maximum number of configuration-pop operations" \
+  arg="N_OPS" \
+  default="-1"
+
+float "max-weight" w "Specify maximum weight of extractable paths" \
+  arg="WEIGHT" \
+  default="1e+38"
+
+flag "att-mode" a "Respect AT&T regex-style escapes in input strings" \
+  default="0"
+
+string "output" F "Specify output file (default=stdout)." \
+    arg="FILE" \
+    default="-"
+
+#-----------------------------------------------------------------------------
+# Addenda
+#-----------------------------------------------------------------------------
+#addenda ""
+
+#-----------------------------------------------------------------------------
+# Bugs
+#-----------------------------------------------------------------------------
+bugs "
+
+None known.
+
+"
+
+#-----------------------------------------------------------------------------
+# Footer
+#-----------------------------------------------------------------------------
+#acknowledge `cat acknowledge.pod`
+
+seealso "
+gfsmutils(1)
+"

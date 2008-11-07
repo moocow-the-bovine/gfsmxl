@@ -17,13 +17,13 @@ gfsmxl_cascade_nbest_lookup [OPTIONS] INPUT_WORDS...
  Options
     -h         --help               Print help and exit.
     -V         --version            Print version and exit.
-    -cFILE     --rcfile=FILE        Read an alternate configuration file.
     -CCASCADE  --cascade=CASCADE    Specify cascade for lookup
     -lLABFILE  --labels=LABFILE     Specify alphabet for string->label lookup
     -pN_PATHS  --max-paths=N_PATHS  Specify maximum number of paths to extract
     -oN_OPS    --max-ops=N_OPS      Specify maximum number of configuration-pop operations
     -wFLOAT    --max-weight=FLOAT   Specify maximum weight of extractable paths
     -a         --att-mode           Respect AT&T regex-style escapes in input strings
+    -c         --connect            Connect result prior to output
     -FFILE     --output=FILE        Specify output file (default=stdout).
 
 =cut
@@ -92,17 +92,6 @@ Default: '0'
 
 
 
-=item C<--rcfile=FILE> , C<-cFILE>
-
-Read an alternate configuration file.
-
-Default: 'NULL'
-
-See also: L<CONFIGURATION FILES>.
-
-
-
-
 =item C<--cascade=CASCADE> , C<-CCASCADE>
 
 Specify cascade for lookup
@@ -161,6 +150,15 @@ Default: '0'
 
 
 
+=item C<--connect> , C<-c>
+
+Connect result prior to output
+
+Default: '0'
+
+
+
+
 =item C<--output=FILE> , C<-FFILE>
 
 Specify output file (default=stdout).
@@ -180,22 +178,6 @@ Default: '-'
 ###############################################################
 # configuration files
 ###############################################################
-=pod
-
-=head1 CONFIGURATION FILES
-
-Configuration files are expected to contain lines of the form:
-
-    LONG_OPTION_NAME    OPTION_VALUE
-
-where LONG_OPTION_NAME is the long name of some option,
-without the leading '--', and OPTION_VALUE is the value for
-that option, if any.  Fields are whitespace-separated.
-Blank lines and comments (lines beginning with '#')
-are ignored.
-
-No configuration files are read by default.
-
 =cut
 
 
@@ -216,7 +198,7 @@ using Getopt::Gen version 0.13.
 Translation was initiated
 as:
 
-   optgen.perl -l --nocfile --nohfile --notimestamp -F gfsmxl_cascade_nbest_lookup gfsmxl_cascade_nbest_lookup.gog
+   optgen.perl -l --no-handle-rcfile --nocfile --nohfile --notimestamp -F gfsmxl_cascade_nbest_lookup gfsmxl_cascade_nbest_lookup.gog
 
 =cut
 

@@ -167,7 +167,7 @@ pdf: $(DOC_PDF_TARGETS)
 ## pod compilation rules: Getopt::Gen
 ##-----------------------------------------------------------------------
 
-OPTGENFLAGS = -l
+OPTGENFLAGS = -l --no-handle-rcfile
 
 if HAVE_OPTGEN
 .gog.pod:

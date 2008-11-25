@@ -3,6 +3,8 @@ gfsmxl_cascade_nth
 gfsmxl_cascade_nbest_strings
 gfsmxl_cascade_nbest_lookup
 
+meinten_sie
+
 *.out
 *.tmp
 tmp.*

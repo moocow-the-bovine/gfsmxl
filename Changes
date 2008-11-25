@@ -1,7 +1,9 @@
 Change log for gfsmxl
 
-v0.0.7 Fri, 07 Nov 2008 12:00:04 +0100
+v0.0.7 Tue, 25 Nov 2008 12:00:01 +0100
   + added program gfsmxl_cascade_nbest_lookup
+  + fixed NULL-dereference in gfsmxl_arcrange_open_block_index() [gfsmxlLabelIndex.hi]
+    causing random-looking segfaults if a NULL pointer (app) was found in abx->q2block
 
 v0.0.6 (development only)
 

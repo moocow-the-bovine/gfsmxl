@@ -58,8 +58,8 @@ void gfsmxl_arcrange_open_block_index(gfsmArcRange *range, gfsmxlArcBlockIndex *
 {
   gfsmArc **app     = (gfsmArc**)g_ptr_array_index(abx->q2block,qid);
   gfsmArc **app_max = (gfsmArc**)g_ptr_array_index(abx->q2block,qid+1);
-  while (app < app_max && (*app)->lower < lo) { ++app; }
-  if (app < app_max && (*app)->lower == lo) {
+  while (app && app < app_max && (*app)->lower < lo) { ++app; }
+  if (app && app < app_max && (*app)->lower == lo) {
     range->min = *app;
     range->max = *(app+1);
   }
@@ -76,12 +76,12 @@ void gfsmxl_arcrange_open_block_index_bsearch(gfsmArcRange *range, gfsmxlArcBloc
   gfsmArc **min = (gfsmArc**)g_ptr_array_index(abx->q2block,qid);
   gfsmArc **max = (gfsmArc**)g_ptr_array_index(abx->q2block,qid+1);
   range->max    = *max;
-  while (min < max) {
+  while (min && min < max) {
     gfsmArc **mid = min + (max-min)/2;
     if ( (*mid)->lower < lo ) { min=mid+1; }
     else                      { max=mid; }
   }
-  range->min = (*min);
+  range->min = min ? (*min) : NULL;
 }
 
 /*======================================================================

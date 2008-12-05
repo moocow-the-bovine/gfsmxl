@@ -114,6 +114,7 @@ void gfsmxl_cascade_lookup_config_list_free(gfsmxlCascadeLookupConfigList *lcl)
  */
 
 //--------------------------------------------------------------
+//#define DEBUG_NCONFIGS 1
 gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVector *input, gfsmAutomaton *result)
 {
   gfsmxlCascadeLookupConfig *cfg;
@@ -121,6 +122,9 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
   gfsmSemiring              *sr = csc->sr;
   gfsmxlCascadeArcIter       cai;
   guint                     n_paths = 0;
+#ifdef DEBUG_NCONFIGS
+  guint n_configs = 1;
+#endif
 
   //-- implicit reset
   gfsmxl_cascade_lookup_reset(cl);
@@ -219,6 +223,10 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
 	cfg_list    = NULL;
       }
 
+# ifdef DEBUG_NCONFIGS
+      ++n_configs;
+# endif
+
       //-- add arc in output automaton
       gfsm_automaton_add_arc(result, cfg->rid, cfg_tmp.rid, carc->lower, carc->upper, carc->weight);
 
@@ -229,6 +237,10 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
     }
     gfsmxl_cascade_arciter_close(&cai);
   }
+
+#ifdef DEBUG_NCONFIGS
+  fprintf(stderr, "(DEBUG): n_configs=%u\n", n_configs);
+#endif
 
   return result;
 }

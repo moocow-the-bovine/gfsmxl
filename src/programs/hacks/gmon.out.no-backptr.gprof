@@ -1,0 +1,844 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+ 17.69      0.23     0.23  1695486     0.00     0.00  gfsmxl_cascade_expand_arcs_
+ 13.08      0.40     0.17   633991     0.00     0.00  gfsmxl_clc_fh_consolidate
+  6.92      0.49     0.09        2    45.00    45.00  gfsmxl_arc_ptr_array_new_lower
+  6.54      0.57     0.09  6362057     0.00     0.00  gfsmxl_clc_fhe_insertafter
+  5.38      0.65     0.07  2459613     0.00     0.00  gfsmxl_arcrange_open_block_index
+  5.38      0.71     0.07   565162     0.00     0.00  gfsmxl_cascade_arciter_open
+  4.62      0.78     0.06  4648928     0.00     0.00  gfsmxl_cascade_lookup_config_fh_compare
+  3.85      0.82     0.05  5287402     0.00     0.00  gfsmxl_clc_fh_removerootlist
+  3.08      0.86     0.04  1916644     0.00     0.00  gfsm_automaton_add_state_full
+  3.08      0.91     0.04        2    20.00    65.00  gfsmxl_arc_block_index_new_lower
+  2.31      0.94     0.03  8384990     0.00     0.00  gfsm_sr_less
+  2.31      0.96     0.03   760460     0.00     0.00  gfsmxl_cascade_arc_new_from_sourced_arcpp_
+  2.31      0.99     0.03   638474     0.00     0.00  gfsmxl_clc_fh_insert
+  2.31      1.02     0.03     1024     0.03     1.13  gfsmxl_cascade_lookup_nbest
+  1.54      1.04     0.02  4648928     0.00     0.00  gfsmxl_clc_fhe_remove
+  1.54      1.06     0.02  2164014     0.00     0.00  gfsmxl_clc_fh_heaplink
+  1.54      1.08     0.02  1246757     0.00     0.00  gfsm_sr_times
+  1.54      1.10     0.02   760460     0.00     0.00  gfsmxl_arcpp_upper
+  1.54      1.12     0.02   638474     0.00     0.00  gfsmxl_clc_fh_insertel
+  1.54      1.15     0.02   638278     0.00     0.00  gfsm_automaton_add_state
+  1.54      1.17     0.02   637450     0.00     0.00  gfsm_arclist_new_full
+  0.77      1.18     0.01  5287402     0.00     0.00  gfsmxl_clc_fh_insertrootlist
+  0.77      1.19     0.01  1916644     0.00     0.00  gfsm_automaton_open_state
+  0.77      1.20     0.01  1325622     0.00     0.00  gfsmxl_cascade_arciter_ok
+  0.77      1.21     0.01   818446     0.00     0.00  gfsm_sr_less
+  0.77      1.22     0.01   760460     0.00     0.00  gfsmxl_arcpp_lower
+  0.77      1.23     0.01   760460     0.00     0.00  gfsmxl_cascade_arciter_next
+  0.77      1.24     0.01   638474     0.00     0.00  gfsmxl_clc_fh_extractminel
+  0.77      1.25     0.01   638474     0.00     0.00  gfsmxl_clc_fhe_initelem
+  0.77      1.25     0.01   637450     0.00     0.00  gfsm_automaton_add_arc
+  0.77      1.26     0.01   637450     0.00     0.00  gfsmxl_cascade_lookup_config_clone
+  0.77      1.27     0.01   633991     0.00     0.00  gfsmxl_clc_fh_checkcons
+  0.77      1.28     0.01   565162     0.00     0.00  gfsmxl_cascade_stateid_sized_new
+  0.77      1.29     0.01                             gfsmxl_cascade_lookup_config_ht_hash
+  0.38      1.30     0.01  1713129     0.00     0.00  gfsmxl_clc_fhe_insertbefore
+  0.00      1.30     0.00  4648928     0.00     0.00  gfsmxl_clc_fh_compare
+  0.00      1.30     0.00  1278366     0.00     0.00  gfsm_automaton_ensure_state
+  0.00      1.30     0.00   760852     0.00     0.00  gfsm_sr_times
+  0.00      1.30     0.00   760460     0.00     0.00  gfsmxl_cascade_arc_free
+  0.00      1.30     0.00   760460     0.00     0.00  gfsmxl_cascade_arc_sized_new
+  0.00      1.30     0.00   760460     0.00     0.00  gfsmxl_cascade_arciter_arc
+  0.00      1.30     0.00   760460     0.00     0.00  gfsmxl_cascade_arciter_insert_arc_
+  0.00      1.30     0.00   640131     0.00     0.00  gfsmxl_clc_fh_extractmin
+  0.00      1.30     0.00   639303     0.00     0.00  gfsm_automaton_reserve_states
+  0.00      1.30     0.00   638474     0.00     0.00  gfsmxl_cascade_lookup_config_free_inline
+  0.00      1.30     0.00   638474     0.00     0.00  gfsmxl_cascade_lookup_config_new_full
+  0.00      1.30     0.00   638474     0.00     0.00  gfsmxl_cascade_stateid_sized_copy
+  0.00      1.30     0.00   638474     0.00     0.00  gfsmxl_clc_fhe_newelem
+  0.00      1.30     0.00   637842     0.00     0.00  gfsm_automaton_open_state_force
+  0.00      1.30     0.00   637450     0.00     0.00  gfsm_arclist_insert_node
+  0.00      1.30     0.00   637450     0.00     0.00  gfsm_arclist_prepend_node
+  0.00      1.30     0.00   637450     0.00     0.00  gfsm_automaton_add_arc_node
+  0.00      1.30     0.00   565162     0.00     0.00  gfsmxl_arcpp_free
+  0.00      1.30     0.00   565162     0.00     0.00  gfsmxl_arcpp_sized_new
+  0.00      1.30     0.00   565162     0.00     0.00  gfsmxl_cascade_arciter_close
+  0.00      1.30     0.00   565162     0.00     0.00  gfsmxl_cascade_stateid_sized_clone
+  0.00      1.30     0.00   565162     0.00     0.00  gfsmxl_cascade_stateid_sized_copy
+  0.00      1.30     0.00    56065     0.00     0.00  gfsm_indexed_automaton_get_final_weight
+  0.00      1.30     0.00    56065     0.00     0.00  gfsm_indexed_automaton_has_state
+  0.00      1.30     0.00    56065     0.00     0.00  gfsm_indexed_automaton_n_states
+  0.00      1.30     0.00    56065     0.00     0.00  gfsm_sr_less
+  0.00      1.30     0.00    45926     0.00     0.00  gfsmxl_cascade_get_final_weight
+  0.00      1.30     0.00     2049     0.00     0.00  gfsm_automaton_set_root
+  0.00      1.30     0.00     2048     0.00     0.00  gfsm_automaton_get_root
+  0.00      1.30     0.00     1025     0.00     0.05  gfsmxl_cascade_lookup_reset
+  0.00      1.30     0.00     1024     0.00     1.13  analyze_token
+  0.00      1.30     0.00     1024     0.00     0.00  gfsm_automaton_n_states
+  0.00      1.30     0.00     1024     0.00     0.00  gfsmxl_cascade_get_root
+  0.00      1.30     0.00      392     0.00     0.00  gfsm_automaton_set_final_state_full
+  0.00      1.30     0.00      392     0.00     0.00  gfsm_state_set_final
+  0.00      1.30     0.00      392     0.00     0.00  gfsm_weight2ptr
+  0.00      1.30     0.00      392     0.00     0.00  gfsm_weightmap_insert
+  0.00      1.30     0.00        6     0.00     0.00  cmdline_parser_parse_option
+  0.00      1.30     0.00        3     0.00     0.00  ceillog2
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_arc_table_free
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_arc_table_index_free
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_arc_table_index_init
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_arc_table_index_sized_new
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_arc_table_sized_new
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_indexed_automaton_free
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_indexed_automaton_n_states
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_indexed_automaton_new
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_indexed_automaton_new_full
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_semiring_free
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_semiring_free
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_semiring_init
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_semiring_init
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_semiring_init
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_semiring_new
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_semiring_new
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_semiring_new
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_weight_vector_free
+  0.00      1.30     0.00        2     0.00     0.00  gfsm_weight_vector_sized_new
+  0.00      1.30     0.00        2     0.00     0.00  gfsmxl_arc_block_index_free
+  0.00      1.30     0.00        2     0.00     0.00  gfsmxl_arc_ptr_array_free
+  0.00      1.30     0.00        2     0.00     0.00  gfsmxl_cascade_clear
+  0.00      1.30     0.00        2     0.00     0.00  gfsmxl_cascade_lookup_set_cascade
+  0.00      1.30     0.00        1     0.00     0.00  clear_args
+  0.00      1.30     0.00        1     0.00     0.00  cmdline_parser
+  0.00      1.30     0.00        1     0.00   130.00  get_my_options
+  0.00      1.30     0.00        1     0.00     0.00  gfsm_automaton_free
+  0.00      1.30     0.00        1     0.00     0.00  gfsm_automaton_new
+  0.00      1.30     0.00        1     0.00     0.00  gfsm_automaton_new_full
+  0.00      1.30     0.00        1     0.00     0.00  gfsm_automaton_new_full
+  0.00      1.30     0.00        1     0.00     0.00  gfsm_automaton_set_semiring
+  0.00      1.30     0.00        1     0.00     0.00  gfsm_semiring_copy
+  0.00      1.30     0.00        1     0.00     0.00  gfsm_semiring_free
+  0.00      1.30     0.00        1     0.00     0.00  gfsm_set_new
+  0.00      1.30     0.00        1     0.00     0.00  gfsm_set_new
+  0.00      1.30     0.00        1     0.00     0.00  gfsm_weightmap_free
+  0.00      1.30     0.00        1     0.00     0.00  gfsmxl_cascade_free
+  0.00      1.30     0.00        1     0.00   130.00  gfsmxl_cascade_load_bin_filename
+  0.00      1.30     0.00        1     0.00   130.00  gfsmxl_cascade_load_bin_handle
+  0.00      1.30     0.00        1     0.00   130.00  gfsmxl_cascade_load_bin_handle_0_0_10
+  0.00      1.30     0.00        1     0.00     0.00  gfsmxl_cascade_load_bin_header
+  0.00      1.30     0.00        1     0.00     0.05  gfsmxl_cascade_lookup_free
+  0.00      1.30     0.00        1     0.00     0.00  gfsmxl_cascade_lookup_new
+  0.00      1.30     0.00        1     0.00     0.00  gfsmxl_cascade_lookup_new_full
+  0.00      1.30     0.00        1     0.00     0.00  gfsmxl_cascade_new
+  0.00      1.30     0.00        1     0.00     0.00  gfsmxl_cascade_new_full
+  0.00      1.30     0.00        1     0.00     0.00  gfsmxl_cascade_set_depth
+  0.00      1.30     0.00        1     0.00     0.00  gfsmxl_cascade_set_semiring_type
+  0.00      1.30     0.00        1     0.00     0.00  gfsmxl_clc_fh_deleteheap
+  0.00      1.30     0.00        1     0.00     0.00  gfsmxl_clc_fh_destroyheap
+  0.00      1.30     0.00        1     0.00     0.00  gfsmxl_clc_fh_initheap
+  0.00      1.30     0.00        1     0.00     0.00  gfsmxl_clc_fh_makeheap
+  0.00      1.30     0.00        1     0.00     0.00  gfsmxl_clc_fh_setneginf
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+ 
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this 
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 4 byte(s) for 0.77% of 1.30 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     99.2    0.00    1.29                 main [1]
+                0.00    1.16    1024/1024        analyze_token [2]
+                0.00    0.13       1/1           get_my_options [10]
+                0.00    0.00       1/1           gfsmxl_cascade_lookup_free [51]
+-----------------------------------------------
+                0.00    1.16    1024/1024        main [1]
+[2]     89.2    0.00    1.16    1024         analyze_token [2]
+                0.03    1.13    1024/1024        gfsmxl_cascade_lookup_nbest [3]
+                0.00    0.00    1024/1024        gfsm_automaton_n_states [74]
+-----------------------------------------------
+                0.03    1.13    1024/1024        analyze_token [2]
+[3]     89.2    0.03    1.13    1024         gfsmxl_cascade_lookup_nbest [3]
+                0.07    0.39  565162/565162      gfsmxl_cascade_arciter_open [4]
+                0.00    0.40  566186/640131      gfsmxl_clc_fh_extractmin [5]
+                0.03    0.05  638474/638474      gfsmxl_clc_fh_insert [18]
+                0.01    0.05  637450/637450      gfsm_automaton_add_arc [23]
+                0.00    0.05    1024/1025        gfsmxl_cascade_lookup_reset [24]
+                0.02    0.02  638278/638278      gfsm_automaton_add_state [28]
+                0.01    0.00 1325622/1325622     gfsmxl_cascade_arciter_ok [37]
+                0.01    0.00  818446/818446      gfsm_sr_less [38]
+                0.01    0.00  760460/760460      gfsmxl_cascade_arciter_next [40]
+                0.01    0.00  637450/637450      gfsmxl_cascade_lookup_config_clone [43]
+                0.00    0.00   45926/45926       gfsmxl_cascade_get_final_weight [49]
+                0.00    0.00    1024/2049        gfsm_automaton_set_root [50]
+                0.00    0.00     392/392         gfsm_automaton_set_final_state_full [52]
+                0.00    0.00  760852/760852      gfsm_sr_times [53]
+                0.00    0.00  760460/760460      gfsmxl_cascade_arciter_arc [56]
+                0.00    0.00  565162/565162      gfsmxl_cascade_arciter_close [67]
+                0.00    0.00    2048/2048        gfsm_automaton_get_root [73]
+                0.00    0.00    1024/1024        gfsmxl_cascade_get_root [75]
+                0.00    0.00    1024/638474      gfsmxl_cascade_lookup_config_new_full [60]
+                0.00    0.00       1/1           gfsm_automaton_new [107]
+                0.00    0.00       1/1           gfsm_automaton_set_semiring [110]
+-----------------------------------------------
+                0.07    0.39  565162/565162      gfsmxl_cascade_lookup_nbest [3]
+[4]     35.4    0.07    0.39  565162         gfsmxl_cascade_arciter_open [4]
+                0.23    0.15 1695486/1695486     gfsmxl_cascade_expand_arcs_ [8]
+                0.00    0.01  565162/565162      gfsmxl_cascade_stateid_sized_clone [45]
+                0.00    0.00  565162/565162      gfsmxl_arcpp_sized_new [66]
+                0.00    0.00  565162/565162      gfsmxl_arcpp_free [65]
+-----------------------------------------------
+                0.00    0.05   73945/640131      gfsmxl_cascade_lookup_reset [24]
+                0.00    0.40  566186/640131      gfsmxl_cascade_lookup_nbest [3]
+[5]     34.5    0.00    0.45  640131         gfsmxl_clc_fh_extractmin [5]
+                0.01    0.44  638474/638474      gfsmxl_clc_fh_extractminel [6]
+-----------------------------------------------
+                0.01    0.44  638474/638474      gfsmxl_clc_fh_extractmin [5]
+[6]     34.5    0.01    0.44  638474         gfsmxl_clc_fh_extractminel [6]
+                0.17    0.23  633991/633991      gfsmxl_clc_fh_consolidate [7]
+                0.00    0.03 2164014/5287402     gfsmxl_clc_fh_insertrootlist [20]
+                0.01    0.00  638474/5287402     gfsmxl_clc_fh_removerootlist [21]
+-----------------------------------------------
+                0.17    0.23  633991/633991      gfsmxl_clc_fh_extractminel [6]
+[7]     30.9    0.17    0.23  633991         gfsmxl_clc_fh_consolidate [7]
+                0.00    0.08 4014937/4648928     gfsmxl_clc_fh_compare [15]
+                0.04    0.02 4648928/5287402     gfsmxl_clc_fh_removerootlist [21]
+                0.02    0.03 2164014/2164014     gfsmxl_clc_fh_heaplink [26]
+                0.00    0.03 2484914/5287402     gfsmxl_clc_fh_insertrootlist [20]
+                0.01    0.00  633991/633991      gfsmxl_clc_fh_checkcons [44]
+-----------------------------------------------
+                0.23    0.15 1695486/1695486     gfsmxl_cascade_arciter_open [4]
+[8]     29.2    0.23    0.15 1695486         gfsmxl_cascade_expand_arcs_ [8]
+                0.03    0.05  760460/760460      gfsmxl_cascade_arc_new_from_sourced_arcpp_ [19]
+                0.07    0.00 2459613/2459613     gfsmxl_arcrange_open_block_index [22]
+                0.00    0.00  760460/760460      gfsmxl_cascade_arciter_insert_arc_ [57]
+-----------------------------------------------
+                0.04    0.09       2/2           gfsmxl_cascade_load_bin_handle_0_0_10 [13]
+[9]     10.0    0.04    0.09       2         gfsmxl_arc_block_index_new_lower [9]
+                0.09    0.00       2/2           gfsmxl_arc_ptr_array_new_lower [16]
+                0.00    0.00       2/2           gfsm_indexed_automaton_n_states [87]
+-----------------------------------------------
+                0.00    0.13       1/1           main [1]
+[10]    10.0    0.00    0.13       1         get_my_options [10]
+                0.00    0.13       1/1           gfsmxl_cascade_load_bin_filename [11]
+                0.00    0.00       1/1           cmdline_parser [105]
+                0.00    0.00       1/1           gfsmxl_cascade_new [120]
+                0.00    0.00       1/1           gfsmxl_cascade_lookup_new [118]
+                0.00    0.00       1/2           gfsmxl_cascade_lookup_set_cascade [103]
+-----------------------------------------------
+                0.00    0.13       1/1           get_my_options [10]
+[11]    10.0    0.00    0.13       1         gfsmxl_cascade_load_bin_filename [11]
+                0.00    0.13       1/1           gfsmxl_cascade_load_bin_handle [12]
+-----------------------------------------------
+                0.00    0.13       1/1           gfsmxl_cascade_load_bin_filename [11]
+[12]    10.0    0.00    0.13       1         gfsmxl_cascade_load_bin_handle [12]
+                0.00    0.13       1/1           gfsmxl_cascade_load_bin_handle_0_0_10 [13]
+                0.00    0.00       1/2           gfsmxl_cascade_clear [102]
+                0.00    0.00       1/1           gfsmxl_cascade_load_bin_header [117]
+-----------------------------------------------
+                0.00    0.13       1/1           gfsmxl_cascade_load_bin_handle [12]
+[13]    10.0    0.00    0.13       1         gfsmxl_cascade_load_bin_handle_0_0_10 [13]
+                0.04    0.09       2/2           gfsmxl_arc_block_index_new_lower [9]
+                0.00    0.00       2/2           gfsm_indexed_automaton_new [88]
+                0.00    0.00       1/1           gfsmxl_cascade_set_semiring_type [123]
+                0.00    0.00       1/1           gfsmxl_cascade_set_depth [122]
+-----------------------------------------------
+                0.06    0.03 4648928/4648928     gfsmxl_clc_fh_compare [15]
+[14]     6.9    0.06    0.03 4648928         gfsmxl_cascade_lookup_config_fh_compare [14]
+                0.03    0.00 8384990/8384990     gfsm_sr_less [30]
+-----------------------------------------------
+                0.00    0.01  633991/4648928     gfsmxl_clc_fh_insertel [27]
+                0.00    0.08 4014937/4648928     gfsmxl_clc_fh_consolidate [7]
+[15]     6.9    0.00    0.09 4648928         gfsmxl_clc_fh_compare [15]
+                0.06    0.03 4648928/4648928     gfsmxl_cascade_lookup_config_fh_compare [14]
+-----------------------------------------------
+                0.09    0.00       2/2           gfsmxl_arc_block_index_new_lower [9]
+[16]     6.9    0.09    0.00       2         gfsmxl_arc_ptr_array_new_lower [16]
+-----------------------------------------------
+                0.02    0.00 1713129/6362057     gfsmxl_clc_fhe_insertbefore [31]
+                0.06    0.00 4648928/6362057     gfsmxl_clc_fh_insertrootlist [20]
+[17]     6.5    0.09    0.00 6362057         gfsmxl_clc_fhe_insertafter [17]
+-----------------------------------------------
+                0.03    0.05  638474/638474      gfsmxl_cascade_lookup_nbest [3]
+[18]     6.2    0.03    0.05  638474         gfsmxl_clc_fh_insert [18]
+                0.02    0.02  638474/638474      gfsmxl_clc_fh_insertel [27]
+                0.00    0.01  638474/638474      gfsmxl_clc_fhe_newelem [42]
+-----------------------------------------------
+                0.03    0.05  760460/760460      gfsmxl_cascade_expand_arcs_ [8]
+[19]     6.1    0.03    0.05  760460         gfsmxl_cascade_arc_new_from_sourced_arcpp_ [19]
+                0.02    0.00  760460/760460      gfsmxl_arcpp_upper [34]
+                0.02    0.00 1236618/1246757     gfsm_sr_times [33]
+                0.01    0.00  760460/760460      gfsmxl_arcpp_lower [39]
+                0.00    0.00  760460/760460      gfsmxl_cascade_arc_sized_new [55]
+-----------------------------------------------
+                0.00    0.01  638474/5287402     gfsmxl_clc_fh_insertel [27]
+                0.00    0.03 2164014/5287402     gfsmxl_clc_fh_extractminel [6]
+                0.00    0.03 2484914/5287402     gfsmxl_clc_fh_consolidate [7]
+[20]     5.5    0.01    0.06 5287402         gfsmxl_clc_fh_insertrootlist [20]
+                0.06    0.00 4648928/6362057     gfsmxl_clc_fhe_insertafter [17]
+-----------------------------------------------
+                0.01    0.00  638474/5287402     gfsmxl_clc_fh_extractminel [6]
+                0.04    0.02 4648928/5287402     gfsmxl_clc_fh_consolidate [7]
+[21]     5.4    0.05    0.02 5287402         gfsmxl_clc_fh_removerootlist [21]
+                0.02    0.00 4648928/4648928     gfsmxl_clc_fhe_remove [32]
+-----------------------------------------------
+                0.07    0.00 2459613/2459613     gfsmxl_cascade_expand_arcs_ [8]
+[22]     5.4    0.07    0.00 2459613         gfsmxl_arcrange_open_block_index [22]
+-----------------------------------------------
+                0.01    0.05  637450/637450      gfsmxl_cascade_lookup_nbest [3]
+[23]     4.9    0.01    0.05  637450         gfsm_automaton_add_arc [23]
+                0.02    0.00  637450/637450      gfsm_arclist_new_full [35]
+                0.00    0.02  637450/1278366     gfsm_automaton_ensure_state [29]
+                0.00    0.02  637450/637842      gfsm_automaton_open_state_force [36]
+                0.00    0.00  637450/637450      gfsm_automaton_add_arc_node [64]
+-----------------------------------------------
+                0.00    0.00       1/1025        gfsmxl_cascade_lookup_free [51]
+                0.00    0.05    1024/1025        gfsmxl_cascade_lookup_nbest [3]
+[24]     4.0    0.00    0.05    1025         gfsmxl_cascade_lookup_reset [24]
+                0.00    0.05   73945/640131      gfsmxl_clc_fh_extractmin [5]
+                0.00    0.00    1025/1278366     gfsm_automaton_ensure_state [29]
+                0.00    0.00    1025/2049        gfsm_automaton_set_root [50]
+-----------------------------------------------
+                0.01    0.00  638278/1916644     gfsm_automaton_add_state [28]
+                0.03    0.01 1278366/1916644     gfsm_automaton_ensure_state [29]
+[25]     3.8    0.04    0.01 1916644         gfsm_automaton_add_state_full [25]
+                0.01    0.00 1916644/1916644     gfsm_automaton_open_state [48]
+                0.00    0.00  639303/639303      gfsm_automaton_reserve_states [58]
+-----------------------------------------------
+                0.02    0.03 2164014/2164014     gfsmxl_clc_fh_consolidate [7]
+[26]     3.7    0.02    0.03 2164014         gfsmxl_clc_fh_heaplink [26]
+                0.01    0.02 1713129/1713129     gfsmxl_clc_fhe_insertbefore [31]
+-----------------------------------------------
+                0.02    0.02  638474/638474      gfsmxl_clc_fh_insert [18]
+[27]     3.2    0.02    0.02  638474         gfsmxl_clc_fh_insertel [27]
+                0.00    0.01  633991/4648928     gfsmxl_clc_fh_compare [15]
+                0.00    0.01  638474/5287402     gfsmxl_clc_fh_insertrootlist [20]
+-----------------------------------------------
+                0.02    0.02  638278/638278      gfsmxl_cascade_lookup_nbest [3]
+[28]     2.8    0.02    0.02  638278         gfsm_automaton_add_state [28]
+                0.01    0.00  638278/1916644     gfsm_automaton_add_state_full [25]
+-----------------------------------------------
+                0.00    0.00    1025/1278366     gfsmxl_cascade_lookup_reset [24]
+                0.00    0.00    2049/1278366     gfsm_automaton_set_root [50]
+                0.00    0.02  637450/1278366     gfsm_automaton_add_arc [23]
+                0.00    0.02  637842/1278366     gfsm_automaton_open_state_force [36]
+[29]     2.6    0.00    0.03 1278366         gfsm_automaton_ensure_state [29]
+                0.03    0.01 1278366/1916644     gfsm_automaton_add_state_full [25]
+-----------------------------------------------
+                0.03    0.00 8384990/8384990     gfsmxl_cascade_lookup_config_fh_compare [14]
+[30]     2.3    0.03    0.00 8384990         gfsm_sr_less [30]
+-----------------------------------------------
+                0.01    0.02 1713129/1713129     gfsmxl_clc_fh_heaplink [26]
+[31]     2.1    0.01    0.02 1713129         gfsmxl_clc_fhe_insertbefore [31]
+                0.02    0.00 1713129/6362057     gfsmxl_clc_fhe_insertafter [17]
+-----------------------------------------------
+                0.02    0.00 4648928/4648928     gfsmxl_clc_fh_removerootlist [21]
+[32]     1.5    0.02    0.00 4648928         gfsmxl_clc_fhe_remove [32]
+-----------------------------------------------
+                0.00    0.00   10139/1246757     gfsmxl_cascade_get_final_weight [49]
+                0.02    0.00 1236618/1246757     gfsmxl_cascade_arc_new_from_sourced_arcpp_ [19]
+[33]     1.5    0.02    0.00 1246757         gfsm_sr_times [33]
+-----------------------------------------------
+                0.02    0.00  760460/760460      gfsmxl_cascade_arc_new_from_sourced_arcpp_ [19]
+[34]     1.5    0.02    0.00  760460         gfsmxl_arcpp_upper [34]
+-----------------------------------------------
+                0.02    0.00  637450/637450      gfsm_automaton_add_arc [23]
+[35]     1.5    0.02    0.00  637450         gfsm_arclist_new_full [35]
+-----------------------------------------------
+                0.00    0.00     392/637842      gfsm_automaton_set_final_state_full [52]
+                0.00    0.02  637450/637842      gfsm_automaton_add_arc [23]
+[36]     1.3    0.00    0.02  637842         gfsm_automaton_open_state_force [36]
+                0.00    0.02  637842/1278366     gfsm_automaton_ensure_state [29]
+-----------------------------------------------
+                0.01    0.00 1325622/1325622     gfsmxl_cascade_lookup_nbest [3]
+[37]     0.8    0.01    0.00 1325622         gfsmxl_cascade_arciter_ok [37]
+-----------------------------------------------
+                0.01    0.00  818446/818446      gfsmxl_cascade_lookup_nbest [3]
+[38]     0.8    0.01    0.00  818446         gfsm_sr_less [38]
+-----------------------------------------------
+                0.01    0.00  760460/760460      gfsmxl_cascade_arc_new_from_sourced_arcpp_ [19]
+[39]     0.8    0.01    0.00  760460         gfsmxl_arcpp_lower [39]
+-----------------------------------------------
+                0.01    0.00  760460/760460      gfsmxl_cascade_lookup_nbest [3]
+[40]     0.8    0.01    0.00  760460         gfsmxl_cascade_arciter_next [40]
+-----------------------------------------------
+                0.01    0.00  638474/638474      gfsmxl_clc_fhe_newelem [42]
+[41]     0.8    0.01    0.00  638474         gfsmxl_clc_fhe_initelem [41]
+-----------------------------------------------
+                0.00    0.01  638474/638474      gfsmxl_clc_fh_insert [18]
+[42]     0.8    0.00    0.01  638474         gfsmxl_clc_fhe_newelem [42]
+                0.01    0.00  638474/638474      gfsmxl_clc_fhe_initelem [41]
+-----------------------------------------------
+                0.01    0.00  637450/637450      gfsmxl_cascade_lookup_nbest [3]
+[43]     0.8    0.01    0.00  637450         gfsmxl_cascade_lookup_config_clone [43]
+                0.00    0.00  637450/638474      gfsmxl_cascade_lookup_config_new_full [60]
+-----------------------------------------------
+                0.01    0.00  633991/633991      gfsmxl_clc_fh_consolidate [7]
+[44]     0.8    0.01    0.00  633991         gfsmxl_clc_fh_checkcons [44]
+                0.00    0.00       3/3           ceillog2 [80]
+-----------------------------------------------
+                0.00    0.01  565162/565162      gfsmxl_cascade_arciter_open [4]
+[45]     0.8    0.00    0.01  565162         gfsmxl_cascade_stateid_sized_clone [45]
+                0.01    0.00  565162/565162      gfsmxl_cascade_stateid_sized_new [46]
+                0.00    0.00  565162/565162      gfsmxl_cascade_stateid_sized_copy [68]
+-----------------------------------------------
+                0.01    0.00  565162/565162      gfsmxl_cascade_stateid_sized_clone [45]
+[46]     0.8    0.01    0.00  565162         gfsmxl_cascade_stateid_sized_new [46]
+-----------------------------------------------
+                                                 <spontaneous>
+[47]     0.8    0.01    0.00                 gfsmxl_cascade_lookup_config_ht_hash [47]
+-----------------------------------------------
+                0.01    0.00 1916644/1916644     gfsm_automaton_add_state_full [25]
+[48]     0.8    0.01    0.00 1916644         gfsm_automaton_open_state [48]
+-----------------------------------------------
+                0.00    0.00   45926/45926       gfsmxl_cascade_lookup_nbest [3]
+[49]     0.0    0.00    0.00   45926         gfsmxl_cascade_get_final_weight [49]
+                0.00    0.00   10139/1246757     gfsm_sr_times [33]
+                0.00    0.00   56065/56065       gfsm_indexed_automaton_get_final_weight [69]
+                0.00    0.00   56065/56065       gfsm_sr_less [72]
+-----------------------------------------------
+                0.00    0.00    1024/2049        gfsmxl_cascade_lookup_nbest [3]
+                0.00    0.00    1025/2049        gfsmxl_cascade_lookup_reset [24]
+[50]     0.0    0.00    0.00    2049         gfsm_automaton_set_root [50]
+                0.00    0.00    2049/1278366     gfsm_automaton_ensure_state [29]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[51]     0.0    0.00    0.00       1         gfsmxl_cascade_lookup_free [51]
+                0.00    0.00       1/1025        gfsmxl_cascade_lookup_reset [24]
+                0.00    0.00       1/1           gfsmxl_cascade_free [116]
+                0.00    0.00       1/1           gfsmxl_clc_fh_deleteheap [124]
+                0.00    0.00       1/1           gfsm_automaton_free [106]
+-----------------------------------------------
+                0.00    0.00     392/392         gfsmxl_cascade_lookup_nbest [3]
+[52]     0.0    0.00    0.00     392         gfsm_automaton_set_final_state_full [52]
+                0.00    0.00     392/637842      gfsm_automaton_open_state_force [36]
+                0.00    0.00     392/392         gfsm_state_set_final [76]
+                0.00    0.00     392/392         gfsm_weightmap_insert [78]
+-----------------------------------------------
+                0.00    0.00  760852/760852      gfsmxl_cascade_lookup_nbest [3]
+[53]     0.0    0.00    0.00  760852         gfsm_sr_times [53]
+-----------------------------------------------
+                0.00    0.00  760460/760460      gfsmxl_cascade_arciter_close [67]
+[54]     0.0    0.00    0.00  760460         gfsmxl_cascade_arc_free [54]
+-----------------------------------------------
+                0.00    0.00  760460/760460      gfsmxl_cascade_arc_new_from_sourced_arcpp_ [19]
+[55]     0.0    0.00    0.00  760460         gfsmxl_cascade_arc_sized_new [55]
+-----------------------------------------------
+                0.00    0.00  760460/760460      gfsmxl_cascade_lookup_nbest [3]
+[56]     0.0    0.00    0.00  760460         gfsmxl_cascade_arciter_arc [56]
+-----------------------------------------------
+                0.00    0.00  760460/760460      gfsmxl_cascade_expand_arcs_ [8]
+[57]     0.0    0.00    0.00  760460         gfsmxl_cascade_arciter_insert_arc_ [57]
+-----------------------------------------------
+                0.00    0.00  639303/639303      gfsm_automaton_add_state_full [25]
+[58]     0.0    0.00    0.00  639303         gfsm_automaton_reserve_states [58]
+-----------------------------------------------
+                0.00    0.00  638474/638474      gfsmxl_cascade_lookup_config_list_free [149]
+[59]     0.0    0.00    0.00  638474         gfsmxl_cascade_lookup_config_free_inline [59]
+-----------------------------------------------
+                0.00    0.00    1024/638474      gfsmxl_cascade_lookup_nbest [3]
+                0.00    0.00  637450/638474      gfsmxl_cascade_lookup_config_clone [43]
+[60]     0.0    0.00    0.00  638474         gfsmxl_cascade_lookup_config_new_full [60]
+                0.00    0.00  638474/638474      gfsmxl_cascade_stateid_sized_copy [61]
+-----------------------------------------------
+                0.00    0.00  638474/638474      gfsmxl_cascade_lookup_config_new_full [60]
+[61]     0.0    0.00    0.00  638474         gfsmxl_cascade_stateid_sized_copy [61]
+-----------------------------------------------
+                0.00    0.00  637450/637450      gfsm_automaton_add_arc_node [64]
+[62]     0.0    0.00    0.00  637450         gfsm_arclist_insert_node [62]
+                0.00    0.00  637450/637450      gfsm_arclist_prepend_node [63]
+-----------------------------------------------
+                0.00    0.00  637450/637450      gfsm_arclist_insert_node [62]
+[63]     0.0    0.00    0.00  637450         gfsm_arclist_prepend_node [63]
+-----------------------------------------------
+                0.00    0.00  637450/637450      gfsm_automaton_add_arc [23]
+[64]     0.0    0.00    0.00  637450         gfsm_automaton_add_arc_node [64]
+                0.00    0.00  637450/637450      gfsm_arclist_insert_node [62]
+-----------------------------------------------
+                0.00    0.00  565162/565162      gfsmxl_cascade_arciter_open [4]
+[65]     0.0    0.00    0.00  565162         gfsmxl_arcpp_free [65]
+-----------------------------------------------
+                0.00    0.00  565162/565162      gfsmxl_cascade_arciter_open [4]
+[66]     0.0    0.00    0.00  565162         gfsmxl_arcpp_sized_new [66]
+-----------------------------------------------
+                0.00    0.00  565162/565162      gfsmxl_cascade_lookup_nbest [3]
+[67]     0.0    0.00    0.00  565162         gfsmxl_cascade_arciter_close [67]
+                0.00    0.00  760460/760460      gfsmxl_cascade_arc_free [54]
+-----------------------------------------------
+                0.00    0.00  565162/565162      gfsmxl_cascade_stateid_sized_clone [45]
+[68]     0.0    0.00    0.00  565162         gfsmxl_cascade_stateid_sized_copy [68]
+-----------------------------------------------
+                0.00    0.00   56065/56065       gfsmxl_cascade_get_final_weight [49]
+[69]     0.0    0.00    0.00   56065         gfsm_indexed_automaton_get_final_weight [69]
+                0.00    0.00   56065/56065       gfsm_indexed_automaton_has_state [70]
+-----------------------------------------------
+                0.00    0.00   56065/56065       gfsm_indexed_automaton_get_final_weight [69]
+[70]     0.0    0.00    0.00   56065         gfsm_indexed_automaton_has_state [70]
+                0.00    0.00   56065/56065       gfsm_indexed_automaton_n_states [71]
+-----------------------------------------------
+                0.00    0.00   56065/56065       gfsm_indexed_automaton_has_state [70]
+[71]     0.0    0.00    0.00   56065         gfsm_indexed_automaton_n_states [71]
+-----------------------------------------------
+                0.00    0.00   56065/56065       gfsmxl_cascade_get_final_weight [49]
+[72]     0.0    0.00    0.00   56065         gfsm_sr_less [72]
+-----------------------------------------------
+                0.00    0.00    2048/2048        gfsmxl_cascade_lookup_nbest [3]
+[73]     0.0    0.00    0.00    2048         gfsm_automaton_get_root [73]
+-----------------------------------------------
+                0.00    0.00    1024/1024        analyze_token [2]
+[74]     0.0    0.00    0.00    1024         gfsm_automaton_n_states [74]
+-----------------------------------------------
+                0.00    0.00    1024/1024        gfsmxl_cascade_lookup_nbest [3]
+[75]     0.0    0.00    0.00    1024         gfsmxl_cascade_get_root [75]
+-----------------------------------------------
+                0.00    0.00     392/392         gfsm_automaton_set_final_state_full [52]
+[76]     0.0    0.00    0.00     392         gfsm_state_set_final [76]
+-----------------------------------------------
+                0.00    0.00     392/392         gfsm_weightmap_insert [78]
+[77]     0.0    0.00    0.00     392         gfsm_weight2ptr [77]
+-----------------------------------------------
+                0.00    0.00     392/392         gfsm_automaton_set_final_state_full [52]
+[78]     0.0    0.00    0.00     392         gfsm_weightmap_insert [78]
+                0.00    0.00     392/392         gfsm_weight2ptr [77]
+-----------------------------------------------
+                0.00    0.00       6/6           cmdline_parser [105]
+[79]     0.0    0.00    0.00       6         cmdline_parser_parse_option [79]
+-----------------------------------------------
+                0.00    0.00       3/3           gfsmxl_clc_fh_checkcons [44]
+[80]     0.0    0.00    0.00       3         ceillog2 [80]
+-----------------------------------------------
+                0.00    0.00       2/2           gfsm_arc_table_index_free [82]
+[81]     0.0    0.00    0.00       2         gfsm_arc_table_free [81]
+-----------------------------------------------
+                0.00    0.00       2/2           gfsm_indexed_automaton_free [86]
+[82]     0.0    0.00    0.00       2         gfsm_arc_table_index_free [82]
+                0.00    0.00       2/2           gfsm_arc_table_free [81]
+-----------------------------------------------
+                0.00    0.00       2/2           gfsm_arc_table_index_sized_new [84]
+[83]     0.0    0.00    0.00       2         gfsm_arc_table_index_init [83]
+                0.00    0.00       2/2           gfsm_arc_table_sized_new [85]
+-----------------------------------------------
+                0.00    0.00       2/2           gfsm_indexed_automaton_new_full [89]
+[84]     0.0    0.00    0.00       2         gfsm_arc_table_index_sized_new [84]
+                0.00    0.00       2/2           gfsm_arc_table_index_init [83]
+-----------------------------------------------
+                0.00    0.00       2/2           gfsm_arc_table_index_init [83]
+[85]     0.0    0.00    0.00       2         gfsm_arc_table_sized_new [85]
+-----------------------------------------------
+                0.00    0.00       2/2           gfsmxl_cascade_clear [102]
+[86]     0.0    0.00    0.00       2         gfsm_indexed_automaton_free [86]
+                0.00    0.00       2/2           gfsm_semiring_free [91]
+                0.00    0.00       2/2           gfsm_weight_vector_free [98]
+                0.00    0.00       2/2           gfsm_arc_table_index_free [82]
+-----------------------------------------------
+                0.00    0.00       2/2           gfsmxl_arc_block_index_new_lower [9]
+[87]     0.0    0.00    0.00       2         gfsm_indexed_automaton_n_states [87]
+-----------------------------------------------
+                0.00    0.00       2/2           gfsmxl_cascade_load_bin_handle_0_0_10 [13]
+[88]     0.0    0.00    0.00       2         gfsm_indexed_automaton_new [88]
+                0.00    0.00       2/2           gfsm_indexed_automaton_new_full [89]
+-----------------------------------------------
+                0.00    0.00       2/2           gfsm_indexed_automaton_new [88]
+[89]     0.0    0.00    0.00       2         gfsm_indexed_automaton_new_full [89]
+                0.00    0.00       2/2           gfsm_semiring_new [96]
+                0.00    0.00       2/2           gfsm_weight_vector_sized_new [99]
+                0.00    0.00       2/2           gfsm_arc_table_index_sized_new [84]
+-----------------------------------------------
+                0.00    0.00       1/2           gfsmxl_cascade_free [116]
+                0.00    0.00       1/2           gfsm_automaton_free [106]
+[90]     0.0    0.00    0.00       2         gfsm_semiring_free [90]
+-----------------------------------------------
+                0.00    0.00       2/2           gfsm_indexed_automaton_free [86]
+[91]     0.0    0.00    0.00       2         gfsm_semiring_free [91]
+-----------------------------------------------
+                0.00    0.00       2/2           gfsm_semiring_new [95]
+[92]     0.0    0.00    0.00       2         gfsm_semiring_init [92]
+-----------------------------------------------
+                0.00    0.00       2/2           gfsm_semiring_new [96]
+[93]     0.0    0.00    0.00       2         gfsm_semiring_init [93]
+-----------------------------------------------
+                0.00    0.00       2/2           gfsm_semiring_new [97]
+[94]     0.0    0.00    0.00       2         gfsm_semiring_init [94]
+-----------------------------------------------
+                0.00    0.00       1/2           gfsmxl_cascade_new_full [121]
+                0.00    0.00       1/2           gfsm_automaton_new_full [108]
+[95]     0.0    0.00    0.00       2         gfsm_semiring_new [95]
+                0.00    0.00       2/2           gfsm_semiring_init [92]
+-----------------------------------------------
+                0.00    0.00       2/2           gfsm_indexed_automaton_new_full [89]
+[96]     0.0    0.00    0.00       2         gfsm_semiring_new [96]
+                0.00    0.00       2/2           gfsm_semiring_init [93]
+-----------------------------------------------
+                0.00    0.00       1/2           gfsm_automaton_new_full [109]
+                0.00    0.00       1/2           gfsm_semiring_copy [111]
+[97]     0.0    0.00    0.00       2         gfsm_semiring_new [97]
+                0.00    0.00       2/2           gfsm_semiring_init [94]
+-----------------------------------------------
+                0.00    0.00       2/2           gfsm_indexed_automaton_free [86]
+[98]     0.0    0.00    0.00       2         gfsm_weight_vector_free [98]
+-----------------------------------------------
+                0.00    0.00       2/2           gfsm_indexed_automaton_new_full [89]
+[99]     0.0    0.00    0.00       2         gfsm_weight_vector_sized_new [99]
+-----------------------------------------------
+                0.00    0.00       2/2           gfsmxl_cascade_clear [102]
+[100]    0.0    0.00    0.00       2         gfsmxl_arc_block_index_free [100]
+                0.00    0.00       2/2           gfsmxl_arc_ptr_array_free [101]
+-----------------------------------------------
+                0.00    0.00       2/2           gfsmxl_arc_block_index_free [100]
+[101]    0.0    0.00    0.00       2         gfsmxl_arc_ptr_array_free [101]
+-----------------------------------------------
+                0.00    0.00       1/2           gfsmxl_cascade_free [116]
+                0.00    0.00       1/2           gfsmxl_cascade_load_bin_handle [12]
+[102]    0.0    0.00    0.00       2         gfsmxl_cascade_clear [102]
+                0.00    0.00       2/2           gfsm_indexed_automaton_free [86]
+                0.00    0.00       2/2           gfsmxl_arc_block_index_free [100]
+-----------------------------------------------
+                0.00    0.00       1/2           get_my_options [10]
+                0.00    0.00       1/2           gfsmxl_cascade_lookup_new_full [119]
+[103]    0.0    0.00    0.00       2         gfsmxl_cascade_lookup_set_cascade [103]
+-----------------------------------------------
+                0.00    0.00       1/1           cmdline_parser [105]
+[104]    0.0    0.00    0.00       1         clear_args [104]
+-----------------------------------------------
+                0.00    0.00       1/1           get_my_options [10]
+[105]    0.0    0.00    0.00       1         cmdline_parser [105]
+                0.00    0.00       6/6           cmdline_parser_parse_option [79]
+                0.00    0.00       1/1           clear_args [104]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsmxl_cascade_lookup_free [51]
+[106]    0.0    0.00    0.00       1         gfsm_automaton_free [106]
+                0.00    0.00       1/2           gfsm_semiring_free [90]
+                0.00    0.00       1/1           gfsm_weightmap_free [115]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsmxl_cascade_lookup_nbest [3]
+[107]    0.0    0.00    0.00       1         gfsm_automaton_new [107]
+                0.00    0.00       1/1           gfsm_automaton_new_full [109]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsmxl_cascade_lookup_new_full [119]
+[108]    0.0    0.00    0.00       1         gfsm_automaton_new_full [108]
+                0.00    0.00       1/2           gfsm_semiring_new [95]
+                0.00    0.00       1/1           gfsm_set_new [113]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsm_automaton_new [107]
+[109]    0.0    0.00    0.00       1         gfsm_automaton_new_full [109]
+                0.00    0.00       1/2           gfsm_semiring_new [97]
+                0.00    0.00       1/1           gfsm_set_new [114]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsmxl_cascade_lookup_nbest [3]
+[110]    0.0    0.00    0.00       1         gfsm_automaton_set_semiring [110]
+                0.00    0.00       1/1           gfsm_semiring_free [112]
+                0.00    0.00       1/1           gfsm_semiring_copy [111]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsm_automaton_set_semiring [110]
+[111]    0.0    0.00    0.00       1         gfsm_semiring_copy [111]
+                0.00    0.00       1/2           gfsm_semiring_new [97]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsm_automaton_set_semiring [110]
+[112]    0.0    0.00    0.00       1         gfsm_semiring_free [112]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsm_automaton_new_full [108]
+[113]    0.0    0.00    0.00       1         gfsm_set_new [113]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsm_automaton_new_full [109]
+[114]    0.0    0.00    0.00       1         gfsm_set_new [114]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsm_automaton_free [106]
+[115]    0.0    0.00    0.00       1         gfsm_weightmap_free [115]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsmxl_cascade_lookup_free [51]
+[116]    0.0    0.00    0.00       1         gfsmxl_cascade_free [116]
+                0.00    0.00       1/2           gfsmxl_cascade_clear [102]
+                0.00    0.00       1/2           gfsm_semiring_free [90]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsmxl_cascade_load_bin_handle [12]
+[117]    0.0    0.00    0.00       1         gfsmxl_cascade_load_bin_header [117]
+-----------------------------------------------
+                0.00    0.00       1/1           get_my_options [10]
+[118]    0.0    0.00    0.00       1         gfsmxl_cascade_lookup_new [118]
+                0.00    0.00       1/1           gfsmxl_cascade_lookup_new_full [119]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsmxl_cascade_lookup_new [118]
+[119]    0.0    0.00    0.00       1         gfsmxl_cascade_lookup_new_full [119]
+                0.00    0.00       1/1           gfsmxl_clc_fh_makeheap [127]
+                0.00    0.00       1/1           gfsmxl_clc_fh_setneginf [128]
+                0.00    0.00       1/1           gfsm_automaton_new_full [108]
+                0.00    0.00       1/2           gfsmxl_cascade_lookup_set_cascade [103]
+-----------------------------------------------
+                0.00    0.00       1/1           get_my_options [10]
+[120]    0.0    0.00    0.00       1         gfsmxl_cascade_new [120]
+                0.00    0.00       1/1           gfsmxl_cascade_new_full [121]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsmxl_cascade_new [120]
+[121]    0.0    0.00    0.00       1         gfsmxl_cascade_new_full [121]
+                0.00    0.00       1/2           gfsm_semiring_new [95]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsmxl_cascade_load_bin_handle_0_0_10 [13]
+[122]    0.0    0.00    0.00       1         gfsmxl_cascade_set_depth [122]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsmxl_cascade_load_bin_handle_0_0_10 [13]
+[123]    0.0    0.00    0.00       1         gfsmxl_cascade_set_semiring_type [123]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsmxl_cascade_lookup_free [51]
+[124]    0.0    0.00    0.00       1         gfsmxl_clc_fh_deleteheap [124]
+                0.00    0.00       1/1           gfsmxl_clc_fh_destroyheap [125]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsmxl_clc_fh_deleteheap [124]
+[125]    0.0    0.00    0.00       1         gfsmxl_clc_fh_destroyheap [125]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsmxl_clc_fh_makeheap [127]
+[126]    0.0    0.00    0.00       1         gfsmxl_clc_fh_initheap [126]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsmxl_cascade_lookup_new_full [119]
+[127]    0.0    0.00    0.00       1         gfsmxl_clc_fh_makeheap [127]
+                0.00    0.00       1/1           gfsmxl_clc_fh_initheap [126]
+-----------------------------------------------
+                0.00    0.00       1/1           gfsmxl_cascade_lookup_new_full [119]
+[128]    0.0    0.00    0.00       1         gfsmxl_clc_fh_setneginf [128]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+
+Index by function name
+
+   [2] analyze_token          [93] gfsm_semiring_init (gfsmSemiring.hi) [13] gfsmxl_cascade_load_bin_handle_0_0_10
+  [80] ceillog2 (gfsmxlCLCFib.c) [94] gfsm_semiring_init (gfsmSemiring.hi) [117] gfsmxl_cascade_load_bin_header
+ [104] clear_args (gfsmxl_cascade_nbest_strings_cmdparser.c) [95] gfsm_semiring_new (gfsmSemiring.hi) [43] gfsmxl_cascade_lookup_config_clone (gfsmxlCascadeLookup.hi)
+ [105] cmdline_parser         [96] gfsm_semiring_new (gfsmSemiring.hi) [14] gfsmxl_cascade_lookup_config_fh_compare (gfsmxlCascadeLookup.hi)
+  [79] cmdline_parser_parse_option [97] gfsm_semiring_new (gfsmSemiring.hi) [59] gfsmxl_cascade_lookup_config_free_inline (gfsmxlCascadeLookup.hi)
+  [10] get_my_options        [113] gfsm_set_new (gfsmSet.hi) [47] gfsmxl_cascade_lookup_config_ht_hash
+  [81] gfsm_arc_table_free (gfsmArcIndex.hi) [114] gfsm_set_new (gfsmSet.hi) [60] gfsmxl_cascade_lookup_config_new_full (gfsmxlCascadeLookup.hi)
+  [82] gfsm_arc_table_index_free (gfsmArcIndex.hi) [72] gfsm_sr_less (gfsmSemiring.hi) [51] gfsmxl_cascade_lookup_free (gfsmxlCascadeLookup.hi)
+  [83] gfsm_arc_table_index_init (gfsmArcIndex.hi) [38] gfsm_sr_less (gfsmSemiring.hi) [3] gfsmxl_cascade_lookup_nbest
+  [84] gfsm_arc_table_index_sized_new (gfsmArcIndex.hi) [30] gfsm_sr_less (gfsmSemiring.hi) [118] gfsmxl_cascade_lookup_new (gfsmxlCascadeLookup.hi)
+  [85] gfsm_arc_table_sized_new (gfsmArcIndex.hi) [33] gfsm_sr_times (gfsmSemiring.hi) [119] gfsmxl_cascade_lookup_new_full (gfsmxlCascadeLookup.hi)
+  [62] gfsm_arclist_insert_node (gfsmArcList.hi) [53] gfsm_sr_times (gfsmSemiring.hi) [24] gfsmxl_cascade_lookup_reset
+  [35] gfsm_arclist_new_full (gfsmArcList.hi) [76] gfsm_state_set_final (gfsmState.hi) [103] gfsmxl_cascade_lookup_set_cascade (gfsmxlCascadeLookup.hi)
+  [63] gfsm_arclist_prepend_node (gfsmArcList.hi) [77] gfsm_weight2ptr (gfsmWeightMap.hi) [120] gfsmxl_cascade_new (gfsmxlCascade.hi)
+  [23] gfsm_automaton_add_arc (gfsmAutomaton.hi) [98] gfsm_weight_vector_free (gfsmArcIndex.hi) [121] gfsmxl_cascade_new_full (gfsmxlCascade.hi)
+  [64] gfsm_automaton_add_arc_node (gfsmAutomaton.hi) [99] gfsm_weight_vector_sized_new (gfsmArcIndex.hi) [122] gfsmxl_cascade_set_depth (gfsmxlCascade.hi)
+  [28] gfsm_automaton_add_state (gfsmAutomaton.hi) [115] gfsm_weightmap_free (gfsmWeightMap.hi) [123] gfsmxl_cascade_set_semiring_type (gfsmxlCascade.hi)
+  [25] gfsm_automaton_add_state_full (gfsmAutomaton.hi) [78] gfsm_weightmap_insert (gfsmWeightMap.hi) [45] gfsmxl_cascade_stateid_sized_clone (gfsmxlCascade.hi)
+  [29] gfsm_automaton_ensure_state (gfsmAutomaton.hi) [100] gfsmxl_arc_block_index_free (gfsmxlLabelIndex.hi) [68] gfsmxl_cascade_stateid_sized_copy (gfsmxlCascade.hi)
+ [106] gfsm_automaton_free (gfsmAutomaton.hi) [9] gfsmxl_arc_block_index_new_lower [61] gfsmxl_cascade_stateid_sized_copy (gfsmxlCascade.hi)
+  [73] gfsm_automaton_get_root (gfsmAutomaton.hi) [101] gfsmxl_arc_ptr_array_free (gfsmxlLabelIndex.hi) [46] gfsmxl_cascade_stateid_sized_new (gfsmxlCascade.hi)
+  [74] gfsm_automaton_n_states (gfsmAutomaton.hi) [16] gfsmxl_arc_ptr_array_new_lower [44] gfsmxl_clc_fh_checkcons (gfsmxlCLCFib.c)
+ [107] gfsm_automaton_new (gfsmAutomaton.hi) [65] gfsmxl_arcpp_free (gfsmxlCascade.hi) [15] gfsmxl_clc_fh_compare (gfsmxlCLCFib.c)
+ [108] gfsm_automaton_new_full (gfsmAutomaton.hi) [39] gfsmxl_arcpp_lower (gfsmxlCascade.hi) [7] gfsmxl_clc_fh_consolidate (gfsmxlCLCFib.c)
+ [109] gfsm_automaton_new_full (gfsmAutomaton.hi) [66] gfsmxl_arcpp_sized_new (gfsmxlCascade.hi) [124] gfsmxl_clc_fh_deleteheap
+  [48] gfsm_automaton_open_state (gfsmAutomaton.hi) [34] gfsmxl_arcpp_upper (gfsmxlCascade.hi) [125] gfsmxl_clc_fh_destroyheap (gfsmxlCLCFib.c)
+  [36] gfsm_automaton_open_state_force (gfsmAutomaton.hi) [22] gfsmxl_arcrange_open_block_index (gfsmxlLabelIndex.hi) [5] gfsmxl_clc_fh_extractmin
+  [58] gfsm_automaton_reserve_states (gfsmAutomaton.hi) [54] gfsmxl_cascade_arc_free (gfsmxlCascade.hi) [6] gfsmxl_clc_fh_extractminel (gfsmxlCLCFib.c)
+  [52] gfsm_automaton_set_final_state_full (gfsmAutomaton.hi) [19] gfsmxl_cascade_arc_new_from_sourced_arcpp_ (gfsmxlCascade.c) [26] gfsmxl_clc_fh_heaplink (gfsmxlCLCFib.c)
+  [50] gfsm_automaton_set_root (gfsmAutomaton.hi) [55] gfsmxl_cascade_arc_sized_new (gfsmxlCascade.hi) [126] gfsmxl_clc_fh_initheap (gfsmxlCLCFib.c)
+ [110] gfsm_automaton_set_semiring (gfsmAutomaton.hi) [56] gfsmxl_cascade_arciter_arc (gfsmxlCascade.hi) [18] gfsmxl_clc_fh_insert
+  [86] gfsm_indexed_automaton_free (gfsmIndexed.hi) [67] gfsmxl_cascade_arciter_close [27] gfsmxl_clc_fh_insertel (gfsmxlCLCFib.c)
+  [69] gfsm_indexed_automaton_get_final_weight (gfsmIndexed.hi) [57] gfsmxl_cascade_arciter_insert_arc_ (gfsmxlCascade.hi) [20] gfsmxl_clc_fh_insertrootlist (gfsmxlCLCFib.c)
+  [70] gfsm_indexed_automaton_has_state (gfsmIndexed.hi) [40] gfsmxl_cascade_arciter_next (gfsmxlCascade.hi) [127] gfsmxl_clc_fh_makeheap
+  [71] gfsm_indexed_automaton_n_states (gfsmIndexed.hi) [37] gfsmxl_cascade_arciter_ok (gfsmxlCascade.hi) [21] gfsmxl_clc_fh_removerootlist (gfsmxlCLCFib.c)
+  [87] gfsm_indexed_automaton_n_states (gfsmIndexed.hi) [4] gfsmxl_cascade_arciter_open [128] gfsmxl_clc_fh_setneginf
+  [88] gfsm_indexed_automaton_new (gfsmIndexed.hi) [102] gfsmxl_cascade_clear [41] gfsmxl_clc_fhe_initelem (gfsmxlCLCFib.c)
+  [89] gfsm_indexed_automaton_new_full (gfsmIndexed.hi) [8] gfsmxl_cascade_expand_arcs_ (gfsmxlCascade.c) [17] gfsmxl_clc_fhe_insertafter (gfsmxlCLCFib.c)
+ [111] gfsm_semiring_copy (gfsmSemiring.hi) [116] gfsmxl_cascade_free (gfsmxlCascade.hi) [31] gfsmxl_clc_fhe_insertbefore (gfsmxlCLCFib.c)
+  [90] gfsm_semiring_free (gfsmSemiring.hi) [49] gfsmxl_cascade_get_final_weight [42] gfsmxl_clc_fhe_newelem (gfsmxlCLCFib.c)
+  [91] gfsm_semiring_free (gfsmSemiring.hi) [75] gfsmxl_cascade_get_root (gfsmxlCascade.hi) [32] gfsmxl_clc_fhe_remove (gfsmxlCLCFib.c)
+ [112] gfsm_semiring_free (gfsmSemiring.hi) [11] gfsmxl_cascade_load_bin_filename
+  [92] gfsm_semiring_init (gfsmSemiring.hi) [12] gfsmxl_cascade_load_bin_handle

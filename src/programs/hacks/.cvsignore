@@ -1,6 +1,9 @@
 *~
 .*~
 
+gmon.out
+backptr-hacks
+
 *.lab
 *.scl
 lts*.sym
@@ -12,6 +15,7 @@ align
 robust
 ma-dwds-hacks
 
+dta-china*.t
 negra-train.t
 negra-test.t
 grimm3*-all.*

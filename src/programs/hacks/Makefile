@@ -1,14 +1,16 @@
 TARGETS = \
-	mootm.taxi2.gfsc \
-	mootm.taxi3.gfsc \
-	mootm.taxi3.bytype.gfsc \
-	\
-	lts-cascade.id.gfsc \
-	lts-cascade.no-subst.gfsc \
-	lts-cascade.gfsc \
-	\
-	mootm.robust.no-subst.gfsc \
-	mootm.robust.gfsc
+	dta-rw+tagh.gfsc
+
+#	mootm.taxi2.gfsc \
+#	mootm.taxi3.gfsc \
+#	mootm.taxi3.bytype.gfsc \
+#	\
+#	lts-cascade.id.gfsc \
+#	lts-cascade.no-subst.gfsc \
+#	lts-cascade.gfsc \
+#	\
+#	mootm.robust.no-subst.gfsc \
+#	mootm.robust.gfsc
 
 #	mootm.taxi.gfsc \
 #	mootm.lo.editor.gfsc
@@ -34,9 +36,25 @@ KNOWN_TARGETS = \
 
 
 #CASCADE_COMPILE = ../../src/programs/gfsmxl_cascade_compile
-CASCADE_COMPILE  = gfsmxl_cascade_compile
+#CASCADE_COMPILE  = gfsmxl_cascade_compile
+PROGDIR = ../
 
 all: $(TARGETS)
+
+##----------------------------------------------------------------------
+## dta: cascade
+dta-rw+tagh.gfsc: dta-rw.gfst dta-tagh.gfst
+	$(PROGDIR)gfsmxl_cascade_compile -F $@ $^
+
+eval ?=nolabel
+dta-eval: dta-eval.$(eval).txt
+
+dta-eval.$(eval).txt: dta-rw+tagh.gfsc dta-china.no-mootm.t
+	$(PROGDIR)gfsmxl_cascade_nbest_strings -p 1 -w 20 -a -l dta-rw.lab -C $< -F dta-china.no-mootm.tt dta-china.no-mootm.t \
+	2>&1 | tee $@
+
+no-dta-eval:
+	rm -f dta-eval.$(eval).txt dta-china.no-mootm.tt
 
 ##----------------------------------------------------------------------
 ## labels

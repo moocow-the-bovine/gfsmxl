@@ -4,7 +4,7 @@
  * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
  * Description: finite state machine library: lookup cascade: lookup
  *
- * Copyright (c) 2007,2008 Bryan Jurish.
+ * Copyright (c) 2007-2008 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,15 +31,22 @@
 #endif
 
 /*======================================================================
+ * Constants
+ */
+const gfsmxlCascadeLookupBacktrace gfsmxl_bt_null = { NULL, 0,0,0,0 };
+
+/*======================================================================
  * Constructors, etc.
  */
 
 //--------------------------------------------------------------
 void gfsmxl_cascade_lookup_reset(gfsmxlCascadeLookup *cl)
 {
-  //-- clear heap & hash
+  //-- clear heap, hash, finals
   while ( gfsmxl_clc_fh_extractmin(cl->heap) ) { ; }
   g_hash_table_remove_all(cl->configs);
+  g_slist_free(cl->finals);
+  cl->finals = NULL;
   //
   //-- reset per-lookup data
   gfsm_automaton_clear(cl->otrie);
@@ -116,39 +123,60 @@ void gfsmxl_cascade_lookup_config_list_free(gfsmxlCascadeLookupConfigList *lcl)
 //--------------------------------------------------------------
 gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVector *input, gfsmAutomaton *result)
 {
-  gfsmxlCascadeLookupConfig *cfg;
-  gfsmxlCascade             *csc = cl->csc;
-  gfsmSemiring              *sr = csc->sr;
-  gfsmxlCascadeArcIter       cai;
-  guint                     n_paths = 0;
-
-  //-- implicit reset
-  gfsmxl_cascade_lookup_reset(cl);
+  GSList *finals;
 
   //-- maybe create result automaton
   if (!result) {
     result = gfsm_automaton_new();
-    gfsm_automaton_set_semiring(result,sr);
+    gfsm_automaton_set_semiring(result,cl->csc->sr);
   } else {
     gfsm_automaton_clear(result);
   }
   result->flags.is_transducer = TRUE;
   result->flags.sort_mode     = gfsmASMNone;
-  //
+
+  //-- search guts (generate backtrace)
+  gfsmxl_cascade_lookup_nbest_search_(cl, input);
+
+  //-- generate backtrace
+  for (finals=cl->finals; finals != NULL; finals=finals->next) {
+    gfsmxlCascadeLookupConfig *cfg = (gfsmxlCascadeLookupConfig *)finals->data;
+    gfsmxl_cascade_lookup_nbest_backtrace_(cl,cfg,result);
+  }
+
+  return result;
+}
+
+//--------------------------------------------------------------
+//#define DEBUG_NCONFIGS 1
+void gfsmxl_cascade_lookup_nbest_search_(gfsmxlCascadeLookup *cl, gfsmLabelVector *input)
+{
+  gfsmxlCascadeLookupConfig *cfg;
+  gfsmxlCascade             *csc = cl->csc;
+  gfsmSemiring              *sr = csc->sr;
+  gfsmxlCascadeArcIter       cai;
+  guint                      n_paths = 0;
+  gfsmxlCascadeLookupBacktrace  bt = {NULL, gfsmEpsilon,gfsmEpsilon, sr->one, sr->zero};
+#ifdef DEBUG_NCONFIGS
+  guint n_configs = 1;
+#endif
+
+  //-- implicit reset
+  gfsmxl_cascade_lookup_reset(cl);
+
   //-- get initial (root) config
-  gfsm_automaton_set_root(result, gfsm_automaton_add_state(result));
-  cfg = gfsmxl_cascade_lookup_config_new_full(cl->csc,
-					     gfsmxl_cascade_get_root(cl->csc),
-					     0,
-					     gfsm_automaton_get_root(cl->otrie),
-					     gfsm_automaton_get_root(result),
-					     sr->one);
+  cfg = gfsmxl_cascade_lookup_config_new_full(cl->csc,                            //-- csc
+					      gfsmxl_cascade_get_root(cl->csc),   //-- qids
+					      0,                                  //-- ipos
+					      gfsm_automaton_get_root(cl->otrie), //-- oid
+					      gfsmNoState,                        //-- rid
+					      sr->one,                            //-- w
+					      bt);                                //-- bt (= {prev,lo,hi,aw.fw})
   gfsmxl_clc_fh_insert(cl->heap, cfg);
   g_hash_table_insert(cl->configs, cfg, g_slist_prepend(NULL, cfg));
   //
   //-- ye olde loope
   while ( (cl->n_ops <= cl->max_ops) && (cfg=gfsmxl_clc_fh_extractmin(cl->heap)) ) {
-    gpointer old_cfg_key, old_cfg_val;
     gfsmWeight fw, new_w;
     gfsmLabelId lab;
 
@@ -161,14 +189,12 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
       if (gfsm_sr_less(sr,fw,sr->zero)) {
 	//-- state is final: get total weight of path
 	new_w = gfsm_sr_times(sr,fw,cfg->w);
-	if (!gfsm_sr_less(sr,cl->max_w,new_w)) {
-	  //-- !(max_w < fw) === (max_w >= fw) === (fw <= max_w) : add this config as a complete path
+	if (!gfsm_sr_less(sr,cl->max_w,new_w) && gfsm_sr_less(sr,fw,cfg->bt.fw)) {
+	  //-- !(max_w < fw) <---> (max_w >= fw) <---> (fw <= max_w) : add this config as a complete path
+	  cfg->bt.fw = fw;
+	  cl->finals = g_slist_prepend(cl->finals, cfg);
 	  ++n_paths;
-	  gfsm_automaton_set_final_state_full(result,cfg->rid,TRUE,fw);
-	  if (n_paths >= cl->max_paths) {
-	    //-- found enough paths: get outta here...
-	    break;
-	  }
+	  if (n_paths >= cl->max_paths) break; //-- found enough paths: get outta here..
 	}
 	//-- bummer: final but too costly: keep on truckin...
       }
@@ -181,9 +207,8 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
     gfsmxl_cascade_arciter_open(&cai, csc, cfg->qids, lab);
     for (; gfsmxl_cascade_arciter_ok(&cai); gfsmxl_cascade_arciter_next(&cai)) {
       gfsmxlCascadeArc            *carc = gfsmxl_cascade_arciter_arc(&cai);
-      gfsmxlCascadeLookupConfig cfg_tmp = { csc, carc->targets, cfg->ipos, cfg->oid, cfg->rid, cfg->w };
-      gfsmxlCascadeLookupConfig     *cfg_new;
-      gfsmxlCascadeLookupConfigList *cfg_list;
+      gfsmxlCascadeLookupConfig cfg_tmp = { csc, carc->targets, cfg->ipos, cfg->oid, cfg->rid, cfg->w, cfg->bt };
+      gfsmxlCascadeLookupConfig *cfg_new;
 
       //-- adjust cfg_tmp.w
       cfg_tmp.w = gfsm_sr_times(sr,cfg->w,carc->weight);
@@ -200,37 +225,52 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
 	cfg_tmp.oid = gfsm_trie_get_arc_lower(cl->otrie, cfg->oid, carc->upper, 0,FALSE);
       }
 
-      //-- check whether an equal-or-better old config already exists
-      if (g_hash_table_lookup_extended(cl->configs, &cfg_tmp, &old_cfg_key, &old_cfg_val)) {
-	//-- an old config exists...
-	gfsmxlCascadeLookupConfig     *old_cfg  = (gfsmxlCascadeLookupConfig    *)old_cfg_key;
-	if (!gfsm_sr_less(sr, cfg_tmp.w, old_cfg->w)) {
-	  //-- old config is better: skip new (cfg_tmp)
-	  continue;
-	} else {
-	  //-- new config (cfg_tmp) is better:
-	  cfg_tmp.rid = old_cfg->rid;                                //-- grab old result-id into new config
-	  cfg_list    = (gfsmxlCascadeLookupConfigList*)old_cfg_val; //-- ... inherit list of matching configs
-	  g_hash_table_steal(cl->configs, old_cfg);                  //-- ... and steal the old hash entry
-	}
-      } else {
-	//-- no old config exists: add a state for this one (with empty match-list)
-	cfg_tmp.rid = gfsm_automaton_add_state(result);
-	cfg_list    = NULL;
-      }
+      //-- check whether an equal-or-better old config already exists, adding to heap
+      if ( (cfg_new = gfsmxl_cascade_lookup_ensure_config(cl,&cfg_tmp)) == NULL ) continue;
+#ifdef DEBUG_NCONFIGS
+      ++n_configs;
+#endif
 
-      //-- add arc in output automaton
-      gfsm_automaton_add_arc(result, cfg->rid, cfg_tmp.rid, carc->lower, carc->upper, carc->weight);
-
-      //-- add new config to the heap & config-tracker
-      cfg_new = gfsmxl_cascade_lookup_config_clone(&cfg_tmp);
-      gfsmxl_clc_fh_insert(cl->heap, cfg_new);
-      g_hash_table_insert(cl->configs, cfg_new, g_slist_prepend(cfg_list,cfg_new));
+      //-- setup new config backtrace
+      cfg_new->bt.prev = cfg;
+      cfg_new->bt.lo   = carc->lower;
+      cfg_new->bt.hi   = carc->upper;
+      cfg_new->bt.aw   = carc->weight;
+      cfg_new->bt.fw   = sr->zero;
     }
     gfsmxl_cascade_arciter_close(&cai);
   }
+#ifdef DEBUG_NCONFIGS
+  fprintf(stderr, "(DEBUG): n_configs=%u\n", n_configs);
+#endif
+}
 
-  return result;
+//--------------------------------------------------------------
+void gfsmxl_cascade_lookup_nbest_backtrace_(gfsmxlCascadeLookup *cl, gfsmxlCascadeLookupConfig *cfg, gfsmAutomaton *result)
+{
+  //-- config: get state
+  if (cfg->rid == gfsmNoState)
+    cfg->rid = gfsm_automaton_add_state(result);
+
+  //-- config: check for finality
+  if (cfg->bt.fw != cfg->csc->sr->zero)
+    gfsm_automaton_set_final_state_full(result,cfg->rid,TRUE,cfg->bt.fw);
+
+  //-- config: parent
+  if (cfg->bt.prev == NULL) {
+    //-- no parent: set root
+    gfsm_automaton_set_root(result, cfg->rid);
+    return;
+  }
+
+  //-- parent: state
+  if (cfg->bt.prev->rid == gfsmNoState) cfg->bt.prev->rid = gfsm_automaton_add_state(result);
+
+  //-- parent: arc
+  gfsm_automaton_add_arc(result, cfg->bt.prev->rid,cfg->rid, cfg->bt.lo,cfg->bt.hi,cfg->bt.aw);
+
+  //-- parent: recurse
+  gfsmxl_cascade_lookup_nbest_backtrace_(cl, cfg->bt.prev, result);
 }
 
 /*======================================================================

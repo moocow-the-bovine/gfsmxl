@@ -34,6 +34,7 @@
 #define _GFSMXL_CLC_FIB_H_
 
 #include <gfsm.h>
+#include <gfsmxlConfig.h>
 
 /// type for heaps of ::gfsmxlCascadeLookupConfig*
 struct gfsmxlCLCFibHeap;
@@ -79,6 +80,10 @@ void gfsmxl_clc_fh_deleteheap(struct gfsmxlCLCFibHeap *);
 
 /** Union of two heaps */
 struct gfsmxlCLCFibHeap *gfsmxl_clc_fh_union(struct gfsmxlCLCFibHeap *, struct gfsmxlCLCFibHeap *);
+
+#ifdef GFSMXL_ENABLE_DEBUG
+# define GFSMXL_CLC_FH_STATS 1
+#endif
 
 #ifdef GFSMXL_CLC_FH_STATS
 int gfsmxl_clc_fh_maxn(struct gfsmxlCLCFibHeap *);

@@ -3,7 +3,7 @@ AC_PREREQ(2.5)
 
 dnl Some handy macros
 define([THE_PACKAGE_NAME],    [gfsmxl])
-define([THE_PACKAGE_VERSION], [0.0.7])
+define([THE_PACKAGE_VERSION], [0.0.7+bughunt])
 define([THE_PACKAGE_MAINTAINER],  [moocow@ling.uni-potsdam.de])
 
 AC_INIT(THE_PACKAGE_NAME, THE_PACKAGE_VERSION, THE_PACKAGE_MAINTAINER)
@@ -179,7 +179,7 @@ if test "$enable_debug" == "yes" ; then
      gfsmxl_OFLAGS=""
    fi
 
-   AC_DEFINE(GFSM_DEBUG_ENABLED,1,
+   AC_DEFINE(GFSMXL_DEBUG_ENABLED,1,
 	     [Define this to enable debugging code])
    DOXY_DEFINES="$DOXY_DEFINES GFSMXL_DEBUG_ENABLED=1"
    #CONFIG_OPTIONS="$CONFIG_OPTIONS DEBUG=1"

@@ -64,6 +64,7 @@ gfsmxlCascadeLookup *gfsmxl_cascade_lookup_new_full(gfsmxlCascade *csc, gfsmWeig
 				       (GDestroyNotify)gfsmxl_cascade_lookup_config_list_free
 				       );
   cl->otrie = gfsm_trie_new();
+  cl->finals = NULL;
   gfsmxl_cascade_lookup_set_cascade(cl,csc);
   return cl;
 }
@@ -84,6 +85,42 @@ void gfsmxl_cascade_lookup_free(gfsmxlCascadeLookup *cl)
   gfsm_automaton_free(cl->otrie);
 }
 
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_ensure_config(gfsmxlCascadeLookup *cl, gfsmxlCascadeLookupConfig *cfg_key)
+{
+  gfsmxlCascadeLookupConfig     *cfg_new;
+  gfsmxlCascadeLookupConfigList *cfg_list;
+  gpointer                       cfg_old_key, cfg_old_val;
+  gfsmStateId                    cfg_rid = gfsmNoState;
+
+  //-- check whether an equal-or-better old config already exists
+  if (g_hash_table_lookup_extended(cl->configs, cfg_key, &cfg_old_key, &cfg_old_val)) {
+    //-- an old config exists...
+    gfsmxlCascadeLookupConfig     *cfg_old  = (gfsmxlCascadeLookupConfig *)cfg_old_key;
+    if (!gfsm_sr_less(cfg_key->csc->sr, cfg_key->w, cfg_old->w)) {
+      //-- old config is better: skip the new one (cfg_key)
+      return NULL;
+    } else {
+      //-- new config (cfg_key) is better: clone & add administrative data
+      cfg_rid      = cfg_old->rid;                                //-- grab old result-id into new config
+      cfg_list     = (gfsmxlCascadeLookupConfigList*)cfg_old_val; //-- ... inherit list of matching configs
+      g_hash_table_steal(cl->configs, cfg_old);                   //-- ... and steal the old hash entry (without freeing)
+    }
+  } else {
+    //-- no old config exists: add a new one by cloning cfg_key (with empty match-list)
+    cfg_list = NULL;
+  }
+
+  //-- clone cfg_key & add new config the the heap & config-tracker
+  cfg_new = gfsmxl_cascade_lookup_config_clone(cfg_key);
+  cfg_new->rid = cfg_rid;
+  gfsmxl_clc_fh_insert(cl->heap, cfg_new);
+  g_hash_table_insert(cl->configs, cfg_new, g_slist_prepend(cfg_list,cfg_new));
+
+  return cfg_new;
+}
+
 /*======================================================================
  * gfsmxlCascadeLookupConfig
  */
@@ -96,7 +133,7 @@ gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_config_new_full(gfsmxlCascade  
 								 gfsmStateId          oid,
 								 gfsmStateId          rid,
 								 gfsmWeight           w
-								 //,gfsmxlCascadeLookupConfig *parent
+								 ,gfsmxlCascadeLookupBacktrace bt
 								 )
 {
   gfsmxlCascadeLookupConfig *lc = (gfsmxlCascadeLookupConfig*)g_malloc(sizeof(gfsmxlCascadeLookupConfig)
@@ -109,7 +146,7 @@ gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_config_new_full(gfsmxlCascade  
   lc->oid    = oid;
   lc->rid    = rid;
   lc->w      = w;
-  //lc->parent = parent;
+  lc->bt     = bt;
   gfsmxl_cascade_stateid_sized_copy(lc->qids, qids, csc->depth);
   return lc;
 }
@@ -124,7 +161,7 @@ gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_config_new(gfsmxlCascadeLookup 
 					       0,
 					       0,
 					       cl->csc->sr->one
-					       //,NULL //-- parent
+					       ,gfsmxl_bt_null
 					       );
 }
 
@@ -145,7 +182,7 @@ void gfsmxl_cascade_lookup_config_copy(gfsmxlCascadeLookupConfig *dst, gfsmxlCas
   dst->oid    = src->oid;
   dst->rid    = src->rid;
   dst->w      = src->w;
-  //dst->parent = src->parent;
+  dst->bt     = src->bt;
   gfsmxl_cascade_stateid_sized_copy(dst->qids,src->qids,src->csc->depth);
 }
 
@@ -154,7 +191,7 @@ GFSM_INLINE
 gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_config_clone(gfsmxlCascadeLookupConfig *src)
 {
   return gfsmxl_cascade_lookup_config_new_full(src->csc, src->qids, src->ipos, src->oid, src->rid, src->w
-					       //, src->parent
+					       ,src->bt
 					       );
 }
 

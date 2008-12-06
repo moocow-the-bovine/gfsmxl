@@ -48,4 +48,8 @@
 #ifndef _GFSMXL_CONFIG_H
 #define _GFSMXL_CONFIG_H
 
+#if defined(GFSMXL_DEBUG_ENABLED) && !defined(GFSMXL_CLC_FH_STATS)
+# define GFSMXL_CLC_FH_STATS 1
+#endif
+
 #endif /* _GFSMXL_CONFIG_H */

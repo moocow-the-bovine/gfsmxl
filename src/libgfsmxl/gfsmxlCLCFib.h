@@ -34,6 +34,7 @@
 #define _GFSMXL_CLC_FIB_H_
 
 #include <gfsm.h>
+#include <gfsmxlConfig.h>
 
 /// type for heaps of ::gfsmxlCascadeLookupConfig*
 struct gfsmxlCLCFibHeap;

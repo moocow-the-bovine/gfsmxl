@@ -98,7 +98,7 @@ void analyze_token(char *text, gfsmIOHandle *outh)
   nstates_total += gfsm_automaton_n_states(result);
   
   //-- connect
-  gfsm_automaton_connect(result);
+  //gfsm_automaton_connect(result);
 
   //-- serialize
   if (paths) gfsm_set_clear(paths);
@@ -163,6 +163,22 @@ void show_config_macros(const char *prog)
 
   fprintf(stderr,"%s: %-32s ? %s\n", prog, "CASCADE_EXPAND_RECURSIVE",
 #if defined(CASCADE_EXPAND_RECURSIVE)
+	 "yes"
+#else
+	 "no"
+#endif
+	 );
+
+  fprintf(stderr,"%s: %-32s ? %s\n", prog, "GFSMXL_DEBUG_ENABLED",
+#if defined(GFSMXL_DEBUG_ENABLED)
+	 "yes"
+#else
+	 "no"
+#endif
+	 );
+
+  fprintf(stderr,"%s: %-32s ? %s\n", prog, "GFSMXL_CLC_FH_STATS",
+#if defined(GFSMXL_CLC_FH_STATS)
 	 "yes"
 #else
 	 "no"
@@ -296,6 +312,11 @@ int main (int argc, char **argv)
   toks_per_sec = ntoks_d / elapsed;
   coverage     = 100.0 * ((double)ncovered) / ntoks_d;
 
+#ifdef GFSMXL_CLC_FH_STATS
+  fprintf(stderr, "%s: fh:maxn     : %8d\n", prog, gfsmxl_clc_fh_maxn(cl->heap));
+  fprintf(stderr, "%s: fh:#/insert : %8d\n", prog, gfsmxl_clc_fh_ninserts(cl->heap));
+  fprintf(stderr, "%s: fh:#/extrct : %8d\n", prog, gfsmxl_clc_fh_nextracts(cl->heap));
+#endif
   fprintf(stderr, "%s: #/tokens    : %8lu tok\n", prog, ntoks);
   fprintf(stderr, "%s: #/chars     : %8lu chr  (%8.2f chr/tok)\n", prog, nchars_total, ((double)nchars_total)/ntoks_d);
   fprintf(stderr, "%s: #/ops       : %8lu ops  (%8.2f ops/tok == %8.2f ops/chr)\n",

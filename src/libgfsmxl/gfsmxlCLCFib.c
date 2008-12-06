@@ -33,6 +33,7 @@
 #include <gfsmxlCLCFib.h>
 #include <gfsmxlCLCFibPriv.h>
 #include <gfsmxlCascadeLookup.h>
+#include <gfsmxlConfig.h>
 
 #include <limits.h>
 #include <stdlib.h>
@@ -122,7 +123,7 @@ gfsmxl_clc_fh_initheap(struct gfsmxlCLCFibHeap *new)
 	new->fh_cons = NULL;
 	new->fh_min = NULL;
 	new->fh_root = NULL;
-#ifdef FH_STATS
+#ifdef GFSMXL_CLC_FH_STATS
 	new->fh_maxn = 0;
 	new->fh_ninserts = 0;
 	new->fh_nextracts = 0;
@@ -322,7 +323,7 @@ gfsmxl_clc_fh_delete(struct gfsmxlCLCFibHeap *h, struct gfsmxlCLCFibHeap_el *x)
 /*
  * Statistics Functions
  */
-#ifdef FH_STATS
+#ifdef GFSMXL_CLC_FH_STATS
 int
 gfsmxl_clc_fh_maxn(struct gfsmxlCLCFibHeap *h)
 {
@@ -376,7 +377,7 @@ gfsmxl_clc_fh_extractminel(struct gfsmxlCLCFibHeap *h)
 		gfsmxl_clc_fh_consolidate(h);
 	}
 
-#ifdef FH_STATS
+#ifdef GFSMXL_CLC_FH_STATS
 	h->fh_nextracts++;
 #endif
 
@@ -591,7 +592,7 @@ gfsmxl_clc_fh_insertel(struct gfsmxlCLCFibHeap *h, struct gfsmxlCLCFibHeap_el *x
 
 	h->fh_n++;
 
-#ifdef FH_STATS
+#ifdef GFSMXL_CLC_FH_STATS
 	if (h->fh_n > h->fh_maxn)
 		h->fh_maxn = h->fh_n;
 	h->fh_ninserts++;

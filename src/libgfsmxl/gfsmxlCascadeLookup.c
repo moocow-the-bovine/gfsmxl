@@ -148,7 +148,6 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
 }
 
 //--------------------------------------------------------------
-//#define DEBUG_NCONFIGS 1
 void gfsmxl_cascade_lookup_nbest_search_(gfsmxlCascadeLookup *cl, gfsmLabelVector *input)
 {
   gfsmxlCascadeLookupConfig *cfg;
@@ -157,9 +156,6 @@ void gfsmxl_cascade_lookup_nbest_search_(gfsmxlCascadeLookup *cl, gfsmLabelVecto
   gfsmxlCascadeArcIter       cai;
   guint                      n_paths = 0;
   gfsmxlCascadeLookupBacktrace  bt = {NULL, gfsmEpsilon,gfsmEpsilon, sr->one, sr->zero};
-#ifdef DEBUG_NCONFIGS
-  guint n_configs = 1;
-#endif
 
   //-- implicit reset
   gfsmxl_cascade_lookup_reset(cl);
@@ -194,7 +190,9 @@ void gfsmxl_cascade_lookup_nbest_search_(gfsmxlCascadeLookup *cl, gfsmLabelVecto
 	  cfg->bt.fw = fw;
 	  cl->finals = g_slist_prepend(cl->finals, cfg);
 	  ++n_paths;
-	  if (n_paths >= cl->max_paths) break; //-- found enough paths: get outta here..
+	  if (n_paths >= cl->max_paths) {
+	    break; //-- found enough paths: get outta here..
+	  }
 	}
 	//-- bummer: final but too costly: keep on truckin...
       }
@@ -227,9 +225,6 @@ void gfsmxl_cascade_lookup_nbest_search_(gfsmxlCascadeLookup *cl, gfsmLabelVecto
 
       //-- check whether an equal-or-better old config already exists, adding to heap
       if ( (cfg_new = gfsmxl_cascade_lookup_ensure_config(cl,&cfg_tmp)) == NULL ) continue;
-#ifdef DEBUG_NCONFIGS
-      ++n_configs;
-#endif
 
       //-- setup new config backtrace
       cfg_new->bt.prev = cfg;
@@ -240,9 +235,6 @@ void gfsmxl_cascade_lookup_nbest_search_(gfsmxlCascadeLookup *cl, gfsmLabelVecto
     }
     gfsmxl_cascade_arciter_close(&cai);
   }
-#ifdef DEBUG_NCONFIGS
-  fprintf(stderr, "(DEBUG): n_configs=%u\n", n_configs);
-#endif
 }
 
 //--------------------------------------------------------------

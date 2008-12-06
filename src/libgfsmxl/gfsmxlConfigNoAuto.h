@@ -1,5 +1,11 @@
 /* src/libgfsmxl/gfsmxlConfigAuto.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define this to enable tracking of fibheap statistics */
+#undef GFSMXL_CLC_FH_STATS
+
+/* Define this to enable debugging code */
+#undef GFSMXL_DEBUG_ENABLED
+
 /* Major gfsmxl version */
 #undef GFSMXL_VERSION_MAJOR
 
@@ -8,9 +14,6 @@
 
 /* Minor gfsmxl version */
 #undef GFSMXL_VERSION_MINOR
-
-/* Define this to enable debugging code */
-#undef GFSM_DEBUG_ENABLED
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H

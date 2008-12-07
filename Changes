@@ -1,5 +1,12 @@
 Change log for gfsmxl
 
+v0.0.8 Sun, 07 Dec 2008 20:35:52 +0100
+  + replaced on-the-fly result FST construction in gfsmxl_cascade_lookup_nbest
+    with backtrace construction
+    - eliminates need for gfsm_automaton_connect() on result FST
+    - probably best to add runtime flag for whole-hog construction
+    - ca. 14% faster (tested with dta-china.typf.no-mootm.t, dta-rw+tagh.gfsc)
+
 v0.0.7 Tue, 25 Nov 2008 12:00:01 +0100
   + added program gfsmxl_cascade_nbest_lookup
   + fixed NULL-dereference in gfsmxl_arcrange_open_block_index() [gfsmxlLabelIndex.hi]

@@ -33,6 +33,7 @@
 #include <gfsmxlCLCFib.h>
 #include <gfsmxlCLCFibPriv.h>
 #include <gfsmxlCascadeLookup.h>
+#include <gfsmxlConfig.h>
 
 #include <limits.h>
 #include <stdlib.h>

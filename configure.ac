@@ -161,7 +161,7 @@ AC_MSG_CHECKING([whether to build debug version])
 AC_ARG_ENABLE(debug,
 	AC_HELP_STRING([--enable-debug], [build debug version (default=no)]))
 
-if test "$enable_debug" == "yes" ; then
+if test "$enable_debug" = "yes" ; then
    AC_MSG_RESULT(yes)
 
    dnl-- this breaks default shared-library building
@@ -209,6 +209,28 @@ fi
 AC_SUBST(gfsmxl_OFLAGS)
 ##
 ## /debug ?
+##^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+##vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+## debug ?
+##
+AC_MSG_CHECKING([whether to track fibheap statistics])
+AC_ARG_ENABLE(debug,
+	AC_HELP_STRING([--enable-fh-stats], [enable tracking of fibheap statistics (default=no)]))
+
+if test "$enable_debug" = "yes" -o "$enable_fh_stats" = "yes" ; then
+   AC_MSG_RESULT(yes)
+
+   AC_DEFINE(GFSMXL_CLC_FH_STATS,1, [Define this to enable tracking of fibheap statistics])
+   DOXY_DEFINES="$DOXY_DEFINES GFSMXL_CLC_FH_STATS=1"
+   CONFIG_OPTIONS="$CONFIG_OPTIONS FH_STATS=1"
+else
+  AC_MSG_RESULT(no)
+   CONFIG_OPTIONS="$CONFIG_OPTIONS FH_STATS=0"
+fi
+
+##
+## /fh_stats ?
 ##^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 #---------------------------------------------------------------

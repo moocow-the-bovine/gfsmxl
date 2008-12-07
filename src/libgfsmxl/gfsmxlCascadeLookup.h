@@ -4,7 +4,7 @@
  * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
  * Description: finite state machine library: lookup cascade: lookup routines
  *
- * Copyright (c) 2007,2008 Bryan Jurish.
+ * Copyright (c) 2007-2008 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,16 +39,30 @@
 typedef struct gfsmxlCLCFibHeap gfsmxlFibHeap;
 //typedef struct fibheap gfsmxlFibHeap;
 
+/// struct for cascade lookup heap element backtrace "pointers"
+typedef struct gfsmxlCascadeLookupBacktrace_ {
+  struct gfsmxlCascadeLookupConfig_ *prev; /**< backtrace: parent configuration */
+  gfsmLabelId                        lo;   /**< backtrace: arc: lower label */
+  gfsmLabelId                        hi;   /**< backtrace: arc: upper label */
+  gfsmWeight                         aw;   /**< backtrace: arc: weight */
+  gfsmWeight                         fw;   /**< backtrace: final: weight */
+} gfsmxlCascadeLookupBacktrace;
+
 /// struct for cascade lookup heap element data
 typedef struct gfsmxlCascadeLookupConfig_ {
   gfsmxlCascade         *csc;     /**< Underlying cascade */
   gfsmxlCascadeStateId   qids;    /**< current state in cascade */
   guint32                ipos;    /**< current position in input string */
   gfsmStateId            oid;     /**< current state in output trie (identifies output string) */
-  gfsmStateId            rid;     /**< current state in output automaton */
+  gfsmStateId            rid;     /**< current state in output automaton (on backtrace only) */
   gfsmWeight             w;       /**< accumulated weight */
-  //struct gfsmxlCascadeLookupConfig_ *parent; /* parent configuration, for backtracking */
+  gfsmxlCascadeLookupBacktrace bt; /**< backtrace */
 } gfsmxlCascadeLookupConfig;
+
+/** \brief Singly-linked list of ::gfsmxlCascadeLookupConfig elements.
+ *  \detail Used by ::gfsmxlCascadeLookup.configs
+ */
+typedef GSList gfsmxlCascadeLookupConfigList;
 
 /// Persistent type for best-first cascade lookups
 typedef struct {
@@ -63,14 +77,16 @@ typedef struct {
   gfsmxlFibHeap             *heap;        /**< Heap for storing lookup configurations */
   GHashTable                *configs;     /**< Set of extant lookup-configurations: cfg_key => GSList(configs_for_key) */
   gfsmAutomaton             *otrie;       /**< output-string trie */
+  gfsmxlCascadeLookupConfigList *finals;  /**< GSList of collected final ::gfsmxlCascadeLookupConfig */
   guint                      n_ops;       /**< Number of elementary operations in current run */
   gfsmxlCascadeLookupConfig  heap_neginf; /**< "Negative infinity" element for heap comparison */
 } gfsmxlCascadeLookup;
 
-/** \brief Singly-linked list of ::gfsmxlCascadeLookupConfig elements.
- *  \detail Used by ::gfsmxlCascadeLookup.configs
+
+/*======================================================================
+ * Constants
  */
-typedef GSList gfsmxlCascadeLookupConfigList;
+extern const gfsmxlCascadeLookupBacktrace gfsmxl_bt_null; /*< "empty" backtrace */
 
 /*======================================================================
  * Constructors, etc.
@@ -105,17 +121,40 @@ void gfsmxl_cascade_lookup_free(gfsmxlCascadeLookup *cl);
 /// \name gfsmxlCascadeLookup API
 //@{
 
+/** Get best config matching \a cfg_tmp (according to gfsmxl_lookup_config_ht_hash(), gfsmxl_lookup_config_ht_equal()).
+ *  Updates administrative data <tt>(cl->heap, cl->configs)</tt> appropriately.
+ *  \param cl      lookup object
+ *  \param cfg_key configuration to match or create
+ *  \returns NULL if an equal-or-better config is already known to \a cl, otherwise a clone of \a cfg_tmp
+ */
+GFSM_INLINE
+gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_ensure_config(gfsmxlCascadeLookup *cl, gfsmxlCascadeLookupConfig *cfg_key);
+
 /** Resets state of a ::gfsmxlCascadeLookup, preparing it for another lookup
  *  \li implicitly called by gfsm_cascade_lookup_nbest()
  */
 void gfsmxl_cascade_lookup_reset(gfsmxlCascadeLookup *cl);
 
-/** Lookup first n "best" path(s) for input labels \a input in \a cl->csc,
- *  populating \a result as we go.  If \a result is passed as NULL, a new
- *  ::gfsmAutomaton will be created.
- *  \returns result if non-NULL, otherwise a new ::gfsmAutomaton.
+/** Lookup first n "best" path(s) for input labels \a input in \a cl->csc, and populate \a result.
+ *  If \a result is passed as NULL, a new ::gfsmAutomaton will be created.
+ *  \returns \a result if non-NULL, otherwise a new ::gfsmAutomaton.
+ *  \sa gfsmxl_cascade_lookup_nbest_search_()
+ *  \sa gfsmxl_cascade_lookup_nbest_backtrace_()
  */
 gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVector *input, gfsmAutomaton *result);
+
+/** Search guts for gfsmxl_cascade_lookup_nbest().  Performs n-best search, storing only backtraces.
+ *  \sa gfsmxl_cascade_lookup_nbest()
+ *  \sa gfsmxl_cascade_lookup_nbest_backtrace_()
+ */
+void gfsmxl_cascade_lookup_nbest_search_(gfsmxlCascadeLookup *cl, gfsmLabelVector *input);
+
+/** Backtrace construction guts for gfsmxl_cascade_lookup_nbest().
+ *  Expands backtraces for config \a cfg in \a cl into \a result.
+ *  \sa gfsmxl_cascade_lookup_nbest()
+ *  \sa gfsmxl_cascade_lookup_nbest_search_()
+ */
+void gfsmxl_cascade_lookup_nbest_backtrace_(gfsmxlCascadeLookup *cl, gfsmxlCascadeLookupConfig *cfg, gfsmAutomaton *result);
 
 //@}
 
@@ -127,35 +166,36 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
 
 /** Heap-element comparison function for ::gfsmxlCascadeLookupConfig (inline)
  *  \li Compares only weights and input positions!
- *  \li Behaves something like the perl code:
+ *  \li Behaves basically like the perl code:
  *      <tt>(lc1->w <=> lc2->w) || (lc2->ipos <=> lc1->ipos)</tt>
  */
 GFSM_INLINE
 int gfsmxl_cascade_lookup_config_fh_compare(gfsmxlCascadeLookupConfig *lc1, gfsmxlCascadeLookupConfig *lc2);
 
 /** Hash function for ::gfsmxlCascadeLookupConfig; castable to GHashFunc
- *  \li Hashes only (lc->ipos,lc->oid,lc->qids)
+ *  \li Hashes only <tt>(lc->ipos,lc->oid,lc->qids)</tt>
  */
 guint gfsmxl_cascade_lookup_config_ht_hash(gfsmxlCascadeLookupConfig *lc);
 
 /** Equality predicate for ::gfsmxlCascadeLookupConfig; castable to GEqualFunc
- *  \li Tests only (lcX->ipos,lcX->oid,lcX->qids)
+ *  \li Tests only <tt>(lcX->ipos,lcX->oid,lcX->qids)</tt>
  */
 gboolean gfsmxl_cascade_lookup_config_ht_equal(gfsmxlCascadeLookupConfig *lc1, gfsmxlCascadeLookupConfig *lc2);
 
 /** Allocate a ::gfsmxlCascadeLookupConfig.
  *  \param csc  underlying cascade
  *  \param qids state ids for the config (will be copied into cfg->qids)
- *  \param w    initial weight for the config
+ *  \param w    initial accumulated weight for the config
+ *  \param bt   configuration backtrace data (parent configuration)
  */
 GFSM_INLINE
 gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_config_new_full(gfsmxlCascade        *csc,
 								 gfsmxlCascadeStateId  qids,
-								 guint32              ipos,
-								 gfsmStateId          oid,
-								 gfsmStateId          rid,
-								 gfsmWeight           w
-								 //,gfsmxlCascadeLookupConfig *parent
+								 guint32               ipos,
+								 gfsmStateId           oid,
+								 gfsmStateId           rid,
+								 gfsmWeight            w,
+								 gfsmxlCascadeLookupBacktrace bt
 								 );
 
 /** Allocate a ::gfsmxlCascadeLookupConfig for \a cl, including state-id data */

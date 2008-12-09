@@ -1,5 +1,8 @@
 fast:
   gfsmxl_cascade_nbest_strings -l edit+zeitF.lab -C edit+zeitF.gfsc -a -w 0.9 -p 3 edit+zeitF.t
+  gfsmxl_cascade_nbest_lookup  -l edit+zeitF.lab -C edit+zeitF.gfsc -a -w 0.9 -p 3 'abendl[ä]ndische'
 
-slow:
+slow/buggy:
   gfsmxl_cascade_nbest_strings -l edit+zeitF.lab -C edit+zeitF.gfsc -a -w 0.9 -p 4 edit+zeitF.t
+  gfsmxl_cascade_nbest_lookup  -l edit+zeitF.lab -C edit+zeitF.gfsc -a -w 0.9 -p 4 'abendl[ä]ndische'
+  gfsmxl_cascade_nbest_lookup  -l hacks/edit+zeitF.lab -C hacks/edit+zeitF.gfsc -a -w 0.9 -p 4 abendl[ä]ndische

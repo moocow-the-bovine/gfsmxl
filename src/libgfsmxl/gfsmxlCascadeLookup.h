@@ -121,6 +121,44 @@ void gfsmxl_cascade_lookup_free(gfsmxlCascadeLookup *cl);
 /// \name gfsmxlCascadeLookup API
 //@{
 
+
+/** Lookup first n "best" path(s) for input labels \a input in \a cl->csc, and populate \a result.
+ *  If \a result is passed as NULL, a new ::gfsmAutomaton will be created.
+ *  \returns \a result if non-NULL, otherwise a new ::gfsmAutomaton.
+ *  \sa gfsmxl_cascade_lookup_nbest_paths()
+ *  \sa gfsmxl_cascade_lookup_nbest_search_()
+ *  \sa gfsmxl_cascade_lookup_nbest_backtrace_()
+ */
+gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVector *input, gfsmAutomaton *result);
+
+/** Lookup first n "best" path(s) for input labels \a input in \a cl->csc, and return them as a ::gfsmSet* \a paths.
+ *  If \a paths is passed as NULL, a new ::gfsmSet will be created.
+ *  \returns \a paths if non-NULL, otherwise a new ::gfsmSet.
+ *  \sa gfsmxl_cascade_lookup_nbest()
+ *  \sa gfsmxl_cascade_lookup_nbest_search_()
+ *  \sa gfsmxl_cascade_lookup_nbest_backtrace_path_()
+ */
+gfsmSet *gfsmxl_cascade_lookup_nbest_paths(gfsmxlCascadeLookup *cl, gfsmLabelVector *input, gfsmSet *paths);
+
+//@}
+
+/*======================================================================
+ * gfsmxlCascadeLookup: Low-level and Debug Utilities
+ */
+/// \name gfsmxlCascadeLookup: Low-level and Debug Utilities
+//@{
+
+/** Resets state of a ::gfsmxlCascadeLookup, preparing it for another lookup
+ *  \li implicitly called by gfsm_cascade_lookup_nbest()
+ */
+void gfsmxl_cascade_lookup_reset(gfsmxlCascadeLookup *cl);
+
+/** Create or clear automaton \a result for use with gfsmxl_cascade_lookup_nbest()
+ *  \returns cleared \a result if specified, otherwise a new ::gfsmAutomaton
+ */
+GFSM_INLINE
+gfsmAutomaton *gfsmxl_cascade_lookup_nbest_prepare_(gfsmxlCascadeLookup *cl, gfsmAutomaton *result);
+
 /** Get best config matching \a cfg_tmp (according to gfsmxl_lookup_config_ht_hash(), gfsmxl_lookup_config_ht_equal()).
  *  Updates administrative data <tt>(cl->heap, cl->configs)</tt> appropriately.
  *  \param cl      lookup object
@@ -129,19 +167,6 @@ void gfsmxl_cascade_lookup_free(gfsmxlCascadeLookup *cl);
  */
 GFSM_INLINE
 gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_ensure_config(gfsmxlCascadeLookup *cl, gfsmxlCascadeLookupConfig *cfg_key);
-
-/** Resets state of a ::gfsmxlCascadeLookup, preparing it for another lookup
- *  \li implicitly called by gfsm_cascade_lookup_nbest()
- */
-void gfsmxl_cascade_lookup_reset(gfsmxlCascadeLookup *cl);
-
-/** Lookup first n "best" path(s) for input labels \a input in \a cl->csc, and populate \a result.
- *  If \a result is passed as NULL, a new ::gfsmAutomaton will be created.
- *  \returns \a result if non-NULL, otherwise a new ::gfsmAutomaton.
- *  \sa gfsmxl_cascade_lookup_nbest_search_()
- *  \sa gfsmxl_cascade_lookup_nbest_backtrace_()
- */
-gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVector *input, gfsmAutomaton *result);
 
 /** Search guts for gfsmxl_cascade_lookup_nbest().  Performs n-best search, storing only backtraces.
  *  \sa gfsmxl_cascade_lookup_nbest()
@@ -154,15 +179,19 @@ void gfsmxl_cascade_lookup_nbest_search_(gfsmxlCascadeLookup *cl, gfsmLabelVecto
  *  \sa gfsmxl_cascade_lookup_nbest()
  *  \sa gfsmxl_cascade_lookup_nbest_search_()
  */
-void gfsmxl_cascade_lookup_nbest_backtrace_(gfsmxlCascadeLookup *cl, gfsmxlCascadeLookupConfig *cfg, gfsmAutomaton *result);
+void gfsmxl_cascade_lookup_nbest_backtrace_(gfsmxlCascadeLookup       *cl,
+					    gfsmxlCascadeLookupConfig *cfg,
+					    gfsmxlCascadeLookupConfig *nxt,
+					    gfsmAutomaton             *result);
 
-//@}
-
-/*======================================================================
- * gfsmxlCascadeLookup API: DEBUG
+/** Backtrace construction guts for gfsmxl_cascade_lookup_nbest_paths().
+ *  Expands backtraces for config \a cfg in \a cl into \a p.
+ *  \sa gfsmxl_cascade_lookup_nbest_paths()
+ *  \sa gfsmxl_cascade_lookup_nbest_search_()
  */
-/// \name gfsmxlCascadeLookup API: DEBUG
-//@{
+void gfsmxl_cascade_lookup_nbest_backtrace_path_(gfsmxlCascadeLookup       *cl,
+						 gfsmxlCascadeLookupConfig *cfg,
+						 gfsmPath                  *p);
 
 /** Old version of gfsmxl_cascade_lookup_nbest(), useful for debugging
  */
@@ -172,9 +201,9 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest_debug(gfsmxlCascadeLookup *cl, gfsmLa
 
 
 /*======================================================================
- * Low-level: gfsmxlCascadeLookupConfig
+ * gfsmxlCascadeLookupConfig: Low-level Utilities
  */
-/// \name Low-level: gfsmxlCascadeLookupConfig
+/// \name gfsmxlCascadeLookupConfig: Low-level Utilities
 //@{
 
 /** Heap-element comparison function for ::gfsmxlCascadeLookupConfig (inline)

@@ -24,6 +24,7 @@ gfsmxl_cascade_nbest_lookup [OPTIONS] INPUT_WORDS...
     -wFLOAT    --max-weight=FLOAT   Specify maximum weight of extractable paths
     -a         --att-mode           Respect AT&T regex-style escapes in input strings
     -c         --connect            Connect result prior to output
+    -d         --debug              Use old lookup routine (for debugging)
     -FFILE     --output=FILE        Specify output file (default=stdout).
 
 =cut
@@ -153,6 +154,15 @@ Default: '0'
 =item C<--connect> , C<-c>
 
 Connect result prior to output
+
+Default: '0'
+
+
+
+
+=item C<--debug> , C<-d>
+
+Use old lookup routine (for debugging)
 
 Default: '0'
 

@@ -59,8 +59,8 @@ float "max-weight" w "Specify maximum weight of extractable paths" \
 flag "att-mode" a "Respect AT&T regex-style escapes in input strings" \
   default="0"
 
-#flag "debug" d "Use old lookup routine (for debugging)" \
-#  default="0"
+flag "debug" d "Use old lookup & paths routine (for debugging)" \
+  default="0"
 
 string "output" F "Specify output file (default=stdout)." \
     arg="FILE" \

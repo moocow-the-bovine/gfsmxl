@@ -39,23 +39,9 @@ const gfsmxlCascadeLookupBacktrace gfsmxl_bt_null = { NULL, 0,0,0,0 };
  * Constructors, etc.
  */
 
-//--------------------------------------------------------------
-void gfsmxl_cascade_lookup_reset(gfsmxlCascadeLookup *cl)
-{
-  //-- clear heap, hash, finals
-  while ( gfsmxl_clc_fh_extractmin(cl->heap) ) { ; }
-  g_hash_table_remove_all(cl->configs);
-  g_slist_free(cl->finals);
-  cl->finals = NULL;
-  //
-  //-- reset per-lookup data
-  gfsm_automaton_clear(cl->otrie);
-  gfsm_automaton_set_root(cl->otrie, gfsm_automaton_ensure_state(cl->otrie,0));
-  cl->n_ops = 0;
-}
 
 /*======================================================================
- * Low-level: gfsmxlCascadeLookupConfig
+ * gfsmxlCascadeLookupConfig: Low-level Utilities
  */
 
 //--------------------------------------------------------------
@@ -125,15 +111,8 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
 {
   GSList *finals;
 
-  //-- maybe create result automaton
-  if (!result) {
-    result = gfsm_automaton_new();
-    gfsm_automaton_set_semiring(result,cl->csc->sr);
-  } else {
-    gfsm_automaton_clear(result);
-  }
-  result->flags.is_transducer = TRUE;
-  result->flags.sort_mode     = gfsmASMNone;
+  //-- prepare result automaton
+  result = gfsmxl_cascade_lookup_nbest_prepare_(cl, result);
 
   //-- search guts (generate backtrace)
   gfsmxl_cascade_lookup_nbest_search_(cl, input);
@@ -141,10 +120,61 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
   //-- generate backtrace
   for (finals=cl->finals; finals != NULL; finals=finals->next) {
     gfsmxlCascadeLookupConfig *cfg = (gfsmxlCascadeLookupConfig *)finals->data;
-    gfsmxl_cascade_lookup_nbest_backtrace_(cl,cfg,result);
+    gfsmxl_cascade_lookup_nbest_backtrace_(cl,cfg,NULL,result);
   }
 
   return result;
+}
+
+//--------------------------------------------------------------
+gfsmSet *gfsmxl_cascade_lookup_nbest_paths(gfsmxlCascadeLookup *cl, gfsmLabelVector *input, gfsmSet *paths)
+{
+  GSList *finals;
+
+  //-- prepare path-set
+  if (paths==NULL) {
+    paths = gfsm_set_new_full(//(GCompareDataFunc)gfsm_path_compare_data,
+			      (GCompareDataFunc)gfsm_uint_compare_data,
+			      (gpointer)cl->csc->sr,
+			      (GDestroyNotify)gfsm_path_free);
+  } else {
+    gfsm_set_clear(paths);
+  }
+
+  //-- search guts (generate backtrace data)
+  gfsmxl_cascade_lookup_nbest_search_(cl, input);
+
+  //-- backtrace
+  for (finals=cl->finals; finals != NULL; finals=finals->next) {
+    gfsmxlCascadeLookupConfig *cfg = (gfsmxlCascadeLookupConfig *)finals->data;
+    gfsmPath *p = gfsm_path_new_full(input, NULL, cfg->w);
+    gfsmxl_cascade_lookup_nbest_backtrace_path_(cl,cfg,p);
+    p->lo = NULL;
+    gfsm_label_vector_reverse(p->hi);
+    gfsm_set_insert(paths,p);
+  }
+
+  return paths;
+}
+
+
+/*======================================================================
+ * gfsmxlCascadeLookup: Low-level and Debug Utilities
+ */
+
+//--------------------------------------------------------------
+void gfsmxl_cascade_lookup_reset(gfsmxlCascadeLookup *cl)
+{
+  //-- clear heap, hash, finals
+  while ( gfsmxl_clc_fh_extractmin(cl->heap) ) { ; }
+  g_hash_table_remove_all(cl->configs);
+  g_slist_free(cl->finals);
+  cl->finals = NULL;
+  //
+  //-- reset per-lookup data
+  gfsm_automaton_clear(cl->otrie);
+  gfsm_automaton_set_root(cl->otrie, gfsm_automaton_ensure_state(cl->otrie,0));
+  cl->n_ops = 0;
 }
 
 //--------------------------------------------------------------
@@ -238,8 +268,14 @@ void gfsmxl_cascade_lookup_nbest_search_(gfsmxlCascadeLookup *cl, gfsmLabelVecto
 }
 
 //--------------------------------------------------------------
-void gfsmxl_cascade_lookup_nbest_backtrace_(gfsmxlCascadeLookup *cl, gfsmxlCascadeLookupConfig *cfg, gfsmAutomaton *result)
+void gfsmxl_cascade_lookup_nbest_backtrace_(gfsmxlCascadeLookup       *cl,
+					    gfsmxlCascadeLookupConfig *cfg,
+					    gfsmxlCascadeLookupConfig *nxt,
+					    gfsmAutomaton             *result)
 {
+  //-- config: save rid
+  gfsmStateId cfg_rid = cfg->rid;
+
   //-- config: get state
   if (cfg->rid == gfsmNoState)
     cfg->rid = gfsm_automaton_add_state(result);
@@ -248,26 +284,39 @@ void gfsmxl_cascade_lookup_nbest_backtrace_(gfsmxlCascadeLookup *cl, gfsmxlCasca
   if (cfg->bt.fw != cfg->csc->sr->zero)
     gfsm_automaton_set_final_state_full(result,cfg->rid,TRUE,cfg->bt.fw);
 
-  //-- config: parent
+  //-- config->next: arc
+  if (nxt)
+    gfsm_automaton_add_arc(result, cfg->rid,nxt->rid, nxt->bt.lo,nxt->bt.hi,nxt->bt.aw);
+
+  //-- config: root
   if (cfg->bt.prev == NULL) {
     //-- no parent: set root
     gfsm_automaton_set_root(result, cfg->rid);
     return;
   }
 
-  //-- parent: state
-  if (cfg->bt.prev->rid == gfsmNoState) cfg->bt.prev->rid = gfsm_automaton_add_state(result);
-
-  //-- parent: arc
-  gfsm_automaton_add_arc(result, cfg->bt.prev->rid,cfg->rid, cfg->bt.lo,cfg->bt.hi,cfg->bt.aw);
-
-  //-- parent: recurse
-  gfsmxl_cascade_lookup_nbest_backtrace_(cl, cfg->bt.prev, result);
+  //-- recurse
+  if (cfg->bt.prev->rid==gfsmNoState || cfg_rid==gfsmNoState)
+    gfsmxl_cascade_lookup_nbest_backtrace_(cl, cfg->bt.prev,cfg, result);
 }
 
-/*======================================================================
- * gfsmxlCascadeLookup API: DEBUG
- */
+//--------------------------------------------------------------
+void gfsmxl_cascade_lookup_nbest_backtrace_path_(gfsmxlCascadeLookup       *cl,
+						 gfsmxlCascadeLookupConfig *cfg,
+						 gfsmPath                  *p)
+{
+  //-- config: root
+  if (cfg->bt.prev == NULL) return;
+
+  //-- add label
+  if (cfg->bt.hi != gfsmEpsilon) {
+    gfsmLabelVal hival = cfg->bt.hi;
+    g_ptr_array_add(p->hi, GUINT_TO_POINTER(hival));
+  }
+
+  //-- recurse
+  gfsmxl_cascade_lookup_nbest_backtrace_path_(cl,cfg->bt.prev,p);
+}
 
 //--------------------------------------------------------------
 gfsmAutomaton *gfsmxl_cascade_lookup_nbest_debug(gfsmxlCascadeLookup *cl, gfsmLabelVector *input, gfsmAutomaton *result)
@@ -282,15 +331,8 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest_debug(gfsmxlCascadeLookup *cl, gfsmLa
   gfsmxl_cascade_lookup_reset(cl);
 
   //-- maybe create result automaton
-  if (!result) {
-    result = gfsm_automaton_new();
-    gfsm_automaton_set_semiring(result,sr);
-  } else {
-    gfsm_automaton_clear(result);
-  }
-  result->flags.is_transducer = TRUE;
-  result->flags.sort_mode     = gfsmASMNone;
-  //
+  result = gfsmxl_cascade_lookup_nbest_prepare_(cl,result);
+
   //-- get initial (root) config
   gfsm_automaton_set_root(result, gfsm_automaton_add_state(result));
   cfg = gfsmxl_cascade_lookup_config_new_full(cl->csc,

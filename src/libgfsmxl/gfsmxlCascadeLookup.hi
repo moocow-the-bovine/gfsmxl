@@ -85,6 +85,27 @@ void gfsmxl_cascade_lookup_free(gfsmxlCascadeLookup *cl)
   gfsm_automaton_free(cl->otrie);
 }
 
+/*======================================================================
+ * gfsmxlCascadeLookup: Low-level Utilities
+ */
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmAutomaton *gfsmxl_cascade_lookup_nbest_prepare_(gfsmxlCascadeLookup *cl, gfsmAutomaton *result)
+{
+  //-- maybe create result automaton
+  if (!result) {
+    result = gfsm_automaton_new();
+    gfsm_automaton_set_semiring(result,cl->csc->sr);
+  } else {
+    gfsm_automaton_clear(result);
+  }
+  result->flags.is_transducer = TRUE;
+  result->flags.sort_mode     = gfsmASMNone;
+  return result;
+}
+
+
 //--------------------------------------------------------------
 GFSM_INLINE
 gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_ensure_config(gfsmxlCascadeLookup *cl, gfsmxlCascadeLookupConfig *cfg_key)

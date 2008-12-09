@@ -23,6 +23,7 @@ gfsmxl_cascade_nbest_strings [OPTIONS] TEXT_FILE
     -oN_OPS    --max-ops=N_OPS      Specify maximum number of configuration-pop operations
     -wFLOAT    --max-weight=FLOAT   Specify maximum weight of extractable paths
     -a         --att-mode           Respect AT&T regex-style escapes in input strings
+    -d         --debug              Use old lookup & paths routine (for debugging)
     -FFILE     --output=FILE        Specify output file (default=stdout).
 
 =cut
@@ -143,6 +144,15 @@ Default: '1e+38'
 =item C<--att-mode> , C<-a>
 
 Respect AT&T regex-style escapes in input strings
+
+Default: '0'
+
+
+
+
+=item C<--debug> , C<-d>
+
+Use old lookup & paths routine (for debugging)
 
 Default: '0'
 

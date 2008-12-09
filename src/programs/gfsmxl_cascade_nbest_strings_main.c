@@ -90,19 +90,33 @@ void analyze_token(char *text, gfsmIOHandle *outh)
   labvec = gfsm_alphabet_generic_string_to_labels(abet, text, labvec, TRUE, att_mode);
 
   //-- lookup & connect
-  result = gfsmxl_cascade_lookup_nbest(cl, labvec, result);
+  if (args.debug_flag) {
+    result = gfsmxl_cascade_lookup_nbest(cl, labvec, result);
 
-  //-- get stats
-  nchars_total  += labvec->len;
-  nops_total    += cl->n_ops;
-  nstates_total += gfsm_automaton_n_states(result);
-  
-  //-- connect
-  //gfsm_automaton_connect(result); /*-- not needed for backtrace-construction --*/
+    //-- get stats
+    nchars_total  += labvec->len;
+    nops_total    += cl->n_ops;
+    nstates_total += gfsm_automaton_n_states(result);
 
-  //-- serialize
-  if (paths) gfsm_set_clear(paths);
-  paths = gfsm_automaton_paths_full(result,paths,gfsmLSUpper);
+    //-- connect
+    //gfsm_automaton_connect(result); /*-- not needed for backtrace-construction --*/
+
+    //-- serialize
+    if (paths) gfsm_set_clear(paths);
+    paths = gfsm_automaton_paths_full(result,paths,gfsmLSUpper);
+  }
+  else {
+    //-- direct serialization
+    /*if (paths) gfsm_set_clear(paths);*/ //-- implicit
+    paths = gfsmxl_cascade_lookup_nbest_paths(cl, labvec, paths);
+
+    //-- get stats
+    nchars_total  += labvec->len;
+    nops_total    += cl->n_ops;
+    //nstates_total += gfsm_automaton_n_states(result);
+  }
+
+  //-- coverage
   if (gfsm_set_size(paths) > 0) { ++ncovered; }
 
   //-- stringify
@@ -272,6 +286,7 @@ int main (int argc, char **argv)
   fprintf(stderr, "%s: max_paths   : %u\n", progname, cl->max_paths);
   fprintf(stderr, "%s: max_w       : %g\n", progname, cl->max_w);
   fprintf(stderr, "%s: max_ops     : %u\n", progname, cl->max_ops);
+  fprintf(stderr, "%s: debug       : %u\n", progname, args.debug_flag);
   fprintf(stderr, "%s: input file  : %s\n", progname, infilename);
   fprintf(stderr, "%s: output file : %s\n", progname, outfilename);
   fprintf(stderr, "%s: processing  : ", progname);

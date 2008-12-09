@@ -1,5 +1,17 @@
 Change log for gfsmxl
 
+v0.0.9 Tue, 09 Dec 2008 22:24:59 +0100
+  + fixed shared-path bug in on-the-fly backtrace construction
+  + added gfsmxl_cascade_lookup_nbest_paths() to avoid temporary
+    automaton construction and read out paths directly, but it's not
+    significantly faster than the automaton version (read: here is
+    not where we're losing time)...
+  + re-added old, slow, bulky, whole-hog automaton construction
+    routine as gfsmxl_cascade_lookup_nbest_debug(), used if option
+    '--debug' is given to gfsmxl_cascade_nbest_lookup utility.
+    - useful for debugging editor cascades, to get an idea of which
+      configurations are being investigated
+
 v0.0.8 Sun, 07 Dec 2008 20:35:52 +0100
   + replaced on-the-fly result FST construction in gfsmxl_cascade_lookup_nbest
     with backtrace construction

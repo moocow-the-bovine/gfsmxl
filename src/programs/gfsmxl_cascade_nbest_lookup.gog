@@ -62,6 +62,9 @@ flag "att-mode" a "Respect AT&T regex-style escapes in input strings" \
 flag "connect" c "Connect result prior to output" \
   default="0"
 
+flag "debug" d "Use old lookup routine (for debugging)" \
+  default="0"
+
 string "output" F "Specify output file (default=stdout)." \
     arg="FILE" \
     default="-"

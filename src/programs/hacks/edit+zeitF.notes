@@ -1,0 +1,5 @@
+fast:
+  gfsmxl_cascade_nbest_strings -l edit+zeitF.lab -C edit+zeitF.gfsc -a -w 0.9 -p 3 edit+zeitF.t
+
+slow:
+  gfsmxl_cascade_nbest_strings -l edit+zeitF.lab -C edit+zeitF.gfsc -a -w 0.9 -p 4 edit+zeitF.t

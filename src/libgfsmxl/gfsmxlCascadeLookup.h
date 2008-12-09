@@ -159,6 +159,19 @@ void gfsmxl_cascade_lookup_nbest_backtrace_(gfsmxlCascadeLookup *cl, gfsmxlCasca
 //@}
 
 /*======================================================================
+ * gfsmxlCascadeLookup API: DEBUG
+ */
+/// \name gfsmxlCascadeLookup API: DEBUG
+//@{
+
+/** Old version of gfsmxl_cascade_lookup_nbest(), useful for debugging
+ */
+gfsmAutomaton *gfsmxl_cascade_lookup_nbest_debug(gfsmxlCascadeLookup *cl, gfsmLabelVector *input, gfsmAutomaton *result);
+
+//@}
+
+
+/*======================================================================
  * Low-level: gfsmxlCascadeLookupConfig
  */
 /// \name Low-level: gfsmxlCascadeLookupConfig

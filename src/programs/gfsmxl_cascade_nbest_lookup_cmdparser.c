@@ -92,6 +92,7 @@ cmdline_parser_print_help (void)
   printf("   -wFLOAT    --max-weight=FLOAT   Specify maximum weight of extractable paths\n");
   printf("   -a         --att-mode           Respect AT&T regex-style escapes in input strings\n");
   printf("   -c         --connect            Connect result prior to output\n");
+  printf("   -d         --debug              Use old lookup routine (for debugging)\n");
   printf("   -FFILE     --output=FILE        Specify output file (default=stdout).\n");
 }
 
@@ -122,6 +123,7 @@ clear_args(struct gengetopt_args_info *args_info)
   args_info->max_weight_arg = 1e+38; 
   args_info->att_mode_flag = 0; 
   args_info->connect_flag = 0; 
+  args_info->debug_flag = 0; 
   args_info->output_arg = gog_strdup("-"); 
 }
 
@@ -141,6 +143,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
   args_info->max_weight_given = 0;
   args_info->att_mode_given = 0;
   args_info->connect_given = 0;
+  args_info->debug_given = 0;
   args_info->output_given = 0;
 
   clear_args(args_info);
@@ -167,6 +170,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
 	{ "max-weight", 1, NULL, 'w' },
 	{ "att-mode", 0, NULL, 'a' },
 	{ "connect", 0, NULL, 'c' },
+	{ "debug", 0, NULL, 'd' },
 	{ "output", 1, NULL, 'F' },
         { NULL,	0, NULL, 0 }
       };
@@ -180,6 +184,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
 	'w', ':',
 	'a',
 	'c',
+	'd',
 	'F', ':',
 	'\0'
       };
@@ -304,6 +309,15 @@ cmdline_parser_parse_option(char oshort, const char *olong, const char *val,
            args_info->connect_flag = !(args_info->connect_flag);
           break;
         
+        case 'd':	 /* Use old lookup routine (for debugging) */
+          if (args_info->debug_given) {
+            fprintf(stderr, "%s: `--debug' (`-d') option given more than once\n", PROGRAM);
+          }
+          args_info->debug_given++;
+         if (args_info->debug_given <= 1)
+           args_info->debug_flag = !(args_info->debug_flag);
+          break;
+        
         case 'F':	 /* Specify output file (default=stdout). */
           if (args_info->output_given) {
             fprintf(stderr, "%s: `--output' (`-F') option given more than once\n", PROGRAM);
@@ -401,6 +415,16 @@ cmdline_parser_parse_option(char oshort, const char *olong, const char *val,
             args_info->connect_given++;
            if (args_info->connect_given <= 1)
              args_info->connect_flag = !(args_info->connect_flag);
+          }
+          
+          /* Use old lookup routine (for debugging) */
+          else if (strcmp(olong, "debug") == 0) {
+            if (args_info->debug_given) {
+              fprintf(stderr, "%s: `--debug' (`-d') option given more than once\n", PROGRAM);
+            }
+            args_info->debug_given++;
+           if (args_info->debug_given <= 1)
+             args_info->debug_flag = !(args_info->debug_flag);
           }
           
           /* Specify output file (default=stdout). */

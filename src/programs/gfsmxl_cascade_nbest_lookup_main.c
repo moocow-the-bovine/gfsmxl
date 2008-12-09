@@ -67,7 +67,11 @@ void analyze_cmdline_words(int argc, char **argv)
   }
 
   //-- lookup & connect
-  result = gfsmxl_cascade_lookup_nbest(cl, labvec, result);
+  if (args.debug_flag) {
+    result = gfsmxl_cascade_lookup_nbest_debug(cl, labvec, result);
+  } else {
+    result = gfsmxl_cascade_lookup_nbest(cl, labvec, result);
+  }
   if (args.connect_flag) {
     gfsm_automaton_connect(result);
   }

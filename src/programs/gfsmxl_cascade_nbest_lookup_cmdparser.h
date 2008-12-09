@@ -26,6 +26,7 @@ struct gengetopt_args_info {
   float max_weight_arg;	 /* Specify maximum weight of extractable paths (default=1e+38). */
   int att_mode_flag;	 /* Respect AT&T regex-style escapes in input strings (default=0). */
   int connect_flag;	 /* Connect result prior to output (default=0). */
+  int debug_flag;	 /* Use old lookup routine (for debugging) (default=0). */
   char * output_arg;	 /* Specify output file (default=stdout). (default=-). */
 
   int help_given;	 /* Whether help was given */
@@ -37,6 +38,7 @@ struct gengetopt_args_info {
   int max_weight_given;	 /* Whether max-weight was given */
   int att_mode_given;	 /* Whether att-mode was given */
   int connect_given;	 /* Whether connect was given */
+  int debug_given;	 /* Whether debug was given */
   int output_given;	 /* Whether output was given */
   
   char **inputs;         /* unnamed arguments */

@@ -64,6 +64,12 @@ typedef struct gfsmxlCascadeLookupConfig_ {
  */
 typedef GSList gfsmxlCascadeLookupConfigList;
 
+/** \brief Singly-linked list of ::gfsmPath elements.
+ *  \detail Used by gfsmxl_cascade_lookup_nbest_paths()
+ */
+//typedef GSList gfsmxlPathList;
+typedef GPtrArray gfsmxlPathArray;
+
 /// Persistent type for best-first cascade lookups
 typedef struct {
   //
@@ -131,14 +137,19 @@ void gfsmxl_cascade_lookup_free(gfsmxlCascadeLookup *cl);
  */
 gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVector *input, gfsmAutomaton *result);
 
-/** Lookup first n "best" path(s) for input labels \a input in \a cl->csc, and return them as a ::gfsmSet* \a paths.
- *  If \a paths is passed as NULL, a new ::gfsmSet will be created.
- *  \returns \a paths if non-NULL, otherwise a new ::gfsmSet.
+/** Lookup first n "best" path(s) for input labels \a input in \a cl->csc, and prepend them to the ::gfsmxlPathArray* \a paths.
+ *  If \a paths is passed as NULL, a new ::gfsmxlPathArray* will be created and returned.
+ *  \returns list of n-best paths prepended to \a paths.
+ *
+ *  \li Each path returned has its \a lo field set to \a input
+ *  \li Each path returned has its own \a hi field allocated
+ *  \li Implicitly clears \a paths
+ *
  *  \sa gfsmxl_cascade_lookup_nbest()
  *  \sa gfsmxl_cascade_lookup_nbest_search_()
  *  \sa gfsmxl_cascade_lookup_nbest_backtrace_path_()
  */
-gfsmSet *gfsmxl_cascade_lookup_nbest_paths(gfsmxlCascadeLookup *cl, gfsmLabelVector *input, gfsmSet *paths);
+gfsmxlPathArray *gfsmxl_cascade_lookup_nbest_paths(gfsmxlCascadeLookup *cl, gfsmLabelVector *input, gfsmxlPathArray *paths);
 
 //@}
 
@@ -199,6 +210,25 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest_debug(gfsmxlCascadeLookup *cl, gfsmLa
 
 //@}
 
+/*======================================================================
+ * gfsmxlPathList: Low-level utilities
+ */
+//@{
+
+/** Create a ::gfsmxlPathArray, pre-allocating \a npaths states */
+GFSM_INLINE
+gfsmxlPathArray *gfsmxl_patharray_new(guint n_paths);
+
+/** Destroy a ::gfsmxlPathArray */
+GFSM_INLINE
+void gfsmxl_patharray_free(gfsmxlPathArray *paths);
+
+/** Clear a ::gfsmxlPathArray, freeing stored paths (except for ::gfsmPath.lo fields) */
+void gfsmxl_patharray_clear(gfsmxlPathArray *paths);
+//void gfsmxl_pathlist_free(gfsmxlPathList *paths);
+
+
+//@}
 
 /*======================================================================
  * gfsmxlCascadeLookupConfig: Low-level Utilities

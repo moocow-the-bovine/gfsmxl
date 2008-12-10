@@ -127,18 +127,16 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest(gfsmxlCascadeLookup *cl, gfsmLabelVec
 }
 
 //--------------------------------------------------------------
-gfsmSet *gfsmxl_cascade_lookup_nbest_paths(gfsmxlCascadeLookup *cl, gfsmLabelVector *input, gfsmSet *paths)
+gfsmxlPathArray *gfsmxl_cascade_lookup_nbest_paths(gfsmxlCascadeLookup *cl, gfsmLabelVector *input, gfsmxlPathArray *paths)
 {
   GSList *finals;
 
-  //-- prepare path-set
-  if (paths==NULL) {
-    paths = gfsm_set_new_full(//(GCompareDataFunc)gfsm_path_compare_data,
-			      (GCompareDataFunc)gfsm_uint_compare_data,
-			      (gpointer)cl->csc->sr,
-			      (GDestroyNotify)gfsm_path_free);
+  //-- create or clear paths
+  if (paths) {
+    gfsmxl_patharray_clear(paths);
+    //g_ptr_array_set_size(paths, cl->max_paths);
   } else {
-    gfsm_set_clear(paths);
+    paths = gfsmxl_patharray_new(cl->max_paths);
   }
 
   //-- search guts (generate backtrace data)
@@ -147,11 +145,10 @@ gfsmSet *gfsmxl_cascade_lookup_nbest_paths(gfsmxlCascadeLookup *cl, gfsmLabelVec
   //-- backtrace
   for (finals=cl->finals; finals != NULL; finals=finals->next) {
     gfsmxlCascadeLookupConfig *cfg = (gfsmxlCascadeLookupConfig *)finals->data;
-    gfsmPath *p = gfsm_path_new_full(input, NULL, cfg->w);
+    gfsmPath *p                    = gfsm_path_new_full(input, NULL, cfg->w);
     gfsmxl_cascade_lookup_nbest_backtrace_path_(cl,cfg,p);
-    p->lo = NULL;
     gfsm_label_vector_reverse(p->hi);
-    gfsm_set_insert(paths,p);
+    g_ptr_array_add(paths,p);
   }
 
   return paths;
@@ -416,6 +413,38 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest_debug(gfsmxlCascadeLookup *cl, gfsmLa
 
   return result;
 }
+
+/*======================================================================
+ * gfsmxlPathList: Low-level utilities
+ */
+
+//--------------------------------------------------------------
+void gfsmxl_patharray_clear(gfsmxlPathArray *paths)
+{
+  guint i;
+  if (!paths) return;
+  for (i=0; i < paths->len; i++) {
+    gfsmPath *p = (gfsmPath*)g_ptr_array_index(paths,i);
+    if (!p) continue;
+    if (p->hi) g_ptr_array_free(p->hi,TRUE);
+    g_free(p);
+    g_ptr_array_index(paths,i) = NULL;
+  }
+  g_ptr_array_set_size(paths,0);
+}
+
+//--------------------------------------------------------------
+/*void gfsmxl_pathlist_free(gfsmxlPathList *paths)
+{
+  gfsmxlPathList *pl=paths;
+  for ( ; pl != NULL; pl=pl->next ) {
+    gfsmPath *p = (gfsmPath*)pl->data;
+    if (!p) continue;
+    if (p->hi) g_ptr_array_free(p->hi,TRUE);
+    g_free(p);
+  }
+  g_slist_free(paths);
+}*/
 
 
 /*======================================================================

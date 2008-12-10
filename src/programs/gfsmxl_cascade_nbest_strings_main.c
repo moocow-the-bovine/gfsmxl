@@ -56,6 +56,7 @@ gfsmError           *err=NULL;
 gfsmLabelVector *labvec=NULL;
 gfsmAutomaton   *result=NULL;
 gfsmSet         *paths =NULL;
+gfsmxlPathArray *pathsa=NULL;
 GString         *gstr  =NULL;
 
 /*======================================================================
@@ -91,6 +92,7 @@ void analyze_token(char *text, gfsmIOHandle *outh)
 
   //-- lookup & connect
   if (args.debug_flag) {
+    //-- lookup & connect: use temporary fst
     result = gfsmxl_cascade_lookup_nbest(cl, labvec, result);
 
     //-- get stats
@@ -104,25 +106,35 @@ void analyze_token(char *text, gfsmIOHandle *outh)
     //-- serialize
     if (paths) gfsm_set_clear(paths);
     paths = gfsm_automaton_paths_full(result,paths,gfsmLSUpper);
+
+    //-- coverage
+    if (gfsm_set_size(paths) > 0) { ++ncovered; }
+
+    //-- stringify
+    gfsmio_puts(outh,text);
+    gfsm_set_foreach(paths, (GTraverseFunc)analyze_token_foreach_, outh);
+    gfsmio_putc(outh,'\n');
   }
   else {
-    //-- direct serialization
-    /*if (paths) gfsm_set_clear(paths);*/ //-- implicit
-    paths = gfsmxl_cascade_lookup_nbest_paths(cl, labvec, paths);
+    //-- lookup & connect: direct serialization
+    int i;
+    pathsa = gfsmxl_cascade_lookup_nbest_paths(cl, labvec, pathsa);
 
     //-- get stats
     nchars_total  += labvec->len;
     nops_total    += cl->n_ops;
     //nstates_total += gfsm_automaton_n_states(result);
+
+    //-- coverage
+    if (pathsa->len > 0) { ++ncovered; }
+
+    //-- stringify
+    gfsmio_puts(outh,text);
+    for (i=0; i<pathsa->len; i++) {
+      analyze_token_foreach_((gfsmPath*)g_ptr_array_index(pathsa,i), NULL, outh);
+    }
+    gfsmio_putc(outh,'\n');
   }
-
-  //-- coverage
-  if (gfsm_set_size(paths) > 0) { ++ncovered; }
-
-  //-- stringify
-  gfsmio_puts(outh,text);
-  gfsm_set_foreach(paths, (GTraverseFunc)analyze_token_foreach_, outh);
-  gfsmio_putc(outh,'\n');
 }
 
 void show_config_macros(const char *prog)

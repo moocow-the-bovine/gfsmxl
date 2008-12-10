@@ -144,6 +144,27 @@ gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_ensure_config(gfsmxlCascadeLook
 
 
 /*======================================================================
+ * gfsmxlPathList: Low-level utilities
+ */
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlPathArray *gfsmxl_patharray_new(guint n_paths)
+{
+  return g_ptr_array_sized_new(n_paths);
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_patharray_free(gfsmxlPathArray *paths)
+{
+  if (!paths) return;
+  gfsmxl_patharray_clear(paths);
+  g_ptr_array_free(paths,TRUE);
+}
+
+
+/*======================================================================
  * gfsmxlCascadeLookupConfig
  */
 

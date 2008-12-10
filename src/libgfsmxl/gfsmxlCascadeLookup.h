@@ -64,6 +64,11 @@ typedef struct gfsmxlCascadeLookupConfig_ {
  */
 typedef GSList gfsmxlCascadeLookupConfigList;
 
+/** \brief GPtrArray of ::gfsmPath elements with a shared ::gfsmPath.lo field
+ *  \detail Used by gfsmxl_cascade_nbest_paths()
+ */
+typedef GPtrArray gfsmxlPathArray;
+
 /// Persistent type for best-first cascade lookups
 typedef struct {
   //

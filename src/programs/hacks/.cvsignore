@@ -19,6 +19,8 @@ dta-china*.t
 negra-train.t
 negra-test.t
 grimm3*-all.*
+edit+zeitF.all.*
+tmp.t
 *.tt
 
 taxi-align.*.tfst

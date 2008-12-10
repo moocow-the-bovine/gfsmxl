@@ -415,7 +415,7 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest_debug(gfsmxlCascadeLookup *cl, gfsmLa
 }
 
 /*======================================================================
- * gfsmxlPathList: Low-level utilities
+ * gfsmxlPathArray: Low-level utilities
  */
 
 //--------------------------------------------------------------
@@ -432,20 +432,6 @@ void gfsmxl_patharray_clear(gfsmxlPathArray *paths)
   }
   g_ptr_array_set_size(paths,0);
 }
-
-//--------------------------------------------------------------
-/*void gfsmxl_pathlist_free(gfsmxlPathList *paths)
-{
-  gfsmxlPathList *pl=paths;
-  for ( ; pl != NULL; pl=pl->next ) {
-    gfsmPath *p = (gfsmPath*)pl->data;
-    if (!p) continue;
-    if (p->hi) g_ptr_array_free(p->hi,TRUE);
-    g_free(p);
-  }
-  g_slist_free(paths);
-}*/
-
 
 /*======================================================================
  * END

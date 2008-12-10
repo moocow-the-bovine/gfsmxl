@@ -64,12 +64,6 @@ typedef struct gfsmxlCascadeLookupConfig_ {
  */
 typedef GSList gfsmxlCascadeLookupConfigList;
 
-/** \brief Singly-linked list of ::gfsmPath elements.
- *  \detail Used by gfsmxl_cascade_lookup_nbest_paths()
- */
-//typedef GSList gfsmxlPathList;
-typedef GPtrArray gfsmxlPathArray;
-
 /// Persistent type for best-first cascade lookups
 typedef struct {
   //
@@ -128,7 +122,7 @@ void gfsmxl_cascade_lookup_free(gfsmxlCascadeLookup *cl);
 //@{
 
 
-/** Lookup first n "best" path(s) for input labels \a input in \a cl->csc, and populate \a result.
+/** Lookup first n "best" path(s) for input labels \a input in \a cl->csc, and populate \a result with them.
  *  If \a result is passed as NULL, a new ::gfsmAutomaton will be created.
  *  \returns \a result if non-NULL, otherwise a new ::gfsmAutomaton.
  *  \sa gfsmxl_cascade_lookup_nbest_paths()
@@ -225,8 +219,6 @@ void gfsmxl_patharray_free(gfsmxlPathArray *paths);
 
 /** Clear a ::gfsmxlPathArray, freeing stored paths (except for ::gfsmPath.lo fields) */
 void gfsmxl_patharray_clear(gfsmxlPathArray *paths);
-//void gfsmxl_pathlist_free(gfsmxlPathList *paths);
-
 
 //@}
 

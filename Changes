@@ -1,6 +1,11 @@
 Change log for gfsmxl
 
-v0.0.9 Tue, 09 Dec 2008 22:24:59 +0100
+v0.0.9 Wed, 10 Dec 2008 11:28:51 +0100
+  + added gfsmxl_cascade_nbest_paths(): direct construction of paths
+    from backtraces, without intermediate transducer or gfsm_automaton_paths()
+    - saves a miniscule amount of time and memory (not worth it really,
+      unless someone generates a huge number of shared-prefix paths,
+      causing gfsm_automaton_paths() to choke...)
   + fixed shared-path bug in on-the-fly backtrace construction
   + added gfsmxl_cascade_lookup_nbest_paths() to avoid temporary
     automaton construction and read out paths directly, but it's not

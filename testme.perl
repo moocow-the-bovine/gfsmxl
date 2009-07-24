@@ -4,6 +4,7 @@ use lib qw(./blib/lib ./blib/arch);
 use Gfsm;
 use Gfsm::XL;
 use Time::HiRes qw(tv_interval gettimeofday);
+use Storable;
 
 BEGIN { *refcnt = *__refcnt = \&Gfsm::XL::__refcnt; }
 
@@ -185,6 +186,10 @@ sub bench_lookup_vs_nbest {
   $lb->max_weight(Gfsm::Semiring->new($xfsm->semiring_type)->one);
   $lb->max_paths(-1);
   $lb->max_ops(-1);
+
+  ##-- debug: binary I/O on Lookup object (looks OK)
+  #my $frz = Storable::freeze($lb);
+  #my $lb2 = Storable::thaw($frz);
 
   ##-- get tokens
   open(TFILE,"<$tfile") or die("$0: open failed for test file '$tfile': $!");

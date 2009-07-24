@@ -46,6 +46,54 @@ sub lookup_nbest {
   return $result;
 }
 
+##======================================================================
+## Operation
+##======================================================================
+
+##--------------------------------------------------------------
+## I/O: Wrappers: Binary: Storable
+
+## ($serialized, $ref1, ...) = $cl->STORABLE_freeze($cloning)
+sub STORABLE_freeze {
+  my ($cl,$cloning) = @_;
+  #return $cl->clone if ($cloning); ##-- weirdness
+
+  ## $saveref = { cascade=>$csc, max_weight=>$w, ... }
+  my $saveref = { map { ($_=>$cl->can($_)->($cl)) } qw(cascade max_weight max_paths max_ops n_ops) };
+  return ('',$saveref);
+}
+
+## $cl = STORABLE_thaw($cl, $cloning, $serialized, $ref1,...)
+sub STORABLE_thaw {
+  my ($cl,$cloning) = @_[0,1];
+
+  ##-- STRANGENESS (race condition on perl program exit)
+  ##   + Storable already bless()d a reference to undef for us: this is BAD
+  ##   + hack: set its value to 0 (NULL) so that DESTROY() ignores it
+  $$cl = 0;
+
+  ##-- check for dclone() operations: weirdness here
+  #if ($cloning) {
+  #  $$cl = ${$_[2]};
+  #  ${$_[2]} = 0; ##-- and don't DESTROY() the clone...
+  #  return;
+  #}
+
+  ##-- we must make a *real* new object: $clnew
+  my $clnew = ref($cl)->new(undef);
+  $$cl    = $$clnew;
+  $$clnew = 0;                ##-- ... but not destroy it...
+  undef($clnew);
+
+  ##-- now do the actual deed
+  my $ref = $_[3];
+  foreach (keys(%$ref)) {
+    $cl->can($_)->($cl,$ref->{$_}) if ($cl->can($_));
+  }
+
+  return $cl;
+}
+
 1;
 
 __END__

@@ -21,7 +21,8 @@ bin_PROGRAMS = \
 	gfsmxl_cascade_compile \
 	gfsmxl_cascade_nth \
 	gfsmxl_cascade_nbest_lookup \
-	gfsmxl_cascade_nbest_strings
+	gfsmxl_cascade_nbest_strings \
+	gfsmxl_defines
 
 EXTRA_DIST =
 
@@ -48,6 +49,16 @@ SUFFIXES = \
 ##-----------------------------------------------------------------------
 ## individual programs
 ##-----------------------------------------------------------------------
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+gfsmxl_defines_sources = gfsmxl_defines.c
+gfsmxl_defines_LDFLAGS = $(LDFLAGS_COMMON)
+gfsmxl_defines_LDADD = $(LDADD_COMMON)
+
+EXTRA_DIST += gfsmxl_defines.perl gfsmxl_defines.c
+
+gfsmxl_defines.c: ./gfsmxl_defines.perl
+	$(PERL) $< > $@ || (rm -f $@; false)
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## --- Required sources

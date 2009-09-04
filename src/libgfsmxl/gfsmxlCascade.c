@@ -239,7 +239,7 @@ void gfsmxl_cascade_expand_arcs_(gfsmxlCascadeArcIter *cai,
     }
 # endif /* defined(CASCADE_USE_BLOCK_HASH) */
 #else /* !defined(CASCADE_USE_BLOCKS) */
-# if defined(CASCADE_USE_RAW_BSEARCH)
+# if defined(CASCADE_USE_RAW_BSEARCH) /* && !defined(CASCADE_USE_BLOCKS) */
     gfsmArcRange range;
     gfsm_arcrange_open_indexed(&range, gfsmxl_cascade_index(cai->csc,ix), cai->qids[ix]);
     range.min = gfsmxl_arcrange_bsearch(range.min, range.max, lo);
@@ -254,7 +254,7 @@ void gfsmxl_cascade_expand_arcs_(gfsmxlCascadeArcIter *cai,
       //-- default: non-eps match: recurse
       gfsmxl_cascade_expand_arcs_(cai, arcpp, ix+1, arcpp[ix]->upper);
     }
-# else /* !defined(CASCADE_USE_RAW_BSEARCH) */
+# else /* !defined(CASCADE_USE_RAW_BSEARCH) && !defined(CASCADE_USE_BLOCKS) */
     gfsmArcRange range;
     gfsm_arcrange_open_indexed(&range, gfsmxl_cascade_index(cai->csc,ix), cai->qids[ix]);
     //
@@ -306,7 +306,11 @@ void gfsmxl_cascade_expand_arcs_(gfsmxlCascadeArcIter *cai,
     //-- open or increment arc
     if (!arcpp[i]) {
       //-- open arc range
+#ifndef CASCADE_EXPAND_BLOCK_BSEARCH
       gfsmxl_arcrange_open_block_index(&ranges[i], (gfsmxlArcBlockIndex*)g_ptr_array_index(xblks,i), qids[i], lab);
+#else
+      gfsmxl_arcrange_open_block_index_bsearch(&ranges[i], (gfsmxlArcBlockIndex*)g_ptr_array_index(xblks,i), qids[i], lab);
+#endif
       arcpp[i] = ranges[i].min;
     } else {
       ++arcpp[i];

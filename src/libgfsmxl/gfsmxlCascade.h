@@ -50,6 +50,10 @@ typedef gfsmStateId* gfsmxlCascadeStateId;
 //   : this is pointless unless we're storing arc-lists with configs!
 //#define CASCADE_SORT_ARCITER 1
 
+#if !defined(CASCADE_EXPAND_RECURSIVE) && !defined(CASCADE_USE_BLOCK_INDEX)
+# define CASCADE_USE_BLOCK_INDEX 1
+#endif
+
 #if defined(CASCADE_USE_BLOCK_INDEX) || defined(CASCADE_USE_BLOCK_HASH)
 # define CASCADE_USE_BLOCKS 1
 #else

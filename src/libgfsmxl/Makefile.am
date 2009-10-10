@@ -41,7 +41,8 @@ libgfsmxl_la_SOURCES = \
 	gfsmxlCascade.c \
 	gfsmxlCascadeLookup.c \
 	gfsmxlCLCFib.c \
-	gfsmxlLabelIndex.c
+	gfsmxlLabelIndex.c \
+	gfsmxlSuffixIndex.c
 
 ## --- Extra (possible) sources
 #EXTRA_${prog_i}_SOURCES = 
@@ -75,6 +76,8 @@ pkginclude_HEADERS = \
 	gfsmxlCLCFibPriv.h \
 	gfsmxlLabelIndex.h \
 	gfsmxlLabelIndex.hi \
+	gfsmxlSuffixIndex.h \
+	gfsmxlSuffixIndex.hi \
 	gfsmxl.h
 
 ## --- no-install headers

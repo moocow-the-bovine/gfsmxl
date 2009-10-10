@@ -4,7 +4,7 @@
  * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
  * Description: finite state machine library: lookup cascade: inline definitions
  *
- * Copyright (c) 2007,2008 Bryan Jurish.
+ * Copyright (c) 2007-2009 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,6 +39,9 @@ void gfsmxl_cascade_set_depth(gfsmxlCascade *csc, guint depth)
 #ifdef CASCADE_USE_BLOCKS
   g_ptr_array_set_size(csc->xblks, depth);
 #endif
+#ifdef CASCADE_USE_SUFFIX_INDEX
+  g_ptr_array_set_size(csc->xslxs,  depth);
+#endif
   g_array_set_size(csc->roots, depth+1);
   //g_array_index(csc->roots,gfsmStateId,0) = depth;
 }
@@ -53,6 +56,9 @@ gfsmxlCascade *gfsmxl_cascade_new_full(guint depth, gfsmSRType srtype)
   csc->xfsms = g_ptr_array_sized_new(depth);
 #ifdef CASCADE_USE_BLOCKS
   csc->xblks = g_ptr_array_sized_new(depth);
+#endif
+#ifdef CASCADE_USE_SUFFIX_INDEX
+  csc->xslxs = g_ptr_array_sized_new(depth);
 #endif
   //
   csc->roots = g_array_sized_new(FALSE,TRUE,sizeof(gfsmStateId),depth);
@@ -77,6 +83,9 @@ void gfsmxl_cascade_free(gfsmxlCascade *csc, gboolean free_automata)
 #ifdef CASCADE_USE_BLOCKS
     if (csc->xblks) g_ptr_array_free(csc->xblks,TRUE);
 #endif
+#ifdef CASCADE_USE_SUFFIX_INDEX
+    if (csc->xslxs) g_ptr_array_free(csc->xslxs,TRUE);
+#endif
     if (csc->roots) g_array_free(csc->roots,TRUE);
     g_free(csc);
   }
@@ -91,6 +100,9 @@ void gfsmxl_cascade_append_indexed(gfsmxlCascade *csc, gfsmIndexedAutomaton *xfs
   g_ptr_array_add(csc->xblks,    gfsmxl_arc_block_index_new_lower(xfsm));
 #elif defined(CASCADE_USE_BLOCK_HASH)
   g_ptr_array_add(csc->xblks,    gfsmxl_arc_block_hash_new_lower(xfsm));
+#endif
+#if defined(CASCADE_USE_SUFFIX_INDEX)
+  g_ptr_array_add(csc->xslxs,    gfsmxl_suffix_length_index_new(xfsm));
 #endif
   g_array_append_val(csc->roots, xfsm->root_id);
   //g_array_index(csc->roots,gfsmStateId,0)++;

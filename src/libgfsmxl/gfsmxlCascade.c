@@ -4,7 +4,7 @@
  * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
  * Description: finite state machine library: lookup cascade
  *
- * Copyright (c) 2007,2008 Bryan Jurish.
+ * Copyright (c) 2007-2009 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -48,6 +48,9 @@ void gfsmxl_cascade_clear(gfsmxlCascade *csc, gboolean free_automata)
 #elif defined(CASCADE_USE_BLOCK_HASH)
       gfsmxlArcBlockHash    *xblk = (gfsmxlArcBlockHash   *)g_ptr_array_index(csc->xblks,i);
 #endif
+#if   defined(CASCADE_USE_SUFFIX_INDEX)
+      gfsmxlSuffixLengthIndex *xslx = (gfsmxlSuffixLengthIndex*)g_ptr_array_index(csc->xslxs,i);
+#endif
       if (xfsm) gfsm_indexed_automaton_free(xfsm);
       g_ptr_array_index(csc->xfsms,i) = NULL;
 
@@ -59,11 +62,17 @@ void gfsmxl_cascade_clear(gfsmxlCascade *csc, gboolean free_automata)
 #ifdef CASCADE_USE_BLOCKS
       g_ptr_array_index(csc->xblks,i) = NULL;
 #endif
+#if   defined(CASCADE_USE_SUFFIX_INDEX)
+      if (xslx) gfsmxl_suffix_length_index_free(xslx);
+#endif
     }
   }
   g_ptr_array_set_size(csc->xfsms,0);
 #if defined(CASCADE_USE_BLOCKS)
   g_ptr_array_set_size(csc->xblks,0);
+#endif
+#if   defined(CASCADE_USE_SUFFIX_INDEX)
+  g_ptr_array_set_size(csc->xslxs,0);
 #endif
   /*
     g_array_set_size(csc->roots,1);
@@ -120,6 +129,24 @@ gfsmWeight gfsmxl_cascade_get_final_weight(gfsmxlCascade *csc, gfsmxlCascadeStat
     if (!gfsm_sr_less(csc->sr,w,csc->sr->zero)) break;
   }
   return w;
+}
+
+//--------------------------------------------------------------
+gboolean gfsmxl_cascade_state_is_terminable(gfsmxlCascade *csc, gfsmxlCascadeStateId qids, gfsmxlSuffixLength ilen)
+{
+#ifndef CASCADE_USE_SUFFIX_INDEX
+  return TRUE;
+#else
+  gfsmxlSuffixLength nxtlen;
+  guint i;
+  for (i=0; i<csc->depth; i++) {
+    gfsmxlSuffixLengthIndex *slx = (gfsmxlSuffixLengthIndex*)csc->xslxs->pdata[i];
+    nxtlen = gfsmxl_suffix_length_array_get(slx->lo,qids[i]);
+    if (ilen < nxtlen) return FALSE;
+    ilen   = gfsmxl_suffix_length_array_get(slx->hi,qids[i]);
+  }
+  return TRUE;
+#endif
 }
 
 /*======================================================================
@@ -540,7 +567,7 @@ gboolean gfsmxl_cascade_load_bin_header(gfsmxlCascadeHeader *hdr, gfsmIOHandle *
     g_set_error(errp,
 		g_quark_from_static_string("gfsmxl"),
 		g_quark_from_static_string("cascade_load_bin_header:version"),
-		"libgfsm v%u.%u.%u is obsolete - stored automaton needs at least v%u.%u.%u",
+		"libgfsmxl v%u.%u.%u is obsolete - stored cascade needs at least v%u.%u.%u",
 		gfsm_version.major,
 		gfsm_version.minor,
 		gfsm_version.micro,
@@ -586,6 +613,12 @@ gboolean gfsmxl_cascade_load_bin_handle_0_0_10(gfsmxlCascadeHeader *hdr,
     g_ptr_array_index(csc->xblks,i) = gfsmxl_arc_block_index_new_lower(xfsm);
 #elif defined(CASCADE_USE_BLOCK_HASH)
     g_ptr_array_index(csc->xblks,i) = gfsmxl_arc_block_hash_new_lower(xfsm);
+#endif
+
+    //-- hack: re-generate suffix-length index
+#if defined(CASCADE_USE_SUFFIX_INDEX)
+    if (g_ptr_array_index(csc->xslxs,i)) { gfsmxl_suffix_length_index_free(g_ptr_array_index(csc->xslxs,i)); }
+    g_ptr_array_index(csc->xslxs,i) = gfsmxl_suffix_length_index_new(xfsm);
 #endif
   }
 

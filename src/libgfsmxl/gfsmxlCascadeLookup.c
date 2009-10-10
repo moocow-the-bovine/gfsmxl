@@ -4,7 +4,7 @@
  * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
  * Description: finite state machine library: lookup cascade: lookup
  *
- * Copyright (c) 2007-2008 Bryan Jurish.
+ * Copyright (c) 2007-2009 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -206,6 +206,12 @@ void gfsmxl_cascade_lookup_nbest_search_(gfsmxlCascadeLookup *cl, gfsmLabelVecto
     //-- chalk up another elementary lookup operation
     ++cl->n_ops;
 
+#ifdef CASCADE_USE_SUFFIX_INDEX
+    //------ CHECK FOR TERMINABILITY
+    if (!gfsmxl_cascade_state_is_terminable(csc, cfg->qids, (cfg->ipos > input->len ? 0 : (input->len-cfg->ipos))))
+      continue;
+#endif
+
     //------ CHECK FOR FINALITY
     if (cfg->ipos >= input->len) {
       fw = gfsmxl_cascade_get_final_weight(csc, cfg->qids);
@@ -349,6 +355,12 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest_debug(gfsmxlCascadeLookup *cl, gfsmLa
 
     //-- chalk up another elementary lookup operation
     ++cl->n_ops;
+
+#ifdef CASCADE_USE_SUFFIX_INDEX
+    //------ CHECK FOR TERMINABILITY
+    if (!gfsmxl_cascade_state_is_terminable(csc, cfg->qids, (cfg->ipos > input->len ? 0 : (input->len-cfg->ipos))))
+      continue;
+#endif
 
     //------ CHECK FOR FINALITY
     if (cfg->ipos >= input->len) {

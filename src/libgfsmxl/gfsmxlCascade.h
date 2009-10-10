@@ -4,7 +4,7 @@
  * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
  * Description: finite state machine library: lookup cascade
  *
- * Copyright (c) 2007,2008 Bryan Jurish.
+ * Copyright (c) 2007-2009 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -30,6 +30,7 @@
 
 #include <gfsm.h>
 #include <gfsmxlLabelIndex.h>
+#include <gfsmxlSuffixIndex.h>
 
 /*======================================================================
  * Types
@@ -42,6 +43,7 @@ typedef gfsmStateId* gfsmxlCascadeStateId;
 #define CASCADE_USE_BLOCK_INDEX 1
 //#define CASCADE_EXPAND_BLOCK_BSEARCH 1
 //#define CASCADE_USE_BLOCK_HASH 1
+//#define CASCADE_USE_SUFFIX_INDEX 1
 
 //-- expand arcs recursively?
 //#define CASCADE_EXPAND_RECURSIVE 1
@@ -66,11 +68,14 @@ typedef struct {
   gfsmSemiring           *sr;     /**< Common semiring */
   GPtrArray              *xfsms;  /**< Cascaded automata (indexed) */
 #if   defined(CASCADE_USE_BLOCK_INDEX)
-  GPtrArray              *xblks;  /**< Arc-block indices (::gfsmxlArcBlockIndex*) over cascaded automata */
+  GPtrArray              *xblks;  /**< Arc-block indices (::gfsmxlArcBlockIndex*) over \a xfsms */
 #elif defined(CASCADE_USE_BLOCK_HASH)
-  GPtrArray              *xblks;  /**< Arc-block hash indices (::gfsmxlArcBlockHash*) over cascaded automata */
+  GPtrArray              *xblks;  /**< Arc-block hash indices (::gfsmxlArcBlockHash*) over \a xfsms */
 #endif
-  GArray                 *roots;  /**< Array of ::gfsmStateId (root ids of corresponding automata) */
+#if   defined(CASCADE_USE_SUFFIX_INDEX)
+  GPtrArray              *xslxs;   /**< Suffix-length indices (::gfsmxlSuffixLengthIndex*) over \a xfsms */
+#endif
+  GArray                  *roots;  /**< Array of ::gfsmStateId (root ids of corresponding \a xfsms) */
 } gfsmxlCascade;
 
 /*======================================================================
@@ -126,9 +131,9 @@ void gfsmxl_cascade_sort_all(gfsmxlCascade *csc, gfsmArcCompMask sort_mask);
 //@}
 
 /*======================================================================
- * StateId Utilities
+ * State Utilities
  */
-///\name StateId Utilities
+///\name State Utilities
 //@{
 
 /** Get root-id of cascade (never free this yourself!) */
@@ -236,13 +241,18 @@ void gfsmxl_cascade_arc_free(gfsmxlCascadeArc *arc);
 
 
 /*======================================================================
- * Arc Iteration
+ * Arc Iteration & Low-level Access
  */
-///\name Arc Iteration
+///\name Arc Iteration & Low-level Access
 //@{
 
 /** Get state final weight or \a csc->sr->zero if state is non-final */
 gfsmWeight gfsmxl_cascade_get_final_weight(gfsmxlCascade *csc, gfsmxlCascadeStateId qids);
+
+/** Check whether a ::gfsmxlCascadeStateId is terminable
+ *  Only useful if GFSMXL_USE_SUFFIX_INDEX is defined
+ */
+gboolean gfsmxl_cascade_state_is_terminable(gfsmxlCascade *csc, gfsmxlCascadeStateId qids, gfsmxlSuffixLength ilen);
 
 /** \brief Type for cascade arc iteration ?! */
 typedef struct {

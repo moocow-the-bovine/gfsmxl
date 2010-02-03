@@ -41,6 +41,7 @@ typedef gfsmStateId* gfsmxlCascadeStateId;
 
 //#define CASCADE_USE_RAW_BSEARCH 1
 #define CASCADE_USE_BLOCK_INDEX 1
+/*-- uhura, r616M, Wed, 03 Feb 2010 14:29:57 +0100: CASCADE_EXPAND_BLOCK_BSEARCH was defined --*/
 //#define CASCADE_EXPAND_BLOCK_BSEARCH 1
 //#define CASCADE_USE_BLOCK_HASH 1
 //#define CASCADE_USE_SUFFIX_INDEX 1

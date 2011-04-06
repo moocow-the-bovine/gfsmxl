@@ -57,7 +57,7 @@ T_GFSM_WEIGHT
 T_LABELID_VECTOR
   {
       //-------------------------- BEGIN T_LABELID_VECTOR perl->C
-      int _i;
+      int _i, _avlen;
       AV *av=NULL;
 
       if (SvROK($arg) && (SvTYPE(SvRV($arg)) == SVt_PVAV) )
@@ -67,8 +67,9 @@ T_LABELID_VECTOR
 	  XSRETURN_UNDEF;
       }
 
-      $var = g_ptr_array_sized_new(av_len(av));
-      for (_i=0; _i <= av_len(av); _i++) {
+      _avlen = av_len(av);
+      $var = g_ptr_array_sized_new(_avlen > 0 ? _avlen : 1);
+      for (_i=0; _i <= _avlen; _i++) {
 	  SV **sv = av_fetch(av,_i,0);
 	  if (sv && *sv) {
 	      g_ptr_array_add($var, GUINT_TO_POINTER(SvUV(*sv)));

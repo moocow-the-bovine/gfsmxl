@@ -31,7 +31,7 @@ void gfsm_perl_free(gpointer mem)
 
 gfsmxlCascadePerl *gfsmxl_perl_cascade_new(void)
 {
-  gfsmxlCascadePerl *cscp = g_new0(gfsmxlCascadePerl,1);
+  gfsmxlCascadePerl *cscp = gfsm_slice_new0(gfsmxlCascadePerl);
   cscp->av = newAV();
   return cscp;
 }
@@ -48,7 +48,7 @@ void gfsmxl_perl_cascade_free(gfsmxlCascadePerl *cscp)
     gfsmxl_perl_cascade_clear(cscp);
     av_undef(cscp->av);
     if (cscp->csc) gfsmxl_cascade_free(cscp->csc,FALSE);
-    g_free(cscp);
+    gfsm_slice_free(gfsmxlCascadePerl,cscp);
   }
 }
 
@@ -109,7 +109,7 @@ void gfsmxl_perl_cascade_lookup_set_cascade_sv(gfsmxlCascadeLookupPerl *clp, SV 
 
 gfsmxlCascadeLookupPerl *gfsmxl_perl_cascade_lookup_new(SV *csc_sv, gfsmWeight max_w, guint max_paths, guint max_ops)
 {
-  gfsmxlCascadeLookupPerl *clp = (gfsmxlCascadeLookupPerl*)g_new0(gfsmxlCascadeLookupPerl,1);
+  gfsmxlCascadeLookupPerl *clp = (gfsmxlCascadeLookupPerl*)gfsm_slice_new0(gfsmxlCascadeLookupPerl);
   clp->cl                      = gfsmxl_cascade_lookup_new_full(NULL, max_w, max_paths, max_ops);
   clp->csc_sv                  = newSV(0);
   gfsmxl_perl_cascade_lookup_set_cascade_sv(clp, csc_sv);
@@ -121,7 +121,7 @@ void gfsmxl_perl_cascade_lookup_free (gfsmxlCascadeLookupPerl *clp)
   clp->cl->csc = NULL;
   gfsmxl_cascade_lookup_free(clp->cl);
   SvREFCNT_dec(clp->csc_sv);
-  g_free(clp);
+  gfsm_slice_free(gfsmxlCascadeLookupPerl,clp);
 }
 
 /*======================================================================
@@ -176,7 +176,7 @@ AV *gfsm_perl_ptr_array_to_av_uv(GPtrArray *ary)
  */
 gfsmIOHandle *gfsmperl_io_new_sv(SV *sv, size_t pos)
 {
-  gfsmPerlSVHandle *svh = g_new(gfsmPerlSVHandle,1);
+  gfsmPerlSVHandle *svh = gfsm_slice_new(gfsmPerlSVHandle);
   gfsmIOHandle *ioh = gfsmio_handle_new(gfsmIOTUser,svh);
 
   SvUTF8_off(sv); //-- unset UTF8 flag for this SV*
@@ -194,7 +194,7 @@ gfsmIOHandle *gfsmperl_io_new_sv(SV *sv, size_t pos)
 void gfsmperl_io_free_sv(gfsmIOHandle *ioh)
 {
   gfsmPerlSVHandle *svh = (gfsmPerlSVHandle*)ioh->handle;
-  g_free(svh);
+  gfsm_slice_free(gfsmPerlSVHandle,svh);
   gfsmio_handle_free(ioh);
 }
 

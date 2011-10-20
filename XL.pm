@@ -9,7 +9,7 @@ use Exporter;
 
 our @ISA = qw(Exporter);
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 # we need Gfsm loaded
 require Gfsm;

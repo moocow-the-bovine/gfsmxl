@@ -1,7 +1,7 @@
 
 /*=============================================================================*\
  * File: gfsmxlCascade.h
- * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
+ * Author: Bryan Jurish <moocow.bovine@gmail.com>
  * Description: finite state machine library: lookup cascade
  *
  * Copyright (c) 2007-2009 Bryan Jurish.
@@ -159,7 +159,7 @@ gfsmxlCascadeStateId gfsmxl_cascade_stateid_sized_clone(gfsmxlCascadeStateId src
 
 /** Free a ::gfsmxlCascadeStateId as returned by gfsmxl_cascade_stateid_new() */
 GFSM_INLINE
-void gfsmxl_cascade_stateid_free(gfsmxlCascadeStateId qids);
+void gfsmxl_cascade_stateid_free(gfsmxlCascadeStateId qids, guint depth);
 
 //@}
 
@@ -188,7 +188,7 @@ gfsmxlArcPP gfsmxl_arcpp_sized_clone(gfsmxlArcPP src, guint depth);
 
 /** Free a ::gfsmxlArcPP as returned by gfsmxl_arcpp_sized_new() */
 GFSM_INLINE
-void gfsmxl_arcpp_free(gfsmxlArcPP arcpp);
+void gfsmxl_arcpp_free(gfsmxlArcPP arcpp, guint depth);
 
 /** Get ultimate lower label of a ::gfsmxlArcPP */
 GFSM_INLINE
@@ -236,7 +236,7 @@ gfsmxlCascadeArc* gfsmxl_cascade_arc_sized_clone(gfsmxlCascadeArc *src, guint de
 
 /** Free a ::gfsmxlCascadeArc as returned by gfsmxl_cascade_arc_sized_new() */
 GFSM_INLINE
-void gfsmxl_cascade_arc_free(gfsmxlCascadeArc *arc);
+void gfsmxl_cascade_arc_free(gfsmxlCascadeArc *arc, guint depth);
 
 //@}
 

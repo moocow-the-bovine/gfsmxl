@@ -6,7 +6,7 @@ program "gfsmxl_cascade_nbest_strings"
 #program_version "0.01"
 
 purpose	"Lookup N-best string path in a gfsmxl cascade for line-buffered input"
-author  "Bryan Jurish <moocow@ling.uni-potsdam.de>"
+author  "Bryan Jurish <moocow.bovine@gmail.com>"
 on_reparse "warn"
 
 #-----------------------------------------------------------------------------

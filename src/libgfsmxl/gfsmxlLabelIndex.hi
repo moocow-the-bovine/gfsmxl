@@ -1,10 +1,10 @@
 
 /*=============================================================================*\
  * File: gfsmxlLabelIndex.hi
- * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
+ * Author: Bryan Jurish <moocow.bovine@gmail.com>
  * Description: finite state machine library: label index: inline definitions
  *
- * Copyright (c) 2007,2008 Bryan Jurish.
+ * Copyright (c) 2007-2011 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,6 +42,24 @@ void gfsmxl_arc_ptr_array_free(gfsmxlArcPtrArray *apa)
 /*======================================================================
  * gfsmxlArcBlockIndex
  */
+
+//--------------------------------------------------------------
+GFSM_INLINE
+gfsmxlStateLabelPair *gfsmxl_state_label_pair_new(gfsmStateId qid, gfsmLabelId lab)
+{
+  gfsmxlStateLabelPair *slp = gfsm_slice_new(gfsmxlStateLabelPair);
+  slp->qid = qid;
+  slp->lab = lab;
+  return slp;
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_state_label_pair_free(gfsmxlStateLabelPair *slp)
+{
+  gfsm_slice_free(gfsmxlStateLabelPair,slp);
+}
+
 
 //--------------------------------------------------------------
 GFSM_INLINE

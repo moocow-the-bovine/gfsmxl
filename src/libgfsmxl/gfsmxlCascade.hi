@@ -1,10 +1,10 @@
 
 /*=============================================================================*\
  * File: gfsmxlCascade.hi
- * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
+ * Author: Bryan Jurish <moocow.bovine@gmail.com>
  * Description: finite state machine library: lookup cascade: inline definitions
  *
- * Copyright (c) 2007-2009 Bryan Jurish.
+ * Copyright (c) 2007-2011 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -50,7 +50,7 @@ void gfsmxl_cascade_set_depth(gfsmxlCascade *csc, guint depth)
 GFSM_INLINE
 gfsmxlCascade *gfsmxl_cascade_new_full(guint depth, gfsmSRType srtype)
 {
-  gfsmxlCascade *csc = g_new0(gfsmxlCascade,1);
+  gfsmxlCascade *csc = gfsm_slice_new0(gfsmxlCascade);
   csc->depth = depth;
   csc->sr    = gfsm_semiring_new(srtype);
   csc->xfsms = g_ptr_array_sized_new(depth);
@@ -87,7 +87,7 @@ void gfsmxl_cascade_free(gfsmxlCascade *csc, gboolean free_automata)
     if (csc->xslxs) g_ptr_array_free(csc->xslxs,TRUE);
 #endif
     if (csc->roots) g_array_free(csc->roots,TRUE);
-    g_free(csc);
+    gfsm_slice_free(gfsmxlCascade,csc);
   }
 }
 
@@ -166,7 +166,7 @@ gfsmxlCascadeStateId gfsmxl_cascade_get_root(gfsmxlCascade *csc)
 GFSM_INLINE
 gfsmxlCascadeStateId gfsmxl_cascade_stateid_sized_new(guint depth)
 {
-  gfsmxlCascadeStateId qids = g_new(gfsmStateId,depth);
+  gfsmxlCascadeStateId qids = gfsm_slice_new_n(gfsmStateId,depth);
   //qids[0] = depth;
   return qids;
 }
@@ -193,8 +193,8 @@ gfsmxlCascadeStateId gfsmxl_cascade_stateid_sized_clone(gfsmxlCascadeStateId src
 
 //--------------------------------------------------------------
 GFSM_INLINE
-void gfsmxl_cascade_stateid_free(gfsmxlCascadeStateId qids)
-{ g_free(qids); }
+void gfsmxl_cascade_stateid_free(gfsmxlCascadeStateId qids, guint depth)
+{ gfsm_slice_free_n(gfsmStateId,qids,depth); }
 
 
 
@@ -205,7 +205,7 @@ void gfsmxl_cascade_stateid_free(gfsmxlCascadeStateId qids)
 //--------------------------------------------------------------
 GFSM_INLINE
 gfsmxlArcPP gfsmxl_arcpp_sized_new(guint depth)
-{ return g_new0(gfsmArc*,depth); }
+{ return gfsm_slice_new0_n(gfsmArc*,depth); }
 
 //--------------------------------------------------------------
 GFSM_INLINE
@@ -222,8 +222,8 @@ gfsmxlArcPP gfsmxl_arcpp_sized_clone(gfsmxlArcPP src, guint depth)
 
 //--------------------------------------------------------------
 GFSM_INLINE
-void gfsmxl_arcpp_free(gfsmxlArcPP arcpp)
-{ g_free(arcpp); }
+void gfsmxl_arcpp_free(gfsmxlArcPP arcpp, guint depth)
+{ gfsm_slice_free_n(gfsmArc*,arcpp,depth); }
 
 //--------------------------------------------------------------
 GFSM_INLINE
@@ -266,7 +266,8 @@ void gfsmxl_arcpp_target(gfsmxlArcPP arcpp, gfsmxlCascadeStateId src, gfsmxlCasc
 GFSM_INLINE
 gfsmxlCascadeArc* gfsmxl_cascade_arc_sized_new(guint depth)
 {
-  gfsmxlCascadeArc *arc = (gfsmxlCascadeArc*)g_malloc(sizeof(gfsmxlCascadeArc)+(depth*sizeof(gfsmStateId)));
+  //gfsmxlCascadeArc *arc = (gfsmxlCascadeArc*)g_malloc(sizeof(gfsmxlCascadeArc)+(depth*sizeof(gfsmStateId)));
+  gfsmxlCascadeArc *arc = (gfsmxlCascadeArc*)gfsm_slice_alloc(sizeof(gfsmxlCascadeArc)+(depth*sizeof(gfsmStateId)));
   arc->targets = (gfsmxlCascadeStateId)( ((void*)arc) + sizeof(gfsmxlCascadeArc) );
   return arc;
 }
@@ -291,10 +292,10 @@ gfsmxlCascadeArc* gfsmxl_cascade_arc_sized_clone(gfsmxlCascadeArc *src, guint de
 
 //--------------------------------------------------------------
 GFSM_INLINE
-void gfsmxl_cascade_arc_free(gfsmxlCascadeArc *arc)
+void gfsmxl_cascade_arc_free(gfsmxlCascadeArc *arc, guint depth)
 {
-  //gfsmxl_cascade_stateid_free(arc->targets);
-  g_free(arc);
+  //g_free(arc);
+  gfsm_slice_free1(sizeof(gfsmxlCascadeArc)+(depth*sizeof(gfsmStateId)), arc);
 }
 
 

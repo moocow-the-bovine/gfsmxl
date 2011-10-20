@@ -63,7 +63,7 @@
 void
 cmdline_parser_print_version (void)
 {
-  printf("gfsmxl_cascade_nbest_lookup (%s %s) by Bryan Jurish <moocow@ling.uni-potsdam.de>\n", PACKAGE, VERSION);
+  printf("gfsmxl_cascade_nbest_lookup (%s %s) by Bryan Jurish <moocow.bovine@gmail.com>\n", PACKAGE, VERSION);
 }
 
 void

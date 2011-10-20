@@ -1,7 +1,7 @@
 
 /*=============================================================================*\
  * File: gfsmxlCascade.c
- * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
+ * Author: Bryan Jurish <moocow.bovine@gmail.com>
  * Description: finite state machine library: lookup cascade
  *
  * Copyright (c) 2007-2009 Bryan Jurish.
@@ -378,7 +378,7 @@ void gfsmxl_cascade_arciter_open(gfsmxlCascadeArcIter *cai, gfsmxlCascade *csc, 
   cai->qids   = gfsmxl_cascade_stateid_sized_clone(qids, csc->depth);
   cai->arclist = NULL;
 #if !defined(CASCADE_EXPAND_RECURSIVE)
-  cai->ranges = g_new(gfsmArcRange, csc->depth);
+  cai->ranges = gfsm_slice_new_n(gfsmArcRange,csc->depth);
 #endif
   //
   //-- allocate & initialize temps
@@ -393,10 +393,10 @@ void gfsmxl_cascade_arciter_open(gfsmxlCascadeArcIter *cai, gfsmxlCascade *csc, 
   if (lo != gfsmEpsilon) gfsmxl_cascade_expand_arcs_(cai,arcpp,0,lo);
   //
   //-- cleanup & return
-  gfsmxl_arcpp_free(arcpp);
+  gfsmxl_arcpp_free(arcpp,csc->depth);
   cai->cur = cai->arclist;
 #if !defined(CASCADE_EXPAND_RECURSIVE)
-  g_free(cai->ranges);
+  gfsm_slice_free_n(gfsmArcRange,cai->ranges,csc->depth);
 #endif
   return;
 }
@@ -405,9 +405,9 @@ void gfsmxl_cascade_arciter_open(gfsmxlCascadeArcIter *cai, gfsmxlCascade *csc, 
 void gfsmxl_cascade_arciter_close(gfsmxlCascadeArcIter *cai)
 {
   gfsm_assert(cai!=NULL);
-  if (cai->qids) { g_free(cai->qids); cai->qids=NULL; }
+  if (cai->qids) { gfsm_slice_free_n(gfsmStateId,cai->qids,cai->csc->depth); cai->qids=NULL; }
   for (cai->cur=cai->arclist; cai->cur != NULL; cai->cur=cai->cur->next) {
-    gfsmxl_cascade_arc_free((gfsmxlCascadeArc*)cai->cur->data);
+    gfsmxl_cascade_arc_free((gfsmxlCascadeArc*)cai->cur->data, cai->csc->depth);
   }
   g_slist_free(cai->arclist);
   cai->arclist=NULL;

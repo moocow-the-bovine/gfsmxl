@@ -1,10 +1,10 @@
 
 /*=============================================================================*\
  * File: gfsmxlSuffixIndex.c
- * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
+ * Author: Bryan Jurish <moocow.bovine@gmail.com>
  * Description: finite state machine library: label index: extern definitions
  *
- * Copyright (c) 2009 Bryan Jurish.
+ * Copyright (c) 2009-2011 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -105,7 +105,7 @@ gfsmxlSuffixLengthIndex *gfsmxl_suffix_length_index_new(gfsmIndexedAutomaton *xf
 {
   gfsmStateId nq = gfsm_indexed_automaton_n_states(xfsm);
   guint       na = gfsm_indexed_automaton_n_arcs(xfsm);
-  gfsmxlSuffixLengthIndex *slx = g_new0(gfsmxlSuffixLengthIndex,1);
+  gfsmxlSuffixLengthIndex *slx = gfsm_slice_new0(gfsmxlSuffixLengthIndex);
   GPtrArray *rarcs       = g_ptr_array_sized_new(na);   //-- [ai] -> arc (sorted by "ts...")
   GPtrArray *rarcs_first = g_ptr_array_sized_new(nq);   //-- [qi] -> first &&arc to qi in rarcs
   gfsmArcTable *atab     = xfsm->arcs->tab;

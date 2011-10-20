@@ -1,10 +1,10 @@
 
 /*=============================================================================*\
  * File: gfsmxlSuffixIndex.h
- * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
+ * Author: Bryan Jurish <moocow.bovine@gmail.com>
  * Description: finite state machine library: suffix-length indices
  *
- * Copyright (c) 2009 Bryan Jurish.
+ * Copyright (c) 2009-2011 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -113,6 +113,7 @@ void gfsmxl_suffix_length_index_free(gfsmxlSuffixLengthIndex *slx);
  *  \returns true on success
  */
 gboolean gfsmxl_suffix_length_index_write_bin_handle(gfsmxlSuffixLengthIndex *slx, gfsmIOHandle *ioh, gfsmError **errp);
+
 /** Read the contents of a ::gfsmSuffixLengthIndex from a (binary) ::gfsmIOHandle.
  *  \param slx index into which data is to be read
  *  \param ioh handle from which data is to be read

@@ -1,10 +1,10 @@
 
 /*=============================================================================*\
  * File: gfsmxlCascadeLookup.hi
- * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
+ * Author: Bryan Jurish <moocow.bovine@gmail.com>
  * Description: finite state machine library: lookup cascade: lookup: inline definitions
  *
- * Copyright (c) 2007-2008 Bryan Jurish.
+ * Copyright (c) 2007-2011 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -46,7 +46,7 @@ void gfsmxl_cascade_lookup_set_cascade(gfsmxlCascadeLookup *cl, gfsmxlCascade *c
 GFSM_INLINE
 gfsmxlCascadeLookup *gfsmxl_cascade_lookup_new_full(gfsmxlCascade *csc, gfsmWeight max_w, guint max_paths, guint max_ops)
 {
-  gfsmxlCascadeLookup *cl = g_new0(gfsmxlCascadeLookup,1);
+  gfsmxlCascadeLookup *cl = gfsm_slice_new0(gfsmxlCascadeLookup);
   cl->csc       = NULL;
   cl->max_w     = max_w;
   cl->max_paths = max_paths;
@@ -179,10 +179,10 @@ gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_config_new_full(gfsmxlCascade  
 								 gfsmxlCascadeLookupBacktrace bt
 								 )
 {
-  gfsmxlCascadeLookupConfig *lc = (gfsmxlCascadeLookupConfig*)g_malloc(sizeof(gfsmxlCascadeLookupConfig)
-								       +
-								       (csc->depth*sizeof(gfsmStateId))
-								       );
+  gfsmxlCascadeLookupConfig *lc = (gfsmxlCascadeLookupConfig*)gfsm_slice_alloc(sizeof(gfsmxlCascadeLookupConfig)
+									       +
+									       (csc->depth*sizeof(gfsmStateId))
+									       );
   lc->csc  = csc;
   lc->qids = (gfsmxlCascadeStateId)( ((void*)lc) + sizeof(gfsmxlCascadeLookupConfig) );
   lc->ipos   = ipos;
@@ -212,8 +212,8 @@ gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_config_new(gfsmxlCascadeLookup 
 GFSM_INLINE
 void gfsmxl_cascade_lookup_config_free_inline(gfsmxlCascadeLookupConfig *lc)
 {
-  //gfsmxl_cascade_stateid_free(lc->qids);
-  g_free(lc);
+  //g_free(lc);
+  gfsm_slice_free1(sizeof(gfsmxlCascadeLookupConfig)+(lc->csc->depth*sizeof(gfsmStateId)), lc);
 }
 
 //--------------------------------------------------------------

@@ -52,10 +52,6 @@
 # include <getopt.h>
 #endif
 
-#if !defined(HAVE_STRDUP) && !defined(strdup)
-# define strdup gengetopt_strdup
-#endif /* HAVE_STRDUP */
-
 #include "gfsmxl_cascade_nth_cmdparser.h"
 
 
@@ -67,7 +63,7 @@
 void
 cmdline_parser_print_version (void)
 {
-  printf("gfsmxl_cascade_nth (%s %s) by Bryan Jurish <moocow@ling.uni-potsdam.de>\n", PACKAGE, VERSION);
+  printf("gfsmxl_cascade_nth (%s %s) by Bryan Jurish <moocow.bovine@gmail.com>\n", PACKAGE, VERSION);
 }
 
 void
@@ -94,11 +90,13 @@ cmdline_parser_print_help (void)
   printf("   -FFILE   --output=FILE     Specify output file (default=stdout).\n");
 }
 
-#if !defined(HAVE_STRDUP) && !defined(strdup)
-/* gengetopt_strdup(): automatically generated from strdup.c. */
+#if defined(HAVE_STRDUP) || defined(strdup)
+# define gog_strdup strdup
+#else
+/* gog_strdup(): automatically generated from strdup.c. */
 /* strdup.c replacement of strdup, which is not standard */
 static char *
-gengetopt_strdup (const char *s)
+gog_strdup (const char *s)
 {
   char *result = (char*)malloc(strlen(s) + 1);
   if (result == (char*)0)
@@ -114,7 +112,7 @@ clear_args(struct gengetopt_args_info *args_info)
 {
   args_info->index_arg = 0; 
   args_info->compress_arg = -1; 
-  args_info->output_arg = strdup("-"); 
+  args_info->output_arg = gog_strdup("-"); 
 }
 
 
@@ -181,7 +179,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
       args_info->inputs_num = argc - optind ;
       args_info->inputs = (char **)(malloc ((args_info->inputs_num)*sizeof(char *))) ;
       while (optind < argc)
-        args_info->inputs[ i++ ] = strdup (argv[optind++]) ; 
+        args_info->inputs[ i++ ] = gog_strdup (argv[optind++]) ; 
   }
 
   return 0;
@@ -243,7 +241,7 @@ cmdline_parser_parse_option(char oshort, const char *olong, const char *val,
           }
           args_info->output_given++;
           if (args_info->output_arg) free(args_info->output_arg);
-          args_info->output_arg = strdup(val);
+          args_info->output_arg = gog_strdup(val);
           break;
         
         case 0:	 /* Long option(s) with no short form */
@@ -294,7 +292,7 @@ cmdline_parser_parse_option(char oshort, const char *olong, const char *val,
             }
             args_info->output_given++;
             if (args_info->output_arg) free(args_info->output_arg);
-            args_info->output_arg = strdup(val);
+            args_info->output_arg = gog_strdup(val);
           }
           
           else {
@@ -353,10 +351,10 @@ cmdline_parser_read_rcfile(const char *filename,
     strcpy(fullname, pwent->pw_dir);
     strcat(fullname, filename+1);
   } else {
-    fullname = strdup(filename);
+    fullname = gog_strdup(filename);
   }
 #else /* !(defined(HAVE_GETUID) && defined(HAVE_GETPWUID)) */
-  fullname = strdup(filename);
+  fullname = gog_strdup(filename);
 #endif /* defined(HAVE_GETUID) && defined(HAVE_GETPWUID) */
 
   /* try to open */

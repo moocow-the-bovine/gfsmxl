@@ -1,10 +1,10 @@
 
 /*=============================================================================*\
  * File: gfsmxlLabelIndex.c
- * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
+ * Author: Bryan Jurish <moocow.bovine@gmail.com>
  * Description: finite state machine library: label index: extern definitions
  *
- * Copyright (c) 2007,2008 Bryan Jurish.
+ * Copyright (c) 2007-2011 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -124,7 +124,7 @@ gfsmxlArcBlockHash *gfsmxl_arc_block_hash_new_lower(gfsmIndexedAutomaton *xfsm)
 {
   gfsmxlArcBlockHash *abh = g_hash_table_new_full((GHashFunc)gfsmxl_state_label_pair_hash,
 						 (GEqualFunc)gfsmxl_state_label_pair_equal,
-						 (GDestroyNotify)g_free,
+						 (GDestroyNotify)gfsmxl_state_label_pair_free,
 						 NULL);
   gfsmxlStateLabelPair slp={gfsmNoState,gfsmNoLabel};
   gfsmArcTable *atab = xfsm->arcs->tab;
@@ -133,9 +133,7 @@ gfsmxlArcBlockHash *gfsmxl_arc_block_hash_new_lower(gfsmIndexedAutomaton *xfsm)
   for (ai=0; ai < atab->len; ai++) {
     gfsmArc *a = &g_array_index(atab,gfsmArc,ai);
     if (a->source != slp.qid || a->lower != slp.lab) {
-      gfsmxlStateLabelPair *slp_key = g_new(gfsmxlStateLabelPair,1);
-      slp.qid  = a->source;
-      slp.lab  = a->lower;
+      gfsmxlStateLabelPair *slp_key = gfsmxl_state_label_pair_new(a->source,a->lower);
       *slp_key = slp;
       g_hash_table_insert(abh,slp_key,a);
     }

@@ -6,7 +6,7 @@ program "gfsmxl_cascade_compile"
 #program_version "0.01"
 
 purpose	"Create a gfsmxl cascade from indexed gfsm automata"
-author  "Bryan Jurish <moocow@ling.uni-potsdam.de>"
+author  "Bryan Jurish <moocow.bovine@gmail.com>"
 on_reparse "warn"
 
 #-----------------------------------------------------------------------------

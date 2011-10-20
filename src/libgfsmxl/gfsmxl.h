@@ -1,7 +1,7 @@
 
 /*=============================================================================*\
  * File: gfsmxl.h
- * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
+ * Author: Bryan Jurish <moocow.bovine@gmail.com>
  * Description: finite state cascade library: top-level
  *
  * Copyright (c) 2008 Bryan Jurish.

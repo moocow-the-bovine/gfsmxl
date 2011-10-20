@@ -1,10 +1,10 @@
 
 /*=============================================================================*\
  * File: gfsmxlCascadeLookup.c
- * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
+ * Author: Bryan Jurish <moocow.bovine@gmail.com>
  * Description: finite state machine library: lookup cascade: lookup
  *
- * Copyright (c) 2007-2009 Bryan Jurish.
+ * Copyright (c) 2007-2011 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -439,7 +439,7 @@ void gfsmxl_patharray_clear(gfsmxlPathArray *paths)
     gfsmPath *p = (gfsmPath*)g_ptr_array_index(paths,i);
     if (!p) continue;
     if (p->hi) g_ptr_array_free(p->hi,TRUE);
-    g_free(p);
+    gfsm_slice_free(gfsmPath,p);
     g_ptr_array_index(paths,i) = NULL;
   }
   g_ptr_array_set_size(paths,0);

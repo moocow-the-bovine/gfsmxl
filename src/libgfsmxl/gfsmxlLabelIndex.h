@@ -1,10 +1,10 @@
 
 /*=============================================================================*\
  * File: gfsmxlLabelIndex.h
- * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
+ * Author: Bryan Jurish <moocow.bovine@gmail.com>
  * Description: finite state machine library: label index
  *
- * Copyright (c) 2007,2008 Bryan Jurish.
+ * Copyright (c) 2007-2011 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -112,6 +112,14 @@ guint gfsmxl_state_label_pair_hash(const gfsmxlStateLabelPair *slp);
 
 /** Equality predicate for ::gfsmxlStateLabelPair, castable to ::GEqualFunc */
 gboolean gfsmxl_state_label_pair_equal(const gfsmxlStateLabelPair *slp1, const gfsmxlStateLabelPair *slp2);
+
+/** Constructor for ::gfsmxlStateLabelPair */
+GFSM_INLINE
+gfsmxlStateLabelPair *gfsmxl_state_label_pair_new(gfsmStateId qid, gfsmLabelId lab);
+
+/** Destructor for ::gfsmxlStateLabelPair */
+GFSM_INLINE
+void gfsmxl_state_label_pair_free(gfsmxlStateLabelPair *slp);
 
 /** Create and populate a new ::gfsmxlArcBlockHash from a ::gfsmxlIndexedAutomaton.
  *  \li xfsm is assumed to be sorted on source states and lower labels

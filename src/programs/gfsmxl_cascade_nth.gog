@@ -6,7 +6,7 @@ program "gfsmxl_cascade_nth"
 #program_version "0.01"
 
 purpose	"Extract the nth transducer from a compile gfsmxl cascade"
-author  "Bryan Jurish <moocow@ling.uni-potsdam.de>"
+author  "Bryan Jurish <moocow.bovine@gmail.com>"
 on_reparse "warn"
 
 #-----------------------------------------------------------------------------

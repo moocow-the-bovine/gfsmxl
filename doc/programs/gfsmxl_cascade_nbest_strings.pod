@@ -231,7 +231,7 @@ Getopt::Gen by Bryan Jurish.
 
 =head1 AUTHOR
 
-Bryan Jurish E<lt>moocow@ling.uni-potsdam.deE<gt>
+Bryan Jurish E<lt>moocow.bovine@gmail.comE<gt>
 
 =head1 SEE ALSO
 

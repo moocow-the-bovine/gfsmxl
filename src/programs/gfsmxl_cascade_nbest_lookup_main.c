@@ -1,6 +1,6 @@
 /*
    gfsmxl-utils : finite state automaton utilities
-   Copyright (C) 2008 by Bryan Jurish <moocow@ling.uni-potsdam.de>
+   Copyright (C) 2008 by Bryan Jurish <moocow.bovine@gmail.com>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public

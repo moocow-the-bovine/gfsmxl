@@ -1,10 +1,10 @@
 
 /*=============================================================================*\
  * File: gfsmxlSuffixIndex.hi
- * Author: Bryan Jurish <moocow@ling.uni-potsdam.de>
+ * Author: Bryan Jurish <moocow.bovine@gmail.com>
  * Description: finite state machine library: suffix-length indices: inline definitions
  *
- * Copyright (c) 2009 Bryan Jurish.
+ * Copyright (c) 2009-2011 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -83,6 +83,7 @@ void gfsmxl_suffix_length_index_free(gfsmxlSuffixLengthIndex *slx)
   gfsm_assert(slx!=NULL);
   if (slx->lo) gfsmxl_suffix_length_array_free(slx->lo);
   if (slx->hi) gfsmxl_suffix_length_array_free(slx->hi);
+  gfsm_slice_free(gfsmxlSuffixLengthIndex,slx);
 }
 
 

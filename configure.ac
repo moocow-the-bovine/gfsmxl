@@ -10,6 +10,7 @@ AC_INIT(THE_PACKAGE_NAME, THE_PACKAGE_VERSION, THE_PACKAGE_MAINTAINER)
 
 dnl source && aux dir
 AC_CONFIG_AUX_DIR(config)
+AC_CONFIG_MACRO_DIR(m4)
 
 dnl canonical target (sets $target, $target_(cpu|vendor|os) : used for bindist)
 AC_CANONICAL_TARGET

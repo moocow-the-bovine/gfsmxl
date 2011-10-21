@@ -132,6 +132,7 @@ YACC="$BISON"
 ##
 dnl v--- needed if Makefile.am uses _LTLIBRARIES targets
 AC_PROG_LIBTOOL
+LT_INIT
 
 dnl v--- for static-only libraries (non-libtool)
 dnl AC_PROG_RANLIB

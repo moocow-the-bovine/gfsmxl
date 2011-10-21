@@ -68,6 +68,7 @@ void gfsmxl_arc_block_index_free(gfsmxlArcBlockIndex *abx)
   gfsm_assert(abx!=NULL);
   if (abx->blocks)  gfsmxl_arc_ptr_array_free(abx->blocks);
   if (abx->q2block) g_ptr_array_free(abx->q2block,TRUE);
+  gfsm_slice_free(gfsmxlArcBlockIndex,abx);
 }
 
 //--------------------------------------------------------------

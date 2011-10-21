@@ -75,7 +75,7 @@ gfsmxlArcPtrArray *gfsmxl_arc_ptr_array_new_lower(gfsmIndexedAutomaton *xfsm)
 //--------------------------------------------------------------
 gfsmxlArcBlockIndex *gfsmxl_arc_block_index_new_lower(gfsmIndexedAutomaton *xfsm)
 {
-  gfsmxlArcBlockIndex *abx = g_new0(gfsmxlArcBlockIndex,1);
+  gfsmxlArcBlockIndex *abx = gfsm_slice_new0(gfsmxlArcBlockIndex);
   gfsmStateId n_states=0, src_prev=gfsmNoState;
   gfsmArc **blocks_pdata = NULL;
   guint bi;

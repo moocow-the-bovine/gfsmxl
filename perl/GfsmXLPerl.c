@@ -98,6 +98,7 @@ void gfsmxl_perl_cascade_lookup_set_cascade_sv(gfsmxlCascadeLookupPerl *clp, SV 
   clp->cl->csc = NULL;  //-- must be explicit, or else madness may ensue
   if (csc_sv && SvROK(csc_sv)) {
     gfsmxlCascadePerl *cscp = (gfsmxlCascadePerl*)SvIV((SV*)SvRV(csc_sv));
+    SvREFCNT_inc((SV*)SvRV(csc_sv));
     //GFSMXL_DEBUG_EVAL(g_printerr(": cl_set_cascade_sv[clp=%p, csc_sv=%p, clp->csc_sv=%p]: copy()\n", clp, csc_sv, clp->csc_sv);)
     gfsmxl_cascade_lookup_set_cascade(clp->cl, cscp->csc);
   } else {

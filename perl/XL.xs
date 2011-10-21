@@ -7,6 +7,8 @@
 #include <gfsm.h>
 #include "GfsmXLPerl.h"
 
+//#define GFSMXL_BLOW_CHUNKS() g_blow_chunks()
+#define GFSMXL_BLOW_CHUNKS()
 
 MODULE = Gfsm::XL		PACKAGE = Gfsm::XL
 

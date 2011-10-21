@@ -168,6 +168,8 @@ void gfsmxl_patharray_free(gfsmxlPathArray *paths)
  * gfsmxlCascadeLookupConfig
  */
 
+#define GFSMXL_CLC_USE_SLICE 1
+
 //--------------------------------------------------------------
 GFSM_INLINE
 gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_config_new_full(gfsmxlCascade        *csc,
@@ -179,12 +181,19 @@ gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_config_new_full(gfsmxlCascade  
 								 gfsmxlCascadeLookupBacktrace bt
 								 )
 {
-  gfsmxlCascadeLookupConfig *lc = (gfsmxlCascadeLookupConfig*)gfsm_slice_alloc(sizeof(gfsmxlCascadeLookupConfig)
-									       +
-									       (csc->depth*sizeof(gfsmStateId))
-									       );
+  gfsmxlCascadeLookupConfig *lc;
+  g_assert(csc!=NULL);
+
+  lc = (gfsmxlCascadeLookupConfig*)
+#ifdef GFSMXL_CLC_USE_SLICE
+    gfsm_slice_alloc
+#else
+    g_malloc
+#endif
+    (sizeof(gfsmxlCascadeLookupConfig) + (csc->depth*sizeof(gfsmStateId)));
+
   lc->csc  = csc;
-  lc->qids = (gfsmxlCascadeStateId)( ((void*)lc) + sizeof(gfsmxlCascadeLookupConfig) );
+  lc->qids = (gfsmxlCascadeStateId)( (void*)(((gchar*)lc) + sizeof(gfsmxlCascadeLookupConfig)) );
   lc->ipos   = ipos;
   lc->oid    = oid;
   lc->rid    = rid;
@@ -212,8 +221,15 @@ gfsmxlCascadeLookupConfig *gfsmxl_cascade_lookup_config_new(gfsmxlCascadeLookup 
 GFSM_INLINE
 void gfsmxl_cascade_lookup_config_free_inline(gfsmxlCascadeLookupConfig *lc)
 {
-  //g_free(lc);
-  gfsm_slice_free1(sizeof(gfsmxlCascadeLookupConfig)+(lc->csc->depth*sizeof(gfsmStateId)), lc);
+#ifdef GFSMXL_CLC_USE_SLICE
+  guint depth;
+  g_assert(lc->csc != NULL);
+  depth = lc->csc->depth;
+  if (depth > 3) fprintf(stderr, "csc=%p, depth=%u\n", lc->csc, depth);
+  gfsm_slice_free1(sizeof(gfsmxlCascadeLookupConfig)+(depth*sizeof(gfsmStateId)), lc);
+#else
+  g_free(lc);
+#endif
 }
 
 //--------------------------------------------------------------

@@ -698,7 +698,7 @@ if test "$enable_warnings" != "no" ; then
    AC_MSG_RESULT(yes)
    if test "$GCC" == "yes"; then
      AC_MSG_NOTICE([GNU C compiler detected: setting appropriate warning flags])
-     gfsmxl_WFLAGS="-Wall -Winline"
+     gfsmxl_WFLAGS="-Wall" #-Winline
    else
      AC_MSG_NOTICE([GNU C compiler not detected: not setting warning flags])
      gfsmxl_WFLAGS=""

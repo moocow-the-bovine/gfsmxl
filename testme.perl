@@ -69,7 +69,7 @@ sub test2 {
   $csc2 = ref($csc)->new();
   $csc2->load("test.gfsc");
 }
-#test2;
+test2;
 
 ##--------------------------------------------------------------
 ## test: lookup: 1
@@ -205,7 +205,7 @@ sub bench_lookup_vs_nbest {
      sprintf("%8s: %8.2f tok/sec\n", 'csc:lb', $tps_lb),  ##-- ~ 6553 tok/sec
     );
 }
-bench_lookup_vs_nbest();
+#bench_lookup_vs_nbest();
 
 sub dobench_lookup {
   my ($name,$toks,$abet,$sub) = @_;

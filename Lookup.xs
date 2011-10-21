@@ -15,7 +15,7 @@ gfsmxlCascadeLookupPerl*
 new(char *CLASS, SV *csc_sv, gfsmWeight max_w=0, guint max_paths=1, guint max_ops=-1)
 CODE:
  RETVAL = gfsmxl_perl_cascade_lookup_new(csc_sv, max_w, max_paths, max_ops);
- //g_printerr("Gfsm::XL::Cascade::Lookup::new(): returning clp=%p, clp->cl=%p, clp->csc_sv=%p; clp->cl->csc=%p\n", RETVAL, RETVAL->cl, RETVAL->csc_sv, RETVAL->cl->csc);
+ GFSMXL_DEBUG_EVAL(g_printerr("Gfsm::XL::Cascade::Lookup::new(): returning clp=%p, clp->cl=%p, clp->csc_sv=%p; clp->cl->csc=%p\n", RETVAL, RETVAL->cl, RETVAL->csc_sv, RETVAL->cl->csc);)
 OUTPUT:
  RETVAL
 
@@ -24,9 +24,9 @@ OUTPUT:
 void
 DESTROY(gfsmxlCascadeLookupPerl* clp)
 CODE:
- //g_printerr("Gfsm::XL::Cascade::Lookup::DESTROY(clp=%p : clp->cl=%p / csc_sv=%p, csc=%p)\n", clp, clp->cl, clp->csc_sv, clp->cl->csc);
+ GFSMXL_DEBUG_EVAL(g_printerr("Gfsm::XL::Cascade::Lookup::DESTROY(clp=%p : clp->cl=%p / csc_sv=%p, csc=%p)\n", clp, (clp ? clp->cl : NULL), (clp ? clp->csc_sv : NULL), (clp && clp->cl ? clp->cl->csc : NULL));)
  if (clp) gfsmxl_perl_cascade_lookup_free(clp);
- g_blow_chunks();
+ GFSMXL_BLOW_CHUNKS();
 
 
 ##=====================================================================

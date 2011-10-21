@@ -16,7 +16,7 @@ new(char *CLASS, guint depth=0, gfsmSRType srtype=gfsmAutomatonDefaultSRType)
 CODE:
  RETVAL      = gfsmxl_perl_cascade_new();
  RETVAL->csc = gfsmxl_cascade_new_full(depth, srtype);
- GFSMXL_DEBUG_EVAL( g_printerr("Gfsm::XL::Cascade::new(): returning cascade=%p, csc=%p\n", RETVAL, RETVAL->csc); )
+ GFSMXL_DEBUG_EVAL(g_printerr("Gfsm::XL::Cascade::new(): returning cascade=%p, csc=%p\n", RETVAL, RETVAL->csc);)
 OUTPUT:
  RETVAL
 
@@ -32,9 +32,9 @@ CODE:
 void
 DESTROY(gfsmxlCascadePerl* cscp)
 CODE:
- GFSMXL_DEBUG_EVAL( g_printerr("Gfsm::XL::Cascade::DESTROY(cscp=%p : cscp->csc=%p)\n", cscp, cscp->csc); )
+ GFSMXL_DEBUG_EVAL(g_printerr("Gfsm::XL::Cascade::DESTROY(cscp=%p : cscp->csc=%p, cscp->csc->depth=%u)\n", cscp, (cscp ? cscp->csc : NULL), (cscp && cscp->csc ? cscp->csc->depth : 0));)
  if (cscp) gfsmxl_perl_cascade_free(cscp);
- g_blow_chunks();
+ GFSMXL_BLOW_CHUNKS();
 
 
 ##=====================================================================

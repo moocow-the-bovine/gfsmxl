@@ -31,6 +31,7 @@ WriteMakefile
    INC          => $GFSMXL_IFLAGS,      ##-- additional includes
    CCFLAGS      => '',                  ##-- additional flags
    OBJECT       => 'XL.o GfsmXLPerl.o',
+   OPTIMIZE     => '-O2 -pipe',
 
    ##-- DEBUG
    #MAKEAPERL=>1,

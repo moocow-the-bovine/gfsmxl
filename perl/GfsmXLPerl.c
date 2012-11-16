@@ -7,6 +7,7 @@
 /*======================================================================
  * Memory Stuff
  */
+//----------------------------------------------------------------------
 gpointer gfsm_perl_malloc(gsize n_bytes)
 {
   gpointer ptr=NULL;
@@ -14,12 +15,14 @@ gpointer gfsm_perl_malloc(gsize n_bytes)
   return ptr;
 }
 
+//----------------------------------------------------------------------
 gpointer gfsm_perl_realloc(gpointer mem, gsize n_bytes)
 {
   Renewc(mem, n_bytes, char, gpointer);
   return mem;
 }
 
+//----------------------------------------------------------------------
 void gfsm_perl_free(gpointer mem)
 {
   Safefree(mem);
@@ -29,6 +32,7 @@ void gfsm_perl_free(gpointer mem)
  * Gfsm::XL::Cascade Utilities
  */
 
+//----------------------------------------------------------------------
 gfsmxlCascadePerl *gfsmxl_perl_cascade_new(void)
 {
   gfsmxlCascadePerl *cscp = gfsm_slice_new0(gfsmxlCascadePerl);
@@ -36,12 +40,14 @@ gfsmxlCascadePerl *gfsmxl_perl_cascade_new(void)
   return cscp;
 }
 
+//----------------------------------------------------------------------
 void gfsmxl_perl_cascade_clear(gfsmxlCascadePerl *cscp)
 {
   if (cscp->csc) gfsmxl_cascade_clear(cscp->csc,FALSE);
   if (cscp->av) av_clear(cscp->av);
 }
 
+//----------------------------------------------------------------------
 void gfsmxl_perl_cascade_free(gfsmxlCascadePerl *cscp)
 {
   if (cscp) {
@@ -52,6 +58,28 @@ void gfsmxl_perl_cascade_free(gfsmxlCascadePerl *cscp)
   }
 }
 
+//----------------------------------------------------------------------
+SV *gfsmxl_perl_cascade_get_sv(gfsmxlCascadePerl *cscp, int i)
+{
+  SV **fetched = av_fetch(cscp->av, i, 0);
+  if (fetched) {
+    SV *rv = sv_mortalcopy(*fetched);
+    SvREFCNT_inc(rv);
+    return rv;
+  }
+  return &PL_sv_undef;
+}
+
+//----------------------------------------------------------------------
+SV *gfsmxl_perl_cascade_pop_sv(gfsmxlCascadePerl *cscp)
+{
+  SV *rv = gfsmxl_perl_cascade_get_sv(cscp, cscp->csc->depth-1);
+  av_delete(cscp->av, cscp->csc->depth-1, G_DISCARD);
+  gfsmxl_cascade_pop(cscp->csc);
+  return rv;
+}
+
+//----------------------------------------------------------------------
 void  gfsmxl_perl_cascade_append_sv(gfsmxlCascadePerl *cscp, SV *xfsm_sv)
 {
   gfsmIndexedAutomaton *xfsm = (gfsmIndexedAutomaton*)SvIV((SV*)SvRV(xfsm_sv));
@@ -65,12 +93,14 @@ void  gfsmxl_perl_cascade_append_sv(gfsmxlCascadePerl *cscp, SV *xfsm_sv)
   gfsmxl_cascade_append_indexed(cscp->csc, xfsm);
 }
 
-void  gfsmxl_perl_cascade_set_nth_sv(gfsmxlCascadePerl *cscp, guint n, SV *xfsm_sv)
+//----------------------------------------------------------------------
+void  gfsmxl_perl_cascade_set_sv(gfsmxlCascadePerl *cscp, guint n, SV *xfsm_sv)
 {
   gfsmIndexedAutomaton *xfsm = (gfsmIndexedAutomaton*)SvIV((SV*)SvRV(xfsm_sv));
   SV *xfsm_sv_copy;
   I32 key = n;
-  GFSMXL_DEBUG_EVAL( g_printerr("cascade_set_nth_sv(cscp=%p, cscp->csc=%p, n=%u): xfsm_sv=%p, xfsm=%p\n", cscp, cscp->csc, n, xfsm_sv, xfsm); )
+  GFSMXL_DEBUG_EVAL( g_printerr("cascade_set_sv(cscp=%p, cscp->csc=%p, n=%u): xfsm_sv=%p, xfsm=%p\n", cscp, cscp->csc, n, xfsm_sv, xfsm); )
+  av_delete(cscp->av, n, G_DISCARD); //-- delete old value (if any)
   //
   xfsm_sv_copy = sv_mortalcopy(xfsm_sv);     //-- array-stored value (mortal)
   SvREFCNT_inc(xfsm_sv_copy);                //   : mortal needs incremented refcnt
@@ -79,17 +109,7 @@ void  gfsmxl_perl_cascade_set_nth_sv(gfsmxlCascadePerl *cscp, guint n, SV *xfsm_
   gfsmxl_cascade_set_nth_indexed(cscp->csc, n, xfsm, FALSE);	//-- don't free old automaton (perl refcount should take care of that)
 }
 
-SV *gfsmxl_perl_cascade_get_sv(gfsmxlCascadePerl *cscp, int i)
-{
-  SV **fetched = av_fetch(cscp->av, i, 0);
-  if (fetched) {
-    SV *rv = sv_mortalcopy(*fetched);
-    SvREFCNT_inc(rv);
-    return rv;
-  }
-  return &PL_sv_undef;
-}
-
+//----------------------------------------------------------------------
 void gfsmxl_perl_cascade_refresh_av(gfsmxlCascadePerl *cscp)
 {
   int i;
@@ -106,6 +126,7 @@ void gfsmxl_perl_cascade_refresh_av(gfsmxlCascadePerl *cscp)
  * Gfsm::XL::Cascade::Lookup Utilities
  */
 
+//----------------------------------------------------------------------
 void gfsmxl_perl_cascade_lookup_set_cascade_sv(gfsmxlCascadeLookupPerl *clp, SV *csc_sv)
 {
   SvSetSV(clp->csc_sv, csc_sv);
@@ -122,6 +143,7 @@ void gfsmxl_perl_cascade_lookup_set_cascade_sv(gfsmxlCascadeLookupPerl *clp, SV 
   //GFSMXL_DEBUG_EVAL(g_printerr(": cl_set_cascade_sv[clp=%p, csc_sv=%p, clp->csc_sv=%p]: exiting.\n", clp, csc_sv, clp->csc_sv);)
 }
 
+//----------------------------------------------------------------------
 gfsmxlCascadeLookupPerl *gfsmxl_perl_cascade_lookup_new(SV *csc_sv, gfsmWeight max_w, guint max_paths, guint max_ops)
 {
   gfsmxlCascadeLookupPerl *clp = (gfsmxlCascadeLookupPerl*)gfsm_slice_new0(gfsmxlCascadeLookupPerl);
@@ -131,6 +153,7 @@ gfsmxlCascadeLookupPerl *gfsmxl_perl_cascade_lookup_new(SV *csc_sv, gfsmWeight m
   return clp;
 }
 
+//----------------------------------------------------------------------
 void gfsmxl_perl_cascade_lookup_free (gfsmxlCascadeLookupPerl *clp)
 {
   clp->cl->csc = NULL;
@@ -142,6 +165,8 @@ void gfsmxl_perl_cascade_lookup_free (gfsmxlCascadeLookupPerl *clp)
 /*======================================================================
  * Type conversions
  */
+
+//----------------------------------------------------------------------
 AV *gfsm_perl_paths_to_av(gfsmSet *paths_s)
 {
   int i;
@@ -160,6 +185,7 @@ AV *gfsm_perl_paths_to_av(gfsmSet *paths_s)
   return RETVAL;
 }
 
+//----------------------------------------------------------------------
 HV *gfsm_perl_path_to_hv(gfsmPath *path)
 {
   HV *hv = newHV();
@@ -174,6 +200,7 @@ HV *gfsm_perl_path_to_hv(gfsmPath *path)
   return hv;
 }
 
+//----------------------------------------------------------------------
 AV *gfsm_perl_ptr_array_to_av_uv(GPtrArray *ary)
 {
   AV *av = newAV();
@@ -189,6 +216,8 @@ AV *gfsm_perl_ptr_array_to_av_uv(GPtrArray *ary)
 /*======================================================================
  * I/O: Constructors: SV*
  */
+
+//----------------------------------------------------------------------
 gfsmIOHandle *gfsmperl_io_new_sv(SV *sv, size_t pos)
 {
   gfsmPerlSVHandle *svh = gfsm_slice_new(gfsmPerlSVHandle);
@@ -206,6 +235,7 @@ gfsmIOHandle *gfsmperl_io_new_sv(SV *sv, size_t pos)
   return ioh;
 }
 
+//----------------------------------------------------------------------
 void gfsmperl_io_free_sv(gfsmIOHandle *ioh)
 {
   gfsmPerlSVHandle *svh = (gfsmPerlSVHandle*)ioh->handle;
@@ -216,9 +246,11 @@ void gfsmperl_io_free_sv(gfsmIOHandle *ioh)
 /*======================================================================
  * I/O: Methods: SV*
  */
+//----------------------------------------------------------------------
 gboolean gfsmperl_eof_sv(gfsmPerlSVHandle *svh)
 { return svh && svh->sv ? (STRLEN)svh->pos >= sv_len(svh->sv) : TRUE; }
 
+//----------------------------------------------------------------------
 gboolean gfsmperl_read_sv(gfsmPerlSVHandle *svh, void *buf, size_t nbytes)
 {
   char *svbytes;
@@ -238,6 +270,7 @@ gboolean gfsmperl_read_sv(gfsmPerlSVHandle *svh, void *buf, size_t nbytes)
   return FALSE;
 }
 
+//----------------------------------------------------------------------
 gboolean gfsmperl_write_sv(gfsmPerlSVHandle *svh, const void *buf, size_t nbytes)
 {
   if (!svh || !svh->sv) return FALSE;

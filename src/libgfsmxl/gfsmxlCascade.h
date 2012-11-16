@@ -93,16 +93,31 @@ gfsmxlCascade *gfsmxl_cascade_new_full(guint depth, gfsmSRType srtype);
 GFSM_INLINE
 gfsmxlCascade *gfsmxl_cascade_new(void);
 
-/** Clear a ::gfsmxlCascade */
-void gfsmxl_cascade_clear(gfsmxlCascade *csc, gboolean free_automata);
-
 /** Free a ::gfsmxlCascade */
 GFSM_INLINE
 void gfsmxl_cascade_free(gfsmxlCascade *csc, gboolean free_automata);
 
-/** Append an automaton to a cascade.  Steals \a xfsm */
+/** Clear a ::gfsmxlCascade */
+void gfsmxl_cascade_clear(gfsmxlCascade *csc, gboolean free_automata);
+
+/** Clear the \a n-th element of a ::gfsmxlCascade (invalidates the cascade) */
+void gfsmxl_cascade_clear_nth(gfsmxlCascade *csc, guint n, gboolean free_automaton);
+
+/** Steal the rightmost automaton from a cascade; calls gfsmxl_cascade_clear_nth(csc,csc->depth-1,FALSE) */
+GFSM_INLINE
+gfsmIndexedAutomaton *gfsmxl_cascade_pop(gfsmxlCascade *csc);
+
+/** Set the \a n-th element of a ::gfsmxlCascade; calls gfsm_cascade_clear_nth(csc,n,free_old_automaton) */
+GFSM_INLINE
+void gfsmxl_cascade_set_nth_indexed(gfsmxlCascade *csc, guint n, gfsmIndexedAutomaton *xfsm, gboolean free_old_automaton);
+
+/** Append an indexed automaton to a cascade.  Steals \a xfsm */
 GFSM_INLINE
 void gfsmxl_cascade_append_indexed(gfsmxlCascade *csc, gfsmIndexedAutomaton *xfsm);
+
+/** Append an un-indexed automaton to a cascade.  Calls gfsm_automaton_to_indexed() */
+GFSM_INLINE
+void gfsmxl_cascade_append(gfsmxlCascade *csc, gfsmAutomaton *fsm);
 
 //@}
 

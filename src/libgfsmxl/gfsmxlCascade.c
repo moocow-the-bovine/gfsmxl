@@ -37,43 +37,58 @@
  */
 
 //--------------------------------------------------------------
+void gfsmxl_cascade_clear_nth(gfsmxlCascade *csc, guint n, gboolean free_automaton)
+{
+  gfsmIndexedAutomaton *xfsm = (gfsmIndexedAutomaton*)g_ptr_array_index(csc->xfsms,n);
+
+#if   defined(CASCADE_USE_BLOCK_INDEX)
+  gfsmxlArcBlockIndex   *xblk = (gfsmxlArcBlockIndex  *)g_ptr_array_index(csc->xblks,n);
+#elif defined(CASCADE_USE_BLOCK_HASH)
+  gfsmxlArcBlockHash    *xblk = (gfsmxlArcBlockHash   *)g_ptr_array_index(csc->xblks,n);
+#endif
+
+#if   defined(CASCADE_USE_SUFFIX_INDEX)
+  gfsmxlSuffixLengthIndex *xslx = (gfsmxlSuffixLengthIndex*)g_ptr_array_index(csc->xslxs,n);
+#endif
+
+  if (xfsm && free_automaton) gfsm_indexed_automaton_free(xfsm);
+  g_ptr_array_index(csc->xfsms,n) = NULL;
+
+#if   defined(CASCADE_USE_BLOCK_INDEX)
+  if (xblk) gfsmxl_arc_block_index_free(xblk);
+  g_ptr_array_index(csc->xblks,n) = NULL;
+#elif defined(CASCADE_USE_BLOCK_HASH)
+  if (xblk) gfsmxl_arc_block_hash_free(xblk);
+  g_ptr_array_index(csc->xblks,n) = NULL;
+#elif defined(CASCADE_USE_BLOCKS)
+  g_ptr_array_index(csc->xblks,n) = NULL;
+#endif
+
+#if   defined(CASCADE_USE_SUFFIX_INDEX)
+  if (xslx) gfsmxl_suffix_length_index_free(xslx);
+#endif
+
+}
+//--------------------------------------------------------------
 void gfsmxl_cascade_clear(gfsmxlCascade *csc, gboolean free_automata)
 {
   if (free_automata) {
     guint i;
     for (i=0; i < csc->depth; i++) {
-      gfsmIndexedAutomaton *xfsm = (gfsmIndexedAutomaton*)g_ptr_array_index(csc->xfsms,i);
-#if   defined(CASCADE_USE_BLOCK_INDEX)
-      gfsmxlArcBlockIndex   *xblk = (gfsmxlArcBlockIndex  *)g_ptr_array_index(csc->xblks,i);
-#elif defined(CASCADE_USE_BLOCK_HASH)
-      gfsmxlArcBlockHash    *xblk = (gfsmxlArcBlockHash   *)g_ptr_array_index(csc->xblks,i);
-#endif
-#if   defined(CASCADE_USE_SUFFIX_INDEX)
-      gfsmxlSuffixLengthIndex *xslx = (gfsmxlSuffixLengthIndex*)g_ptr_array_index(csc->xslxs,i);
-#endif
-      if (xfsm) gfsm_indexed_automaton_free(xfsm);
-      g_ptr_array_index(csc->xfsms,i) = NULL;
-
-#if   defined(CASCADE_USE_BLOCK_INDEX)
-      if (xblk) gfsmxl_arc_block_index_free(xblk);
-#elif defined(CASCADE_USE_BLOCK_HASH)
-      if (xblk) gfsmxl_arc_block_hash_free(xblk);
-#endif
-#ifdef CASCADE_USE_BLOCKS
-      g_ptr_array_index(csc->xblks,i) = NULL;
-#endif
-#if   defined(CASCADE_USE_SUFFIX_INDEX)
-      if (xslx) gfsmxl_suffix_length_index_free(xslx);
-#endif
+      gfsmxl_cascade_clear_nth(csc,i,free_automata);
     }
   }
+
   g_ptr_array_set_size(csc->xfsms,0);
+
 #if defined(CASCADE_USE_BLOCKS)
   g_ptr_array_set_size(csc->xblks,0);
 #endif
+
 #if   defined(CASCADE_USE_SUFFIX_INDEX)
   g_ptr_array_set_size(csc->xslxs,0);
 #endif
+
   /*
     g_array_set_size(csc->roots,1);
     g_array_index(csc->roots,gfsmStateId,1) = csc->depth;

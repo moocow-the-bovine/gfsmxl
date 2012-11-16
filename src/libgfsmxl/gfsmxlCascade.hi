@@ -93,20 +93,61 @@ void gfsmxl_cascade_free(gfsmxlCascade *csc, gboolean free_automata)
 
 //--------------------------------------------------------------
 GFSM_INLINE
+gfsmIndexedAutomaton* gfsmxl_cascade_pop(gfsmxlCascade *csc)
+{
+  gfsmIndexedAutomaton *xfsm = NULL;
+  if (csc->depth<=0) return NULL;
+  xfsm = gfsmxl_cascade_index(csc,csc->depth-1);
+  gfsmxl_cascade_clear_nth(csc,csc->depth-1,FALSE);
+  csc->depth--;
+  return xfsm;
+}
+
+
+//--------------------------------------------------------------
+GFSM_INLINE
 void gfsmxl_cascade_append_indexed(gfsmxlCascade *csc, gfsmIndexedAutomaton *xfsm)
 {
   g_ptr_array_add(csc->xfsms,    xfsm);
+
 #if defined(CASCADE_USE_BLOCK_INDEX)
   g_ptr_array_add(csc->xblks,    gfsmxl_arc_block_index_new_lower(xfsm));
 #elif defined(CASCADE_USE_BLOCK_HASH)
   g_ptr_array_add(csc->xblks,    gfsmxl_arc_block_hash_new_lower(xfsm));
 #endif
+
 #if defined(CASCADE_USE_SUFFIX_INDEX)
   g_ptr_array_add(csc->xslxs,    gfsmxl_suffix_length_index_new(xfsm));
 #endif
+
   g_array_append_val(csc->roots, xfsm->root_id);
   //g_array_index(csc->roots,gfsmStateId,0)++;
   csc->depth++;
+}
+
+//--------------------------------------------------------------
+GFSM_INLINE
+void gfsmxl_cascade_set_nth_indexed(gfsmxlCascade *csc, guint n, gfsmIndexedAutomaton *xfsm, gboolean free_old_automaton)
+{
+  if (n < csc->depth) {
+    gfsmxl_cascade_append_indexed(csc,xfsm);
+    return;
+  }
+
+  gfsmxl_cascade_clear_nth(csc,n,free_old_automaton);
+  g_ptr_array_index(csc->xfsms,n) = xfsm;
+
+#if defined(CASCADE_USE_BLOCK_INDEX)
+  g_ptr_array_index(csc->xblks,n) = gfsmxl_arc_block_index_new_lower(xfsm);
+#elif defined(CASCADE_USE_BLOCK_HASH)
+  g_ptr_array_index(csc->xblks,n) = gfsmxl_arc_block_hash_new_lower(xfsm);
+#endif
+
+#if defined(CASCADE_USE_SUFFIX_INDEX)
+  g_ptr_array_index(csc->xslxs,n) = gfsmxl_suffix_length_index_new(xfsm);
+#endif
+
+  g_array_index(csc->roots,gfsmStateId,n) = xfsm->root_id;
 }
 
 //--------------------------------------------------------------

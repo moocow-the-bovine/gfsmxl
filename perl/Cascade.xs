@@ -91,9 +91,8 @@ OUTPUT:
 SV*
 gfsmxl_cascade_pop(gfsmxlCascadePerl *cscp)
 CODE:
-  RETVAL = gfsmxl_perl_cascade_get_sv(cscp,cscp->csc->depth-1);
-  if (RETVAL) { SvREFCNT_dec(RETVAL); }
-  gfsmxl_cascade_pop(cscp->csc);
+  if (cscp->csc->depth<=0) { XSRETURN_UNDEF; }
+  RETVAL = gfsmxl_perl_cascade_pop_sv(cscp);
 OUTPUT:
   RETVAL
 
@@ -101,12 +100,12 @@ SV*
 gfsmxl_cascade_set(gfsmxlCascadePerl *cscp, guint n, SV *xfsm_sv)
 CODE:
   if( !sv_isobject(xfsm_sv) && (SvTYPE(SvRV(xfsm_sv)) == SVt_PVMG) ) {
-    warn( "Gfsm::XL::Cascade::set_nth_indexed() -- xfsm_sv is not a blessed SV reference" );
+    warn( "Gfsm::XL::Cascade::set() -- xfsm_sv is not a blessed SV reference" );
     XSRETURN_UNDEF;
   }
   RETVAL = gfsmxl_perl_cascade_get_sv(cscp,n);
-  gfsmxl_perl_cascade_set_nth_sv(cscp,n,xfsm_sv);
-  if (RETVAL) { SvREFCNT_dec(RETVAL); }
+  //if (RETVAL) { SvREFCNT_dec(RETVAL); }
+  gfsmxl_perl_cascade_set_sv(cscp,n,xfsm_sv);
 OUTPUT:
   RETVAL
 

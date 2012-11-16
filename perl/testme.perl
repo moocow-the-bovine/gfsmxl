@@ -4,6 +4,7 @@ use lib qw(./blib/lib ./blib/arch);
 use Gfsm;
 use Gfsm::XL;
 use Time::HiRes qw(tv_interval gettimeofday);
+use Devel::Peek;
 use Storable;
 
 BEGIN { *refcnt = *__refcnt = \&Gfsm::XL::__refcnt; }
@@ -51,7 +52,7 @@ sub test1 {
 ##--------------------------------------------------------------
 ## test 2
 sub test2 {
-  our ($fsm0,$fsm1, $xfsm0,$xfsm1, $csc);
+  our ($fsm0,$fsm1, $xfsm0,$xfsm1, $fsm2,$xfsm2, $csc);
 
   $fsm0 = Gfsm::Automaton->new();
   $fsm0->compile('csc0.tfst');
@@ -60,6 +61,10 @@ sub test2 {
   $fsm1 = Gfsm::Automaton->new();
   $fsm1->compile('csc1.tfst');
   $xfsm1 = $fsm1->to_indexed;
+
+  $fsm2 = Gfsm::Automaton->new();
+  $fsm2->compile('csc2.tfst');
+  $xfsm2 = $fsm2->to_indexed;
 
   $csc = Gfsm::XL::Cascade->new();
   $csc->_append($xfsm0,$xfsm1);

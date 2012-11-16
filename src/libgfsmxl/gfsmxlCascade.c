@@ -4,7 +4,7 @@
  * Author: Bryan Jurish <moocow.bovine@gmail.com>
  * Description: finite state machine library: lookup cascade
  *
- * Copyright (c) 2007-2009 Bryan Jurish.
+ * Copyright (c) 2007-2012 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

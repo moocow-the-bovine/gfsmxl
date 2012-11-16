@@ -4,7 +4,7 @@
  * Author: Bryan Jurish <moocow.bovine@gmail.com>
  * Description: finite state machine library: lookup cascade: inline definitions
  *
- * Copyright (c) 2007-2011 Bryan Jurish.
+ * Copyright (c) 2007-2012 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -100,6 +100,16 @@ gfsmIndexedAutomaton* gfsmxl_cascade_pop(gfsmxlCascade *csc)
   xfsm = gfsmxl_cascade_index(csc,csc->depth-1);
   gfsmxl_cascade_clear_nth(csc,csc->depth-1,FALSE);
   csc->depth--;
+  g_ptr_array_set_size(csc->xfsms,csc->depth);
+
+#if defined(CASCADE_USE_BLOCKS)
+  g_ptr_array_set_size(csc->xblks,csc->depth);
+#endif
+
+#if   defined(CASCADE_USE_SUFFIX_INDEX)
+  g_ptr_array_set_size(csc->xslxs,csc->depth);
+#endif
+
   return xfsm;
 }
 

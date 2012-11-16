@@ -14,7 +14,7 @@ plan(test => scalar(@modules));
 # 1--N: load submodules (1 subtest/module)
 foreach $module (@modules) {
   print "Test 'use $module;'\n";
-  ok(eval("require $module;"));
+  ok(do {my $rc=eval("require $module;"); die("require $module failed: $@") if ($@); $rc});
 }
 
 print "\n";

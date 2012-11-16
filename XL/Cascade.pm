@@ -150,8 +150,10 @@ Gfsm::XL::Cascade - object-oriented interface to libgfsmxl finite-state cascades
  ## Accessors/Manipulators: Properties
 
  $csc   = $csc->append(@fsms);            # append a Gfsm::Automaton::Indexed (by reference if possible)
- $xfsm  = $csc->get($nth);                # retrieve reference to $nth automaton in the cascade (indexed)
+ $xfsm  = $csc->get($n);                  # retrieve reference to $n-th automaton in the cascade (indexed)
  @xfsms = $csc->get_all();                # retrieve list of references to all automata in cascade
+ $xold  = $csc->set($n,$xfsm);		  # set the $n-th automaton in the cascade; returns old $n-th automaton
+ $xold  = $csc->pop();            	  # pop the deepest automaton in the cascade
 
  $depth  = $csc->depth();                 # get cascade depth
  $srtype = $csc->semiring_type(?$srtype); # get/set semiring type
@@ -191,14 +193,14 @@ gfsmutils(1).
 
 =head1 AUTHOR
 
-Bryan Jurish E<lt>moocow@ling.uni-potsdam.deE<gt>
+Bryan Jurish E<lt>moocow@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2005-2008 by Bryan Jurish
+Copyright (C) 2005-2012 by Bryan Jurish
 
 This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.8.4 or,
+it under the same terms as Perl itself, either Perl version 5.10.1 or,
 at your option, any later version of Perl 5 you may have available.
 
 

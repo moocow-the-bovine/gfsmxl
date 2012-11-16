@@ -65,6 +65,20 @@ void  gfsmxl_perl_cascade_append_sv(gfsmxlCascadePerl *cscp, SV *xfsm_sv)
   gfsmxl_cascade_append_indexed(cscp->csc, xfsm);
 }
 
+void  gfsmxl_perl_cascade_set_nth_sv(gfsmxlCascadePerl *cscp, guint n, SV *xfsm_sv)
+{
+  gfsmIndexedAutomaton *xfsm = (gfsmIndexedAutomaton*)SvIV((SV*)SvRV(xfsm_sv));
+  SV *xfsm_sv_copy;
+  I32 key = n;
+  GFSMXL_DEBUG_EVAL( g_printerr("cascade_set_nth_sv(cscp=%p, cscp->csc=%p, n=%u): xfsm_sv=%p, xfsm=%p\n", cscp, cscp->csc, n, xfsm_sv, xfsm); )
+  //
+  xfsm_sv_copy = sv_mortalcopy(xfsm_sv);     //-- array-stored value (mortal)
+  SvREFCNT_inc(xfsm_sv_copy);                //   : mortal needs incremented refcnt
+  av_store(cscp->av, key, xfsm_sv_copy);     //   : store at position $n
+  //
+  gfsmxl_cascade_set_nth_indexed(cscp->csc, n, xfsm, FALSE);	//-- don't free old automaton (perl refcount should take care of that)
+}
+
 SV *gfsmxl_perl_cascade_get_sv(gfsmxlCascadePerl *cscp, int i)
 {
   SV **fetched = av_fetch(cscp->av, i, 0);

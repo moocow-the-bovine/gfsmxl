@@ -38,6 +38,7 @@ void gfsmxl_perl_cascade_free (gfsmxlCascadePerl *cscp);
 
 void gfsmxl_perl_cascade_append_sv(gfsmxlCascadePerl *cscp, SV *xfsm_sv);
 SV*  gfsmxl_perl_cascade_get_sv(gfsmxlCascadePerl *cscp, int i);
+void  gfsmxl_perl_cascade_set_nth_sv(gfsmxlCascadePerl *cscp, guint n, SV *xfsm_sv);
 
 void gfsmxl_perl_cascade_refresh_av(gfsmxlCascadePerl *cscp); //-- create cscp->av from csc->csc->xfsms
 

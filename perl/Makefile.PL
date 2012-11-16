@@ -3,7 +3,7 @@ use ExtUtils::MakeMaker;
 ##----------------------------------------------------------------------
 ## Configuration
 ##----------------------------------------------------------------------
-our $gfsmxl_min_version = "0.0.2";
+our $gfsmxl_min_version = "0.0.11";
 if (system("pkg-config --atleast-version=$gfsmxl_min_version gfsmxl") != 0) {
   die("Required module gfsmxl >= v$gfsmxl_min_version not found!\n");
 }

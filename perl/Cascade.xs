@@ -36,7 +36,6 @@ CODE:
  if (cscp) gfsmxl_perl_cascade_free(cscp);
  GFSMXL_BLOW_CHUNKS();
 
-
 ##=====================================================================
 ## High-level Access
 ##=====================================================================
@@ -88,6 +87,28 @@ CODE:
  RETVAL = gfsmxl_perl_cascade_get_sv(cscp,i);
 OUTPUT:
  RETVAL
+
+SV*
+gfsmxl_cascade_pop(gfsmxlCascadePerl *cscp)
+CODE:
+  RETVAL = gfsmxl_perl_cascade_get_sv(cscp,cscp->csc->depth-1);
+  if (RETVAL) { SvREFCNT_dec(RETVAL); }
+  gfsmxl_cascade_pop(cscp->csc);
+OUTPUT:
+  RETVAL
+
+SV*
+gfsmxl_cascade_set(gfsmxlCascadePerl *cscp, guint n, SV *xfsm_sv)
+CODE:
+  if( !sv_isobject(xfsm_sv) && (SvTYPE(SvRV(xfsm_sv)) == SVt_PVMG) ) {
+    warn( "Gfsm::XL::Cascade::set_nth_indexed() -- xfsm_sv is not a blessed SV reference" );
+    XSRETURN_UNDEF;
+  }
+  RETVAL = gfsmxl_perl_cascade_get_sv(cscp,n);
+  gfsmxl_perl_cascade_set_nth_sv(cscp,n,xfsm_sv);
+  if (RETVAL) { SvREFCNT_dec(RETVAL); }
+OUTPUT:
+  RETVAL
 
 
 ##=====================================================================

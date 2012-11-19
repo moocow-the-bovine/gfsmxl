@@ -97,7 +97,7 @@ OUTPUT:
   RETVAL
 
 SV*
-gfsmxl_cascade_set(gfsmxlCascadePerl *cscp, guint n, SV *xfsm_sv)
+_set(gfsmxlCascadePerl *cscp, guint n, SV *xfsm_sv)
 CODE:
   if( !sv_isobject(xfsm_sv) && (SvTYPE(SvRV(xfsm_sv)) == SVt_PVMG) ) {
     warn( "Gfsm::XL::Cascade::set() -- xfsm_sv is not a blessed SV reference" );

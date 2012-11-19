@@ -46,6 +46,9 @@ sub lookup_nbest {
   return $result;
 }
 
+## \@paths = $cl->lookup_nbest_paths($input)
+*lookup_paths = \&lookup_nbest_paths;
+
 ##======================================================================
 ## Operation
 ##======================================================================
@@ -119,8 +122,8 @@ Gfsm::XL::Cascade::Lookup - libgfsmxl finite-state cascade lookup routines
  ##--------------------------------------------------------------
  ## Attributes
 
- $csc  = $cl->cascade();	##-- get underlying cascade
- undef = $cl->cascade($csc);	##-- set underlying cascade
+ $csc = $cl->cascade();		##-- get underlying cascade
+ $csc = $cl->cascade($csc);	##-- set underlying cascade
 
  $w = $cl->max_weight(?$w);	##-- get/set max weight (-1 for none)
  $n = $cl->max_paths(?$n);	##-- get/set max number of paths (-1 for none)
@@ -130,7 +133,8 @@ Gfsm::XL::Cascade::Lookup - libgfsmxl finite-state cascade lookup routines
  ##--------------------------------------------------------------
  ## Lookup
 
- $fst = $cl->lookup_nbest(\@ilabs,?$result);	##-- n-best lookup
+ $fst   = $cl->lookup(\@ilabs,?$result); ##-- n-best lookup (FST)
+ $paths = $cl->lookup_paths(\@ilabs);	 ##-- n-best lookup (paths)
 
 =head1 DESCRIPTION
 

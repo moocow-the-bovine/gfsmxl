@@ -1,8 +1,9 @@
 ##-*- Mode: Makefile -*-
 
 #OFLAGS  ?=-pipe -O2 -march=prescott -msse -msse2 -msse3 -mfpmath=sse -ffast-math
-OFLAGS  ?=-pipe -O2
+#OFLAGS  ?=-pipe -O2
 #OFLAGS  ?=-pipe -g
+OFLAGS   ?=-pipe -ggdb -O0
 #OFLAGS  ?=-g -pg
 #OFLAGS  ?=-O2 -pg
 
@@ -19,17 +20,17 @@ LDFLAGS  =-L../.libs $(shell pkg-config --libs-only-L gfsm)  $(OFLAGS)
 LIBS     =$(shell pkg-config --libs-only-l gfsm)
 
 TARGETS = \
+	gfsmxl-cascade-set-nth \
+	gfsmxl-cascade-switch
+
+KNOWN_TARGETS = \
+	cascade.gfsc \
 	gfsmxl-make-cascade \
 	gfsmxl-cascade-get-arcs \
 	gfsmxl-cascade-nbest \
 	gfsmxl-cascade-nbest-many \
-	cascade.gfsc
-
-KNOWN_TARGETS = \
-	gfsmxl-make-cascade \
-	gfsmxl-cascade-get-arcs \
-	gfsmxl-cascade-nbest \
-	gfsmxl-cascade-nbest-many
+	gfsmxl-cascade-set-nth \
+	gfsmxl-cascade-switch
 
 ##======================================================================
 ## RULES
@@ -78,6 +79,9 @@ HEAP_OBJ      = ../gfsmxlCLCFib.o
 LOOKUP_HDRS   = $(CASCADE_HDRS) $(HEAP_HDRS) ../gfsmxlCascadeLookup.h ../gfsmxlCascadeLookup.hi
 LOOKUP_OBJ    = $(CASCADE_OBJ) $(HEAP_OBJ) ../gfsmxlCascadeLookup.o
 
+GFSMXL_HDRS   = $(wildcard ../*.h) $(wildcard ../*.hi)
+GFSMXL_OBJ    = ../.libs/libgfsmxl.a
+
 gfsmxlCLCFib.o: ../gfsmxlCLCFib.c $(HEAP_HDRS)
 
 gfsmxlLabelIndex.o: ../gfsmxlLabelIndex.c $(LABINDEX_HDRS)
@@ -95,6 +99,12 @@ gfsmxl-cascade-nbest: gfsmxl-cascade-nbest.o $(LOOKUP_OBJ)
 
 gfsmxl-cascade-nbest-many.o: gfsmxl-cascade-nbest-many.c $(LOOKUP_HDRS)
 gfsmxl-cascade-nbest-many: gfsmxl-cascade-nbest-many.o $(LOOKUP_OBJ)
+
+gfsmxl-cascade-set-nth.o: gfsmxl-cascade-set-nth.c $(GFSMXL_HDRS)
+gfsmxl-cascade-set-nth: gfsmxl-cascade-set-nth.o $(GFSMXL_OBJ)
+
+gfsmxl-cascade-switch.o: gfsmxl-cascade-switch.c $(GFSMXL_HDRS)
+gfsmxl-cascade-switch: gfsmxl-cascade-switch.o $(GFSMXL_OBJ)
 
 ##======================================================================
 ## Rules: linking: specialized

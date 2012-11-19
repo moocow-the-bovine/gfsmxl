@@ -58,10 +58,13 @@ void gfsmxl_perl_cascade_lookup_free (gfsmxlCascadeLookupPerl *clp);
 /*======================================================================
  * Type conversions
  */
-AV *gfsm_perl_paths_to_av(gfsmSet *paths_s);
-HV *gfsm_perl_path_to_hv(gfsmPath *path);
-AV *gfsm_perl_ptr_array_to_av_uv(GPtrArray *ary);
+//AV *gfsm_perl_paths_to_av(gfsmSet *paths_s);
+//HV *gfsm_perl_path_to_hv(gfsmPath *path);
+//AV *gfsm_perl_ptr_array_to_av_uv(GPtrArray *ary);
 
+AV *gfsm_perl_ptr_array_to_av_uv(GPtrArray *ary);
+HV *gfsm_perl_path_to_hv(gfsmPath *path);
+AV *gfsmxl_perl_patharray_to_av(gfsmxlPathArray *paths_a);
 
 /*======================================================================
  * Weight stuff

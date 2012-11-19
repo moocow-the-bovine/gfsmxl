@@ -29,6 +29,14 @@ sub get_all {
   return map { $csc->get($_) } (0..($csc->depth-1));
 }
 
+## $old_nth = $csc->set($nth, $xfsm_or_fsm)
+sub set {
+  my $csc   = shift;
+  my $xfsm  = UNIVERSAL::isa(ref($_[1]),'Gfsm::Automaton::Indexed') ? $_[1] : $_[0]->to_indexed();
+  $xfsm->arcsort($Gfsm::ACLower) if (Gfsm::acmask_nth($xfsm->sort_mode,0) != $Gfsm::ACLower);
+  return $csc->_set($_[0],$xfsm);
+}
+
 ##======================================================================
 ## I/O: Wrappers
 ##======================================================================
@@ -152,7 +160,7 @@ Gfsm::XL::Cascade - object-oriented interface to libgfsmxl finite-state cascades
  $csc   = $csc->append(@fsms);            # append a Gfsm::Automaton::Indexed (by reference if possible)
  $xfsm  = $csc->get($n);                  # retrieve reference to $n-th automaton in the cascade (indexed)
  @xfsms = $csc->get_all();                # retrieve list of references to all automata in cascade
- $xold  = $csc->set($n,$xfsm);		  # set the $n-th automaton in the cascade; returns old $n-th automaton
+ $xold  = $csc->set($n,$fsm);		  # set the $n-th automaton in the cascade; returns old $n-th automaton
  $xold  = $csc->pop();            	  # pop the deepest automaton in the cascade
 
  $depth  = $csc->depth();                 # get cascade depth

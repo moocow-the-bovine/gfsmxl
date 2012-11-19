@@ -126,11 +126,24 @@ CODE:
  gfsmxl_cascade_lookup_reset(clp->cl);
 
 ##--------------------------------------------------------------
-## Operations: n-best lookup
+## Operations: n-best lookup (FST)
 
 void
 _lookup_nbest(gfsmxlCascadeLookupPerl *clp, gfsmLabelVector *input, gfsmAutomaton *result)
 CODE:
  gfsmxl_cascade_lookup_nbest(clp->cl, input, result);
+CLEANUP:
+ g_ptr_array_free(input,TRUE);
+
+AV *
+lookup_nbest_paths(gfsmxlCascadeLookupPerl *clp, gfsmLabelVector *input)
+PREINIT:
+ gfsmxlPathArray *paths_a;
+CODE:
+ paths_a = gfsmxl_cascade_lookup_nbest_paths(clp->cl, input, NULL);
+ RETVAL  = gfsmxl_perl_patharray_to_av(paths_a);
+ gfsmxl_patharray_free(paths_a);
+OUTPUT:
+ RETVAL
 CLEANUP:
  g_ptr_array_free(input,TRUE);

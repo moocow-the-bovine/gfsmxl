@@ -99,7 +99,7 @@ void  gfsmxl_perl_cascade_set_sv(gfsmxlCascadePerl *cscp, guint n, SV *xfsm_sv)
   gfsmIndexedAutomaton *xfsm = (gfsmIndexedAutomaton*)SvIV((SV*)SvRV(xfsm_sv));
   SV *xfsm_sv_copy;
   I32 key = n;
-  GFSMXL_DEBUG_EVAL( g_printerr("cascade_set_sv(cscp=%p, cscp->csc=%p, n=%u): xfsm_sv=%p, xfsm=%p\n", cscp, cscp->csc, n, xfsm_sv, xfsm); )
+  GFSMXL_DEBUG_EVAL( g_printerr("cascade_set_sv(cscp=%p, cscp->csc=%p, n=%u): BEGIN: xfsm_sv=%p, xfsm=%p\n", cscp, cscp->csc, n, xfsm_sv, xfsm); )
   av_delete(cscp->av, n, G_DISCARD); //-- delete old value (if any)
   //
   xfsm_sv_copy = sv_mortalcopy(xfsm_sv);     //-- array-stored value (mortal)
@@ -167,23 +167,17 @@ void gfsmxl_perl_cascade_lookup_free (gfsmxlCascadeLookupPerl *clp)
  */
 
 //----------------------------------------------------------------------
-AV *gfsm_perl_paths_to_av(gfsmSet *paths_s)
+AV *gfsm_perl_ptr_array_to_av_uv(GPtrArray *ary)
 {
-  int i;
-  AV *RETVAL = newAV();
-  GPtrArray *paths_a=g_ptr_array_sized_new(gfsm_set_size(paths_s));
-  gfsm_set_to_ptr_array(paths_s, paths_a);
-
-  for (i=0; i < paths_a->len; i++) {
-    gfsmPath *path = (gfsmPath*)g_ptr_array_index(paths_a,i);
-    HV       *hv   = gfsm_perl_path_to_hv(path);
-    av_push(RETVAL, newRV((SV*)hv));
+  AV *av = newAV();
+  guint i;
+  for (i=0; i < ary->len; i++) {
+    av_push(av, newSVuv((UV)g_ptr_array_index(ary,i)));
   }
-  g_ptr_array_free(paths_a,TRUE);
-
-  sv_2mortal((SV*)RETVAL);  
-  return RETVAL;
+  sv_2mortal((SV*)av);
+  return av;
 }
+
 
 //----------------------------------------------------------------------
 HV *gfsm_perl_path_to_hv(gfsmPath *path)
@@ -201,16 +195,21 @@ HV *gfsm_perl_path_to_hv(gfsmPath *path)
 }
 
 //----------------------------------------------------------------------
-AV *gfsm_perl_ptr_array_to_av_uv(GPtrArray *ary)
+AV *gfsmxl_perl_patharray_to_av(gfsmxlPathArray *paths_a)
 {
-  AV *av = newAV();
-  guint i;
-  for (i=0; i < ary->len; i++) {
-    av_push(av, newSVuv((UV)g_ptr_array_index(ary,i)));
+  int i;
+  AV *RETVAL = newAV();
+
+  for (i=0; i < paths_a->len; i++) {
+    gfsmPath *path = (gfsmPath*)g_ptr_array_index(paths_a,i);
+    HV       *hv   = gfsm_perl_path_to_hv(path);
+    av_push(RETVAL, newRV((SV*)hv));
   }
-  sv_2mortal((SV*)av);
-  return av;
+
+  sv_2mortal((SV*)RETVAL);  
+  return RETVAL;
 }
+
 
 
 /*======================================================================

@@ -74,7 +74,7 @@ sub test2 {
   $csc2 = ref($csc)->new();
   $csc2->load("test.gfsc");
 }
-test2;
+#test2;
 
 ##--------------------------------------------------------------
 ## test: lookup: 1
@@ -227,6 +227,95 @@ sub dobench_lookup {
   }
   return $ntoks / tv_interval($started);
 }
+
+##--------------------------------------------------------------
+## test switch + lookup
+
+*labs2fsm = \&labs2fsm_fw;
+#*labs2fsm = \&labs2fsm_bw;
+sub labs2fsm_bw {
+  my ($labs,$fsm) = @_;
+  if (!$fsm) {
+    $fsm = Gfsm::Automaton->new();
+  } else {
+    $fsm->clear;
+  }
+  $fsm->ensure_state($#$labs+1);
+  $fsm->root($#$labs+1);
+  foreach (0..$#$labs) {
+    $fsm->add_arc($_+1,$_,$labs->[$#$labs-$_],$labs->[$#$labs-$_],0);
+  }
+  $fsm->final_weight(0,0);
+  $fsm->sort_mode(Gfsm::acmask_from_chars('lwut'));
+  return $fsm;
+}
+
+sub labs2fsm_fw {
+  my ($labs,$fsm) = @_;
+  if (!$fsm) {
+    $fsm = Gfsm::Automaton->new();
+  } else {
+    $fsm->clear;
+  }
+  $fsm->ensure_state($#$labs+1);
+  $fsm->root(0);
+  foreach (0..$#$labs) {
+    $fsm->add_arc($_,$_+1,$labs->[$_],$labs->[$_],0);
+  }
+  $fsm->final_weight($#$labs+1,0);
+  $fsm->sort_mode(Gfsm::acmask_from_chars('lwut'));
+  return $fsm;
+}
+
+## \@strings = paths2strings(\@laba,\@paths)
+sub paths2strings {
+  return [map {join('',@{$_[0]}[@{$_->{lo}}])." : ".join('',@{$_[0]}[@{$_->{hi}}])." <$_->{w}>"} @{$_[1]}];
+}
+
+sub test_swap_lookup {
+  my $abet_file = @_ ? shift : "hacks/dta-rw.lab";
+  my $csc_file  = @_ ? shift : "hacks/dta-rw.gfsc";
+  my $itext     = @_ ? shift : 'sezen';
+  my $otext     = @_ ? shift : 'setzen';
+
+  ##-- load & prepare: alphabet
+  my $abet = Gfsm::Alphabet->new();
+  $abet->load($abet_file) or die("$0: load failed for alphabet '$abet_file': $!");
+  my $laba = $abet->toArray;
+  my $labh = $abet->toHash;
+
+  ##-- load & prepare: cascade
+  my $csc = Gfsm::XL::Cascade->new();
+  $csc->load($csc_file) or die("$0: load failed for '$csc_file': $!");
+  my $csc1 = $csc->get(1);
+
+  ##-- prepare: cascade lookup-best
+  my $cl = Gfsm::XL::Cascade::Lookup->new($csc, 1e38, 1, -1);
+
+  ##-- cascade: swap target language
+  my @ilabs = @$labh{split(//,$itext)};
+  my @olabs = @$labh{split(//,$otext)};
+  my $ofsm  = labs2fsm(\@olabs);
+  #$ofsm->save("hacks/setzen1.gfst");
+  #$ofsm->clear();
+  #$ofsm->load("hacks/setzen.gfst");
+  #$ofsm->statesort_dfs(); ##-- bad! -- wtf?!
+  #$ofsm->arcsort(Gfsm::acmask_from_chars('lwut'));
+  my $ofsmx = $ofsm->to_indexed;
+  $csc->_set(1, $ofsmx);
+
+  $csc->save("swapped.gfsc");
+
+  ##-- lookup
+  $cl->lookup(\@ilabs)->rmepsilon->connect->viewps(labels=>$abet);
+  my $fpaths = paths2strings($laba,$cl->lookup(\@ilabs)->paths);
+  my $lpaths = paths2strings($laba,$cl->lookup_paths(\@ilabs));
+  print @$fpaths ? (map {"$_\n"} sort {$a->{w}<=>$b->{w}} @$fpaths) : "no output paths!\n";
+
+  print STDERR "test_swap_lookup done: what now?\n";
+  exit 0;
+}
+test_swap_lookup(@ARGV);
 
 ##--------------------------------------------------------------
 ## MAIN

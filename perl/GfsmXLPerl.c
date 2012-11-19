@@ -133,7 +133,7 @@ void gfsmxl_perl_cascade_lookup_set_cascade_sv(gfsmxlCascadeLookupPerl *clp, SV 
   clp->cl->csc = NULL;  //-- must be explicit, or else madness may ensue
   if (csc_sv && SvROK(csc_sv)) {
     gfsmxlCascadePerl *cscp = (gfsmxlCascadePerl*)SvIV((SV*)SvRV(csc_sv));
-    SvREFCNT_inc((SV*)SvRV(csc_sv));
+    //SvREFCNT_inc((SV*)SvRV(csc_sv)); //-- should NOT be necessary if the reference itself was copied using SvSetSV()!
     //GFSMXL_DEBUG_EVAL(g_printerr(": cl_set_cascade_sv[clp=%p, csc_sv=%p, clp->csc_sv=%p]: copy()\n", clp, csc_sv, clp->csc_sv);)
     gfsmxl_cascade_lookup_set_cascade(clp->cl, cscp->csc);
   } else {
@@ -149,7 +149,9 @@ gfsmxlCascadeLookupPerl *gfsmxl_perl_cascade_lookup_new(SV *csc_sv, gfsmWeight m
   gfsmxlCascadeLookupPerl *clp = (gfsmxlCascadeLookupPerl*)gfsm_slice_new0(gfsmxlCascadeLookupPerl);
   clp->cl                      = gfsmxl_cascade_lookup_new_full(NULL, max_w, max_paths, max_ops);
   clp->csc_sv                  = newSV(0);
+  GFSMXL_DEBUG_EVAL( g_printerr("cascade_lookup_new(clp=%p): created clp->csc_sv=%p (REFCNT=%u)\n", clp, clp->csc_sv, SvREFCNT(clp->csc_sv)); )
   gfsmxl_perl_cascade_lookup_set_cascade_sv(clp, csc_sv);
+  GFSMXL_DEBUG_EVAL( g_printerr("cascade_lookup_new(clp=%p): post set_cascade_sv: clp->csc_sv=%p (REFCNT=%u)\n", clp, clp->csc_sv, SvREFCNT(clp->csc_sv)); )
   return clp;
 }
 

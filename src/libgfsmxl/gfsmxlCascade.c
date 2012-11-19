@@ -206,117 +206,6 @@ gfsmArc *gfsmxl_arcrange_bsearch(gfsmArc *min, gfsmArc *max, gfsmLabelId lo)
 
 
 //--------------------------------------------------------------
-#if defined(CASCADE_EXPAND_RECURSIVE)
-static
-void gfsmxl_cascade_expand_arcs_(gfsmxlCascadeArcIter *cai,
-				gfsmxlArcPP           arcpp,
-				gint                 ix,
-				gfsmLabelId          lo)
-{
-  //
-  //-- check for full match
-  if (ix >= cai->csc->depth) {
-    gfsmxl_cascade_arciter_insert_arc_(cai,gfsmxl_cascade_arc_new_from_sourced_arcpp_(cai->csc,cai->qids,arcpp));
-    return;
-  }
-  else {
-#if defined(CASCADE_USE_BLOCKS)
-# if defined(CASCADE_USE_BLOCK_INDEX)
-#  if !defined(CASCADE_EXPAND_BLOCK_BSEARCH)
-    gfsmArcRange blkrange;
-    //
-    //-- find matching block (linear search)
-    gfsmxl_arcrange_open_block_index(&blkrange,
-				    (gfsmxlArcBlockIndex*)g_ptr_array_index(cai->csc->xblks,ix),
-				    cai->qids[ix], lo);
-    //
-    //-- recursively expand matching arcs
-    for (arcpp[ix]=blkrange.min; arcpp[ix] < blkrange.max; arcpp[ix]++) {
-      if (arcpp[ix]->upper == gfsmEpsilon) {
-	//-- upper-epsilon match: skip rest
-	gfsmxl_cascade_arciter_insert_arc_(cai,gfsmxl_cascade_arc_new_from_sourced_arcpp_(cai->csc,cai->qids,arcpp));
-	continue;
-      }
-      //-- default: non-eps match: recurse
-      gfsmxl_cascade_expand_arcs_(cai, arcpp, ix+1, arcpp[ix]->upper);
-    }
-#  else /* defined(CASCADE_EXPAND_BLOCK_BSEARCH) */
-    gfsmArcRange blkrange;
-    //
-    //-- find matching block (binary search)
-    gfsmxl_arcrange_open_block_index_bsearch(&blkrange,
-					    (gfsmxlArcBlockIndex*)g_ptr_array_index(cai->csc->xblks,ix),
-					    cai->qids[ix], lo);
-    //
-    //-- recursively expand matching arcs
-    for (arcpp[ix]=blkrange.min; arcpp[ix] < blkrange.max && arcpp[ix]->lower==lo; arcpp[ix]++) {
-      if (arcpp[ix]->upper == gfsmEpsilon) {
-	//-- upper-epsilon match: skip rest
-	gfsmxl_cascade_arciter_insert_arc_(cai,gfsmxl_cascade_arc_new_from_sourced_arcpp_(cai->csc,cai->qids,arcpp));
-	continue;
-      }
-      //-- default: non-eps match: recurse
-      gfsmxl_cascade_expand_arcs_(cai, arcpp, ix+1, arcpp[ix]->upper);
-    }
-#  endif /* defined(CASCADE_EXPAND_BLOCK_BSEARCH) */
-# elif defined(CASCADE_USE_BLOCK_HASH)
-    gfsmxlStateLabelPair key   = { cai->qids[ix], lo };
-    gfsmArcRange       range;
-    gfsm_arcrange_open_indexed(&range, gfsmxl_cascade_index(cai->csc,ix), key.qid);
-    range.min = (gfsmArc*)g_hash_table_lookup((gfsmxlArcBlockHash*)g_ptr_array_index(cai->csc->xblks,ix), &key);
-    //
-    //-- recursively expand matching arcs
-    for (arcpp[ix]=range.min; arcpp[ix] && arcpp[ix] < range.max && arcpp[ix]->lower==lo; arcpp[ix]++) {
-      if (arcpp[ix]->upper == gfsmEpsilon) {
-	//-- upper-epsilon match: skip rest
-	gfsmxl_cascade_arciter_insert_arc_(cai,gfsmxl_cascade_arc_new_from_sourced_arcpp_(cai->csc,cai->qids,arcpp));
-	continue;
-      }
-      //-- default: non-eps match: recurse
-      gfsmxl_cascade_expand_arcs_(cai, arcpp, ix+1, arcpp[ix]->upper);
-    }
-# endif /* defined(CASCADE_USE_BLOCK_HASH) */
-#else /* !defined(CASCADE_USE_BLOCKS) */
-# if defined(CASCADE_USE_RAW_BSEARCH) /* && !defined(CASCADE_USE_BLOCKS) */
-    gfsmArcRange range;
-    gfsm_arcrange_open_indexed(&range, gfsmxl_cascade_index(cai->csc,ix), cai->qids[ix]);
-    range.min = gfsmxl_arcrange_bsearch(range.min, range.max, lo);
-    //
-    //-- recursively expand matching arcs
-    for (arcpp[ix]=range.min; arcpp[ix] < range.max && arcpp[ix]->lower==lo; arcpp[ix]++) {
-      if (arcpp[ix]->upper == gfsmEpsilon) {
-	//-- upper-epsilon match: skip rest
-	gfsmxl_cascade_arciter_insert_arc_(cai,gfsmxl_cascade_arc_new_from_sourced_arcpp_(cai->csc,cai->qids,arcpp));
-	continue;
-      }
-      //-- default: non-eps match: recurse
-      gfsmxl_cascade_expand_arcs_(cai, arcpp, ix+1, arcpp[ix]->upper);
-    }
-# else /* !defined(CASCADE_USE_RAW_BSEARCH) && !defined(CASCADE_USE_BLOCKS) */
-    gfsmArcRange range;
-    gfsm_arcrange_open_indexed(&range, gfsmxl_cascade_index(cai->csc,ix), cai->qids[ix]);
-    //
-    //-- recursively expand matching arcs
-    for (arcpp[ix]=range.min; arcpp[ix] < range.max && arcpp[ix]->lower <  lo; arcpp[ix]++) { ; }
-    for (                   ; arcpp[ix] < range.max && arcpp[ix]->lower == lo; arcpp[ix]++) {
-      if (arcpp[ix]->upper == gfsmEpsilon) {
-	//-- upper-epsilon match: skip rest
-	gfsmxl_cascade_arciter_insert_arc_(cai,gfsmxl_cascade_arc_new_from_sourced_arcpp_(cai->csc,cai->qids,arcpp));
-	continue;
-      }
-      //-- default: non-eps match: recurse
-      gfsmxl_cascade_expand_arcs_(cai, arcpp, ix+1, arcpp[ix]->upper);
-    }
-# endif /* defined(CASCADE_USE_RAW_BSEARCH) */
-#endif /* !defined(CASCADE_USE_BLOCKS) */
-  }
-  //
-  //-- always reset arcpp[ix]
-  arcpp[ix] = NULL;
-}
-
-#else /* !defined(CASCADE_EXPAND_RECURSIVE) */
-
 static inline
 void gfsmxl_cascade_expand_arcs_(gfsmxlCascadeArcIter *cai,
 				 gfsmxlArcPP           arcpp,
@@ -372,8 +261,6 @@ void gfsmxl_cascade_expand_arcs_(gfsmxlCascadeArcIter *cai,
   }
 }
 
-#endif /* defined(CASCADE_EXPAND_RECURSIVE) */
-
 //--------------------------------------------------------------
 void gfsmxl_cascade_arciter_open(gfsmxlCascadeArcIter *cai, gfsmxlCascade *csc, gfsmxlCascadeStateId qids, gfsmLabelId lo)
 {
@@ -388,9 +275,7 @@ void gfsmxl_cascade_arciter_open(gfsmxlCascadeArcIter *cai, gfsmxlCascade *csc, 
   cai->csc    = csc;
   cai->qids   = gfsmxl_cascade_stateid_sized_clone(qids, csc->depth);
   cai->arclist = NULL;
-#if !defined(CASCADE_EXPAND_RECURSIVE)
   cai->ranges = gfsm_slice_new_n(gfsmArcRange,csc->depth);
-#endif
   //
   //-- allocate & initialize temps
   arcpp = gfsmxl_arcpp_sized_new(csc->depth);
@@ -406,9 +291,7 @@ void gfsmxl_cascade_arciter_open(gfsmxlCascadeArcIter *cai, gfsmxlCascade *csc, 
   //-- cleanup & return
   gfsmxl_arcpp_free(arcpp,csc->depth);
   cai->cur = cai->arclist;
-#if !defined(CASCADE_EXPAND_RECURSIVE)
   gfsm_slice_free_n(gfsmArcRange,cai->ranges,csc->depth);
-#endif
   return;
 }
 

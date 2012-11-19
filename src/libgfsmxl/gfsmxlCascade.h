@@ -46,14 +46,11 @@ typedef gfsmStateId* gfsmxlCascadeStateId;
 //#define CASCADE_USE_BLOCK_HASH 1
 //#define CASCADE_USE_SUFFIX_INDEX 1
 
-//-- expand arcs recursively?
-//#define CASCADE_EXPAND_RECURSIVE 1
-
 //-- sort temporary arc-lists on creation?
 //   : this is pointless unless we're storing arc-lists with configs!
 //#define CASCADE_SORT_ARCITER 1
 
-#if !defined(CASCADE_EXPAND_RECURSIVE) && !defined(CASCADE_USE_BLOCK_INDEX)
+#if !defined(CASCADE_USE_BLOCK_INDEX)
 # define CASCADE_USE_BLOCK_INDEX 1
 #endif
 
@@ -276,9 +273,7 @@ typedef struct {
   gfsmxlCascadeStateId   qids;    /**< source state (vector of ::gfsmStateId, +depth): local copy */
   GSList               *arclist; /**< GSList* of ::gfsmxlCascadeArc* */
   GSList               *cur;     /**< Current node in arclist */
-#if !defined(CASCADE_EXPAND_RECURSIVE)
   gfsmArcRange         *ranges;  /**< block range stack */
-#endif
 } gfsmxlCascadeArcIter;
 
 /** Open outgoing arcs from state \a qids in \a csc with ultimate lower label eithr epsilon or \a lo.

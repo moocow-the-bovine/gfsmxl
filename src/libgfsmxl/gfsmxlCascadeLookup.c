@@ -160,6 +160,18 @@ gfsmxlPathArray *gfsmxl_cascade_lookup_nbest_paths(gfsmxlCascadeLookup *cl, gfsm
  */
 
 //--------------------------------------------------------------
+static void _dump_config(const char *label, gfsmxlCascadeLookupConfig *cfg)
+{
+  int i;
+  fprintf(stderr,"%s: ipos=%u qids=[",label,cfg->ipos);
+  for (i=0; i < cfg->csc->depth; ++i) {
+    fprintf(stderr,"%s%u", (i>0 ? " " : ""), cfg->qids[i]);
+  }
+  fprintf(stderr,"] oid=%u w=%g", cfg->oid, cfg->w);
+  fprintf(stderr," bt={lo=%u hi=%u aw=%g fw=%g}\n", cfg->bt.lo, cfg->bt.hi, cfg->bt.aw, cfg->bt.fw);
+}
+
+//--------------------------------------------------------------
 void gfsmxl_cascade_lookup_reset(gfsmxlCascadeLookup *cl)
 {
   //-- clear heap, hash, finals
@@ -202,6 +214,8 @@ void gfsmxl_cascade_lookup_nbest_search_(gfsmxlCascadeLookup *cl, gfsmLabelVecto
   while ( (cl->n_ops <= cl->max_ops) && (cfg=gfsmxl_clc_fh_extractmin(cl->heap)) ) {
     gfsmWeight fw, new_w;
     gfsmLabelId lab;
+
+    GFSMXL_DEBUG_EVAL( _dump_config("CFG",cfg); )
 
     //-- chalk up another elementary lookup operation
     ++cl->n_ops;

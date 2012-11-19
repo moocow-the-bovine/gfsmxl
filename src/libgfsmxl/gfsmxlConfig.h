@@ -52,4 +52,10 @@
 # define GFSMXL_CLC_FH_STATS 1
 #endif
 
+#if defined(GFSMXL_DEBUG_ENABLED)
+# define GFSMXL_DEBUG_EVAL(code) code
+#else
+# define GFSMXL_DEBUG_EVAL(code)
+#endif
+
 #endif /* _GFSMXL_CONFIG_H */

@@ -12,10 +12,15 @@ our $NULL = bless \(my $x=0), 'Gfsm::XL::Cascade';
 ## Manipulation: Wrappers
 ##======================================================================
 
+## $indexed = _ensure_indexed($fsm_or_xfsm)
+sub _ensure_indexed {
+  return UNIVERSAL::isa(ref($_[0]),'Gfsm::Automaton::Indexed') ? $_[0] : $_[0]->to_indexed();
+}
+
 ## $csc = $csc->append(@fsms_or_xfsms)
 sub append {
   my $csc   = shift;
-  my @xfsms = map { (UNIVERSAL::isa(ref($_),'Gfsm::Automaton::Indexed') ? $_ : $_->to_indexed()) } @_;
+  my @xfsms = map {_ensure_indexed($_)} @_;
   foreach (@xfsms) {
     $_->arcsort($Gfsm::ACLower) if (Gfsm::acmask_nth($_->sort_mode,0) != $Gfsm::ACLower);
   }
@@ -32,7 +37,7 @@ sub get_all {
 ## $old_nth = $csc->set($nth, $xfsm_or_fsm)
 sub set {
   my $csc   = shift;
-  my $xfsm  = UNIVERSAL::isa(ref($_[1]),'Gfsm::Automaton::Indexed') ? $_[1] : $_[0]->to_indexed();
+  my $xfsm  = _ensure_indexed($_[1]);
   $xfsm->arcsort($Gfsm::ACLower) if (Gfsm::acmask_nth($xfsm->sort_mode,0) != $Gfsm::ACLower);
   return $csc->_set($_[0],$xfsm);
 }

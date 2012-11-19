@@ -89,10 +89,6 @@ void gfsmxl_cascade_clear(gfsmxlCascade *csc, gboolean free_automata)
   g_ptr_array_set_size(csc->xslxs,0);
 #endif
 
-  /*
-    g_array_set_size(csc->roots,1);
-    g_array_index(csc->roots,gfsmStateId,1) = csc->depth;
-  */
   csc->depth = 0;
 }
 

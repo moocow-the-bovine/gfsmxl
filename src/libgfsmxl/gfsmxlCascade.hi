@@ -42,8 +42,7 @@ void gfsmxl_cascade_set_depth(gfsmxlCascade *csc, guint depth)
 #ifdef CASCADE_USE_SUFFIX_INDEX
   g_ptr_array_set_size(csc->xslxs,  depth);
 #endif
-  g_array_set_size(csc->roots, depth+1);
-  //g_array_index(csc->roots,gfsmStateId,0) = depth;
+  g_array_set_size(csc->roots, depth);
 }
 
 //--------------------------------------------------------------
@@ -62,8 +61,6 @@ gfsmxlCascade *gfsmxl_cascade_new_full(guint depth, gfsmSRType srtype)
 #endif
   //
   csc->roots = g_array_sized_new(FALSE,TRUE,sizeof(gfsmStateId),depth);
-  //csc->roots = g_array_sized_new(FALSE,TRUE,sizeof(gfsmStateId),depth+1);
-  //g_array_index(csc->roots,gfsmStateId,0) = depth;
   return csc;
 }
 
@@ -131,7 +128,6 @@ void gfsmxl_cascade_append_indexed(gfsmxlCascade *csc, gfsmIndexedAutomaton *xfs
 #endif
 
   g_array_append_val(csc->roots, xfsm->root_id);
-  //g_array_index(csc->roots,gfsmStateId,0)++;
   csc->depth++;
 }
 

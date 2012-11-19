@@ -114,6 +114,23 @@ Gfsm::XL::Cascade::Lookup - libgfsmxl finite-state cascade lookup routines
  ##------------------------------------------------------------
  ## Constructors, etc.
 
+ $cl  = Gfsm::XL::Cascade::Lookup->new($max_weight, $max_paths, $max_ops);
+
+ ##--------------------------------------------------------------
+ ## Attributes
+
+ $csc  = $cl->cascade();	##-- get underlying cascade
+ undef = $cl->cascade($csc);	##-- set underlying cascade
+
+ $w = $cl->max_weight(?$w);	##-- get/set max weight (-1 for none)
+ $n = $cl->max_paths(?$n);	##-- get/set max number of paths (-1 for none)
+ $n = $cl->max_ops(?$n);	##-- get/set max number of heap extractions (-1 for none)
+ $n = $cl->n_ops();		##-- get number of heap extractions for last run
+
+ ##--------------------------------------------------------------
+ ## Lookup
+
+ $fst = $cl->lookup_nbest(\@ilabs,?$result);	##-- n-best lookup
 
 =head1 DESCRIPTION
 

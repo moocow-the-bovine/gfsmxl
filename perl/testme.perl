@@ -231,45 +231,7 @@ sub dobench_lookup {
 ##--------------------------------------------------------------
 ## test switch + lookup
 
-#*labs2fsm = \&labs2fsm_fw;
-*labs2fsm = \&labs2fsm_fwe;
-#*labs2fsm = \&labs2fsm_bw;
-sub labs2fsm_bw {
-  my ($labs,$fsm) = @_;
-  if (!$fsm) {
-    $fsm = Gfsm::Automaton->new();
-  } else {
-    $fsm->clear;
-  }
-  $fsm->ensure_state($#$labs+1);
-  $fsm->root($#$labs+1);
-  foreach (0..$#$labs) {
-    $fsm->add_arc($_+1,$_,$labs->[$#$labs-$_],$labs->[$#$labs-$_],0);
-  }
-  $fsm->final_weight(0,0);
-  $fsm->sort_mode(Gfsm::acmask_from_chars('lwut'));
-  return $fsm;
-}
-
-sub labs2fsm_fwe {
-  my ($labs,$fsm) = @_;
-  if (!$fsm) {
-    $fsm = Gfsm::Automaton->new();
-  } else {
-    $fsm->clear;
-  }
-  $fsm->ensure_state($#$labs+1);
-  $fsm->root(0);
-  foreach (0..$#$labs) {
-    $fsm->add_arc($_,$_+1,$labs->[$_],$labs->[$_],0);
-  }
-  $fsm->add_arc($#$labs+1,$#$labs+1,0,0,0); ##-- adding this line to labs2fsm_fw() makes things work: wtf? final state now has an outgoing arc; so what?
-  $fsm->final_weight($#$labs+1,0);
-  $fsm->sort_mode(Gfsm::acmask_from_chars('lwut'));
-  return $fsm;
-}
-
-sub labs2fsm_fw {
+sub labs2fsm {
   my ($labs,$fsm) = @_;
   if (!$fsm) {
     $fsm = Gfsm::Automaton->new();
@@ -318,7 +280,7 @@ sub test_swap_lookup {
   #$ofsm->save("hacks/setzen1.gfst");
   #$ofsm->clear();
   #$ofsm->load("hacks/setzen.gfst");
-  #$ofsm->statesort_dfs(); ##-- bad! -- wtf?!
+  #$ofsm->statesort_dfs(); ##-- bad! -- wtf?! -- bad app_max in gfsmxlArcBlockIndex
   #$ofsm->arcsort(Gfsm::acmask_from_chars('lwut'));
   my $ofsmx = $ofsm->to_indexed;
   $csc->_set(1, $ofsmx);

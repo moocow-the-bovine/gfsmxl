@@ -368,7 +368,7 @@ gfsmAutomaton *gfsmxl_cascade_lookup_nbest_debug(gfsmxlCascadeLookup *cl, gfsmLa
     //-- chalk up another elementary lookup operation
     ++cl->n_ops;
 
-    GFSMXL_DEBUG_EVAL( _dump_config("CFG",cfg); )
+    GFSMXL_DEBUG_DO( _dump_config("CFG",cfg); )
 
 #ifdef CASCADE_USE_SUFFIX_INDEX
     //------ CHECK FOR TERMINABILITY

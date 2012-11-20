@@ -53,9 +53,9 @@
 #endif
 
 #if defined(GFSMXL_DEBUG_ENABLED)
-# define GFSMXL_DEBUG_EVAL(code) code
+# define GFSMXL_DEBUG_DO(code) code
 #else
-# define GFSMXL_DEBUG_EVAL(code)
+# define GFSMXL_DEBUG_DO(code)
 #endif
 
 #endif /* _GFSMXL_CONFIG_H */

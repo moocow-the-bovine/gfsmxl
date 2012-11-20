@@ -20,8 +20,7 @@ LDFLAGS  =-L../.libs $(shell pkg-config --libs-only-L gfsm)  $(OFLAGS)
 LIBS     =$(shell pkg-config --libs-only-l gfsm)
 
 TARGETS = \
-	gfsmxl-cascade-set-nth \
-	gfsmxl-cascade-switch
+	gfsmxl-cascade-dlookup
 
 KNOWN_TARGETS = \
 	cascade.gfsc \
@@ -30,7 +29,8 @@ KNOWN_TARGETS = \
 	gfsmxl-cascade-nbest \
 	gfsmxl-cascade-nbest-many \
 	gfsmxl-cascade-set-nth \
-	gfsmxl-cascade-switch
+	gfsmxl-cascade-switch \
+	gfsmxl-cascade-dlookup
 
 ##======================================================================
 ## RULES
@@ -105,6 +105,9 @@ gfsmxl-cascade-set-nth: gfsmxl-cascade-set-nth.o $(GFSMXL_OBJ)
 
 gfsmxl-cascade-switch.o: gfsmxl-cascade-switch.c $(GFSMXL_HDRS)
 gfsmxl-cascade-switch: gfsmxl-cascade-switch.o $(GFSMXL_OBJ)
+
+gfsmxl-cascade-dlookup.o: gfsmxl-cascade-dlookup.c $(GFSMXL_HDRS)
+gfsmxl-cascade-dlookup: gfsmxl-cascade-dlookup.o $(GFSMXL_OBJ)
 
 ##======================================================================
 ## Rules: linking: specialized

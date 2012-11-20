@@ -100,9 +100,13 @@ gfsmxlArcBlockIndex *gfsmxl_arc_block_index_new_lower(gfsmIndexedAutomaton *xfsm
       src_prev = a->source;
     }
   }
+
   //-- upper bound (non-inclusive)
-  //g_ptr_array_index(abx->q2block, n_states) = &g_ptr_array_index(xfsm->arcs->first, n_states);
-  g_ptr_array_index(abx->q2block, n_states) = blocks_pdata + (abx->blocks->len - 1);
+  //g_ptr_array_index(abx->q2block, n_states) = &g_ptr_array_index(xfsm->arcs->first, n_states); //-- nope
+  //g_ptr_array_index(abx->q2block, n_states) = blocks_pdata + (abx->blocks->len - 1); //-- nope: bugs if last state has no outgoing arcs
+  for (src_prev++; src_prev <= n_states; src_prev++) {
+    g_ptr_array_index(abx->q2block, src_prev) = blocks_pdata + (abx->blocks->len-1);
+  }
 
   return abx;
 }

@@ -1,0 +1,18 @@
+BUG at:
+ #0  gfsmxl_arcrange_open_block_index (range=0x8058c58, abx=0x8057928, qid=5, lo=5) at ./gfsmxlLabelIndex.hi:79
+ #1  0x0804ab56 in gfsmxl_cascade_expand_arcs_ (cai=0xbffff0e8, arcpp=0x8057b10, ix=0, lo=5) at gfsmxlCascade.c:237
+ #2  0x0804acfb in gfsmxl_cascade_arciter_open (cai=0xbffff0e8, csc=0x8050fd8, qids=0x8058c90, lo=5) at gfsmxlCascade.c:289
+ #3  0x0804cf4c in gfsmxl_cascade_lookup_nbest_debug (cl=0x80579c8, input=0x8051908, result=0x8050f30) at gfsmxlCascadeLookup.c:402
+ #4  0x08049deb in main (argc=4, argv=0xbffff234) at gfsmxl-cascade-dlookup.c:66
+
+CODE:
+ gfsmArc **app_max = (gfsmArc**)g_ptr_array_index(abx->q2block,qid+1);
+
+PROBLEM:
+ + app gets (gfsmArc **)0x805794c with **app = {source = 5, target = 6, lower = 5, upper = 5, weight = 0}
+ + app_max gets NULL (because that's tored at abx->q2block->pdata[qid+1 (==6)]
+ + the underlying automaton has a single arc **app (5--5:5-->6), which is the LAST arc in the automaton
+ + BUT the test at line 81 FAILS (app && app < app_max && (*app)->lower == lo)
+   since !(app<app_max)
+ + how do we fix this and avoid segfaults due to indexing non-existing arcs?!
+

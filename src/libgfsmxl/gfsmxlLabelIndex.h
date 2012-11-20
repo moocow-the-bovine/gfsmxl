@@ -67,7 +67,7 @@ void gfsmxl_arc_ptr_array_free(gfsmxlArcPtrArray *apa);
  */
 typedef struct {
   gfsmxlArcPtrArray *blocks;    /**< Array of (::gfsmArc*) to first arc in each (state+lower) block */
-  GPtrArray        *q2block;   /**< Array of (::gfsmArc**) to first block for each source state */
+  GPtrArray        *q2block;    /**< Array of (::gfsmArc**) to first block for each source state */
 } gfsmxlArcBlockIndex;
 
 /** Create and populate a ::gfsmxlArcBlockIndex from a ::gfsmxlIndexedAutomaton.

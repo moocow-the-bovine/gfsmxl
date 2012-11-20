@@ -285,7 +285,7 @@ sub test_swap_lookup {
   my $ofsmx = $ofsm->to_indexed;
   $csc->_set(1, $ofsmx);
 
-  $csc->save("swapped.gfsc");
+  #$csc->save("swapped.gfsc");
 
   ##-- lookup
   $cl->lookup(\@ilabs)->rmepsilon->connect->viewps(labels=>$abet);

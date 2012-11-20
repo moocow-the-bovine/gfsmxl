@@ -225,7 +225,7 @@ void gfsmxl_cascade_lookup_config_free_inline(gfsmxlCascadeLookupConfig *lc)
   guint depth;
   g_assert(lc->csc != NULL);
   depth = lc->csc->depth;
-  if (depth > 3) fprintf(stderr, "csc=%p, depth=%u\n", lc->csc, depth);
+  GFSMXL_DEBUG_DO( if (depth > 3) fprintf(stderr, "cascade_lookup_free_inline(): lc=%p, csc=%p, depth=%u\n", lc, lc->csc, depth); )//-- DEBUG
   gfsm_slice_free1(sizeof(gfsmxlCascadeLookupConfig)+(depth*sizeof(gfsmStateId)), lc);
 #else
   g_free(lc);

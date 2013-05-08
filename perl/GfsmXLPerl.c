@@ -82,7 +82,7 @@ SV *gfsmxl_perl_cascade_pop_sv(gfsmxlCascadePerl *cscp)
 //----------------------------------------------------------------------
 void  gfsmxl_perl_cascade_append_sv(gfsmxlCascadePerl *cscp, SV *xfsm_sv)
 {
-  gfsmIndexedAutomaton *xfsm = (gfsmIndexedAutomaton*)SvIV((SV*)SvRV(xfsm_sv));
+  gfsmIndexedAutomaton *xfsm = (gfsmIndexedAutomaton*)GINT_TO_POINTER( SvIV((SV*)SvRV(xfsm_sv)) );
   SV *xfsm_sv_copy;
   GFSMXL_DEBUG_EVAL( g_printerr("cascade_append_sv(cscp=%p, cscp->csc=%p): xfsm_sv=%p, xfsm=%p\n", cscp, cscp->csc, xfsm_sv, xfsm); )
   //
@@ -96,7 +96,7 @@ void  gfsmxl_perl_cascade_append_sv(gfsmxlCascadePerl *cscp, SV *xfsm_sv)
 //----------------------------------------------------------------------
 void  gfsmxl_perl_cascade_set_sv(gfsmxlCascadePerl *cscp, guint n, SV *xfsm_sv)
 {
-  gfsmIndexedAutomaton *xfsm = (gfsmIndexedAutomaton*)SvIV((SV*)SvRV(xfsm_sv));
+  gfsmIndexedAutomaton *xfsm = (gfsmIndexedAutomaton*)GINT_TO_POINTER( SvIV((SV*)SvRV(xfsm_sv)) );
   SV *xfsm_sv_copy;
   I32 key = n;
   GFSMXL_DEBUG_EVAL( g_printerr("cascade_set_sv(cscp=%p, cscp->csc=%p, n=%u): BEGIN: xfsm_sv=%p, xfsm=%p\n", cscp, cscp->csc, n, xfsm_sv, xfsm); )
@@ -132,7 +132,7 @@ void gfsmxl_perl_cascade_lookup_set_cascade_sv(gfsmxlCascadeLookupPerl *clp, SV 
   SvSetSV(clp->csc_sv, csc_sv);
   clp->cl->csc = NULL;  //-- must be explicit, or else madness may ensue
   if (csc_sv && SvROK(csc_sv)) {
-    gfsmxlCascadePerl *cscp = (gfsmxlCascadePerl*)SvIV((SV*)SvRV(csc_sv));
+    gfsmxlCascadePerl *cscp = (gfsmxlCascadePerl*)GINT_TO_POINTER( SvIV((SV*)SvRV(csc_sv)) );
     //SvREFCNT_inc((SV*)SvRV(csc_sv)); //-- should NOT be necessary if the reference itself was copied using SvSetSV()!
     //GFSMXL_DEBUG_EVAL(g_printerr(": cl_set_cascade_sv[clp=%p, csc_sv=%p, clp->csc_sv=%p]: copy()\n", clp, csc_sv, clp->csc_sv);)
     gfsmxl_cascade_lookup_set_cascade(clp->cl, cscp->csc);
@@ -174,7 +174,7 @@ AV *gfsm_perl_ptr_array_to_av_uv(GPtrArray *ary)
   AV *av = newAV();
   guint i;
   for (i=0; i < ary->len; i++) {
-    av_push(av, newSVuv((UV)g_ptr_array_index(ary,i)));
+    av_push(av, newSVuv((UV)GPOINTER_TO_SIZE(g_ptr_array_index(ary,i))));
   }
   sv_2mortal((SV*)av);
   return av;

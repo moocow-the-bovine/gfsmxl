@@ -79,9 +79,12 @@ if HAVE_POD2HTML
 	pod2html --outfile $@ $<
 endif
 
+LICENSES = COPYING.GPL-3 COPYING
+
 pkgdoc_DATA = \
 	$(PODS:.pod=.txt) \
-	$(PODS:.pod=.html)
+	$(PODS:.pod=.html) \
+	$(LICENSES)
 
 #-----------------------------------------------------------------------
 # Variables: distribution
@@ -95,6 +98,7 @@ EXTRA_DIST = \
 	$(PODS) \
 	$(PODS:.pod=.txt) \
 	$(PODS:.pod=.html) \
+	$(LICENSES) \
 	autogen.sh \
 	configure \
 	README.cvs

@@ -10,7 +10,7 @@ CODE:
 
 PROBLEM:
  + app gets (gfsmArc **)0x805794c with **app = {source = 5, target = 6, lower = 5, upper = 5, weight = 0}
- + app_max gets NULL (because that's tored at abx->q2block->pdata[qid+1 (==6)]
+ + app_max gets NULL (because that's stored at abx->q2block->pdata[qid+1 (==6)]
  + the underlying automaton has a single arc **app (5--5:5-->6), which is the LAST arc in the automaton
  + BUT the test at line 81 FAILS (app && app < app_max && (*app)->lower == lo)
    since !(app<app_max)

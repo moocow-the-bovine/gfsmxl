@@ -8,7 +8,7 @@ DESCRIPTION
 
 DEPENDENCIES
     libgfsm
-        Available from: http://www.ling.uni-potsdam.de/~moocow/projects/gfsm
+        Available from: http://www.kaskade.dwds.de/~moocow/projects/gfsm
 
         Simple C library for finite state automata. Requirs at least version
         0.0.10.
@@ -35,7 +35,7 @@ DEPENDENCIES
         A Perl module used to generate command-line option parsers. Should
         be available from the author of this package at:
 
-        http://www.ling.uni-potsdam.de/~moocow/projects/perl
+        http://kaskade.dwds.de/~moocow/projects/perl
 
         Tested versions 0.09, 0.10.
 
@@ -46,8 +46,8 @@ DEPENDENCIES
         Note additionally that Parse::Lex v2.15 is broken: if it gives you
         grief, use the hacked version available at:
 
-        http://www.ling.uni-potsdam.de/~moocow/projects/perl/ParseLex-2.15-h
-        acked.tar.gz
+        http://kaskade.dwds.de/~moocow/projects/perl/ParseLex-2.15-hacked.ta
+        r.gz
 
     pod2man, pod2text, pod2html, pod2latex (Optional)
         The Perl documentation converstion utilities, required for building

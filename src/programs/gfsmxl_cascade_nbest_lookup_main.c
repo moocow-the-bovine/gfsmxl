@@ -1,6 +1,6 @@
 /*
    gfsmxl-utils : finite state automaton utilities
-   Copyright (C) 2008 by Bryan Jurish <moocow.bovine@gmail.com>
+   Copyright (C) 2008-2014 by Bryan Jurish <moocow.bovine@gmail.com>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Lesser General Public
@@ -117,6 +117,7 @@ void get_my_options(int argc, char **argv)
 	    progname, abetfilename, (err ? err->message : "?"));
     exit(2);
   }
+  abet->utf8 = args.utf8_flag;
 
   //-- create cascade-lookup
   cl = gfsmxl_cascade_lookup_new();

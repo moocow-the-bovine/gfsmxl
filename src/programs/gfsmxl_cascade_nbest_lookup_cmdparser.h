@@ -21,6 +21,7 @@ extern "C" {
 struct gengetopt_args_info {
   char * cascade_arg;	 /* Specify cascade for lookup (default=cascade.gfsc). */
   char * labels_arg;	 /* Specify alphabet for string->label lookup (default=cascade.lab). */
+  int utf8_flag;	 /* Assume UTF-8 encoded alphabet and input (default=0). */
   int max_paths_arg;	 /* Specify maximum number of paths to extract (default=1). */
   int max_ops_arg;	 /* Specify maximum number of configuration-pop operations (default=-1). */
   float max_weight_arg;	 /* Specify maximum weight of extractable paths (default=1e+38). */
@@ -33,6 +34,7 @@ struct gengetopt_args_info {
   int version_given;	 /* Whether version was given */
   int cascade_given;	 /* Whether cascade was given */
   int labels_given;	 /* Whether labels was given */
+  int utf8_given;	 /* Whether utf8 was given */
   int max_paths_given;	 /* Whether max-paths was given */
   int max_ops_given;	 /* Whether max-ops was given */
   int max_weight_given;	 /* Whether max-weight was given */

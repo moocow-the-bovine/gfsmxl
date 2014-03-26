@@ -44,6 +44,9 @@ string "labels" l "Specify alphabet for string->label lookup" \
     arg="LABFILE" \
     default="cascade.lab"
 
+flag "utf8" u "Assume UTF-8 encoded alphabet and input" \
+  default="0"
+
 int "max-paths" p "Specify maximum number of paths to extract" \
   arg="N_PATHS" \
   default="1"

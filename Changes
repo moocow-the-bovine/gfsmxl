@@ -1,5 +1,8 @@
 Change log for gfsmxl
 
+v0.0.12 Wed, 26 Mar 2014 16:17:50 +0100 moocow
+	+ added awareness for gfsmAlphabet utf8 attribute
+
 v0.0.9 Wed, 10 Dec 2008 11:28:51 +0100
   + added gfsmxl_cascade_nbest_paths(): direct construction of paths
     from backtraces, without intermediate transducer or gfsm_automaton_paths()
@@ -48,3 +51,7 @@ v0.0.2 Tue, 08 Jan 2008 13:30:33 +0100
 
 v0.0.1 Mon, 07 Jan 2008 13:05:47 +0100
   + created
+
+## Local Variables:
+## mode: change-log
+## End:

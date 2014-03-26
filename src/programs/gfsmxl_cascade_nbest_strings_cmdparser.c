@@ -87,6 +87,7 @@ cmdline_parser_print_help (void)
   printf("   -V         --version            Print version and exit.\n");
   printf("   -CCASCADE  --cascade=CASCADE    Specify cascade for lookup\n");
   printf("   -lLABFILE  --labels=LABFILE     Specify alphabet for string->label lookup\n");
+  printf("   -u         --utf8               Assume UTF-8 encoded alphabet and input\n");
   printf("   -pN_PATHS  --max-paths=N_PATHS  Specify maximum number of paths to extract\n");
   printf("   -oN_OPS    --max-ops=N_OPS      Specify maximum number of configuration-pop operations\n");
   printf("   -wFLOAT    --max-weight=FLOAT   Specify maximum weight of extractable paths\n");
@@ -117,6 +118,7 @@ clear_args(struct gengetopt_args_info *args_info)
 {
   args_info->cascade_arg = gog_strdup("cascade.gfsc"); 
   args_info->labels_arg = gog_strdup("cascade.lab"); 
+  args_info->utf8_flag = 0; 
   args_info->max_paths_arg = 1; 
   args_info->max_ops_arg = -1; 
   args_info->max_weight_arg = 1e+38; 
@@ -136,6 +138,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
   args_info->version_given = 0;
   args_info->cascade_given = 0;
   args_info->labels_given = 0;
+  args_info->utf8_given = 0;
   args_info->max_paths_given = 0;
   args_info->max_ops_given = 0;
   args_info->max_weight_given = 0;
@@ -162,6 +165,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
 	{ "version", 0, NULL, 'V' },
 	{ "cascade", 1, NULL, 'C' },
 	{ "labels", 1, NULL, 'l' },
+	{ "utf8", 0, NULL, 'u' },
 	{ "max-paths", 1, NULL, 'p' },
 	{ "max-ops", 1, NULL, 'o' },
 	{ "max-weight", 1, NULL, 'w' },
@@ -175,6 +179,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
 	'V',
 	'C', ':',
 	'l', ':',
+	'u',
 	'p', ':',
 	'o', ':',
 	'w', ':',
@@ -260,6 +265,15 @@ cmdline_parser_parse_option(char oshort, const char *olong, const char *val,
           args_info->labels_given++;
           if (args_info->labels_arg) free(args_info->labels_arg);
           args_info->labels_arg = gog_strdup(val);
+          break;
+        
+        case 'u':	 /* Assume UTF-8 encoded alphabet and input */
+          if (args_info->utf8_given) {
+            fprintf(stderr, "%s: `--utf8' (`-u') option given more than once\n", PROGRAM);
+          }
+          args_info->utf8_given++;
+         if (args_info->utf8_given <= 1)
+           args_info->utf8_flag = !(args_info->utf8_flag);
           break;
         
         case 'p':	 /* Specify maximum number of paths to extract */
@@ -354,6 +368,16 @@ cmdline_parser_parse_option(char oshort, const char *olong, const char *val,
             args_info->labels_given++;
             if (args_info->labels_arg) free(args_info->labels_arg);
             args_info->labels_arg = gog_strdup(val);
+          }
+          
+          /* Assume UTF-8 encoded alphabet and input */
+          else if (strcmp(olong, "utf8") == 0) {
+            if (args_info->utf8_given) {
+              fprintf(stderr, "%s: `--utf8' (`-u') option given more than once\n", PROGRAM);
+            }
+            args_info->utf8_given++;
+           if (args_info->utf8_given <= 1)
+             args_info->utf8_flag = !(args_info->utf8_flag);
           }
           
           /* Specify maximum number of paths to extract */

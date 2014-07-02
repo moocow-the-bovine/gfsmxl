@@ -4,7 +4,7 @@
  * Author: Bryan Jurish <moocow.bovine@gmail.com>
  * Description: finite state machine library: lookup cascade: lookup: inline definitions
  *
- * Copyright (c) 2007-2011 Bryan Jurish.
+ * Copyright (c) 2007-2014 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -83,6 +83,7 @@ void gfsmxl_cascade_lookup_free(gfsmxlCascadeLookup *cl)
   gfsmxl_clc_fh_deleteheap(cl->heap);
   g_hash_table_destroy(cl->configs);
   gfsm_automaton_free(cl->otrie);
+  gfsm_slice_free(gfsmxlCascadeLookup, cl);
 }
 
 /*======================================================================

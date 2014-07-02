@@ -1,5 +1,8 @@
 Change log for gfsmxl
 
+v0.0.13 Wed, 02 Jul 2014 10:20:14 +0200 moocow
+	+ fixed memory leak in gfsmxl_cascade_lookup_free() reported by Marcel Bollmann & Florian Petran
+
 v0.0.12 Wed, 26 Mar 2014 16:17:50 +0100 moocow
 	+ added awareness for gfsmAlphabet utf8 attribute
 

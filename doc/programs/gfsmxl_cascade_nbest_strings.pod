@@ -17,6 +17,7 @@ gfsmxl_cascade_nbest_strings [OPTIONS] TEXT_FILE
  Options
     -h         --help               Print help and exit.
     -V         --version            Print version and exit.
+    -vINT      --verbose=INT        Verbosity level (0:none, 1:stderr, 2:stderr+file)
     -CCASCADE  --cascade=CASCADE    Specify cascade for lookup
     -lLABFILE  --labels=LABFILE     Specify alphabet for string->label lookup
     -u         --utf8               Assume UTF-8 encoded alphabet and input
@@ -89,6 +90,15 @@ Default: '0'
 Print version and exit.
 
 Default: '0'
+
+
+
+
+=item C<--verbose=INT> , C<-vINT>
+
+Verbosity level (0:none, 1:stderr, 2:stderr+file)
+
+Default: '1'
 
 
 

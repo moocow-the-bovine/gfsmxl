@@ -85,6 +85,7 @@ cmdline_parser_print_help (void)
   printf(" Options:\n");
   printf("   -h         --help               Print help and exit.\n");
   printf("   -V         --version            Print version and exit.\n");
+  printf("   -vINT      --verbose=INT        Verbosity level (0:none, 1:stderr, 2:stderr+file)\n");
   printf("   -CCASCADE  --cascade=CASCADE    Specify cascade for lookup\n");
   printf("   -lLABFILE  --labels=LABFILE     Specify alphabet for string->label lookup\n");
   printf("   -u         --utf8               Assume UTF-8 encoded alphabet and input\n");
@@ -116,6 +117,7 @@ gog_strdup (const char *s)
 static void
 clear_args(struct gengetopt_args_info *args_info)
 {
+  args_info->verbose_arg = 1; 
   args_info->cascade_arg = gog_strdup("cascade.gfsc"); 
   args_info->labels_arg = gog_strdup("cascade.lab"); 
   args_info->utf8_flag = 0; 
@@ -136,6 +138,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
 
   args_info->help_given = 0;
   args_info->version_given = 0;
+  args_info->verbose_given = 0;
   args_info->cascade_given = 0;
   args_info->labels_given = 0;
   args_info->utf8_given = 0;
@@ -163,6 +166,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
       static struct option long_options[] = {
 	{ "help", 0, NULL, 'h' },
 	{ "version", 0, NULL, 'V' },
+	{ "verbose", 1, NULL, 'v' },
 	{ "cascade", 1, NULL, 'C' },
 	{ "labels", 1, NULL, 'l' },
 	{ "utf8", 0, NULL, 'u' },
@@ -177,6 +181,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
       static char short_options[] = {
 	'h',
 	'V',
+	'v', ':',
 	'C', ':',
 	'l', ':',
 	'u',
@@ -247,6 +252,14 @@ cmdline_parser_parse_option(char oshort, const char *olong, const char *val,
           cmdline_parser_print_version();
           exit(EXIT_SUCCESS);
         
+          break;
+        
+        case 'v':	 /* Verbosity level (0:none, 1:stderr, 2:stderr+file) */
+          if (args_info->verbose_given) {
+            fprintf(stderr, "%s: `--verbose' (`-v') option given more than once\n", PROGRAM);
+          }
+          args_info->verbose_given++;
+          args_info->verbose_arg = (int)atoi(val);
           break;
         
         case 'C':	 /* Specify cascade for lookup */
@@ -348,6 +361,15 @@ cmdline_parser_parse_option(char oshort, const char *olong, const char *val,
             cmdline_parser_print_version();
             exit(EXIT_SUCCESS);
           
+          }
+          
+          /* Verbosity level (0:none, 1:stderr, 2:stderr+file) */
+          else if (strcmp(olong, "verbose") == 0) {
+            if (args_info->verbose_given) {
+              fprintf(stderr, "%s: `--verbose' (`-v') option given more than once\n", PROGRAM);
+            }
+            args_info->verbose_given++;
+            args_info->verbose_arg = (int)atoi(val);
           }
           
           /* Specify cascade for lookup */

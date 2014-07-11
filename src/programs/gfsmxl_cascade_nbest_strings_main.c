@@ -59,6 +59,9 @@ gfsmSet         *paths =NULL;
 gfsmxlPathArray *pathsa=NULL;
 GString         *gstr  =NULL;
 
+//-- profiling
+double         elapsed, ntoks_d, toks_per_sec, coverage, nchars_d;
+
 /*======================================================================
  * Coverage tracking
  */
@@ -71,6 +74,8 @@ long unsigned int nchars_total=0;
 /*======================================================================
  * Utils
  */
+
+//----------------------------------------------------------------------
 gboolean analyze_token_foreach_(gfsmPath *path, gpointer val_unused, gfsmIOHandle *outh)
 {
   g_string_truncate(gstr,0);
@@ -137,9 +142,10 @@ void analyze_token(char *text, gfsmIOHandle *outh)
   }
 }
 
-void show_config_macros(const char *prog)
+//----------------------------------------------------------------------
+void show_config_macros(FILE *f, const char *prefix, const char *label)
 {
-  fprintf(stderr,"%s: %-32s ? %s\n", prog, "CASCADE_USE_BLOCKS",
+  fprintf(f,"%s%s: %-32s ? %s\n", prefix, label, "CASCADE_USE_BLOCKS",
 #if defined(CASCADE_USE_BLOCKS)
 	 "yes"
 #else
@@ -147,7 +153,7 @@ void show_config_macros(const char *prog)
 #endif
 	 );
 
-  fprintf(stderr,"%s: %-32s ? %s\n", prog, "CASCADE_USE_BLOCK_INDEX",
+  fprintf(f,"%s%s: %-32s ? %s\n", prefix, label, "CASCADE_USE_BLOCK_INDEX",
 #if defined(CASCADE_USE_BLOCK_INDEX)
 	 "yes"
 #else
@@ -155,7 +161,7 @@ void show_config_macros(const char *prog)
 #endif
 	 );
 
-  fprintf(stderr,"%s: %-32s ? %s\n", prog, "CASCADE_EXPAND_BLOCK_BSEARCH",
+  fprintf(f,"%s%s: %-32s ? %s\n", prefix, label, "CASCADE_EXPAND_BLOCK_BSEARCH",
 #if defined(CASCADE_EXPAND_BLOCK_BSEARCH)
 	 "yes"
 #else
@@ -163,7 +169,7 @@ void show_config_macros(const char *prog)
 #endif
 	 );
 
-  fprintf(stderr,"%s: %-32s ? %s\n", prog, "CASCADE_USE_BLOCK_HASH",
+  fprintf(f,"%s%s: %-32s ? %s\n", prefix, label, "CASCADE_USE_BLOCK_HASH",
 #if defined(CASCADE_USE_BLOCK_HASH)
 	 "yes"
 #else
@@ -171,7 +177,7 @@ void show_config_macros(const char *prog)
 #endif
 	 );
 
-  fprintf(stderr,"%s: %-32s ? %s\n", prog, "CASCADE_USE_RAW_BSEARCH",
+  fprintf(f,"%s%s: %-32s ? %s\n", prefix, label, "CASCADE_USE_RAW_BSEARCH",
 #if defined(CASCADE_USE_RAW_BSEARCH)
 	 "yes"
 #else
@@ -179,7 +185,7 @@ void show_config_macros(const char *prog)
 #endif
 	 );
 
-  fprintf(stderr,"%s: %-32s ? %s\n", prog, "CASCADE_SORT_ARCITER",
+  fprintf(f,"%s%s: %-32s ? %s\n", prefix, label, "CASCADE_SORT_ARCITER",
 #if defined(CASCADE_SORT_ARCITER)
 	 "yes"
 #else
@@ -187,7 +193,7 @@ void show_config_macros(const char *prog)
 #endif
 	 );
 
-  fprintf(stderr,"%s: %-32s ? %s\n", prog, "CASCADE_EXPAND_RECURSIVE",
+  fprintf(f,"%s%s: %-32s ? %s\n", prefix, label, "CASCADE_EXPAND_RECURSIVE",
 #if defined(CASCADE_EXPAND_RECURSIVE)
 	 "yes"
 #else
@@ -195,7 +201,7 @@ void show_config_macros(const char *prog)
 #endif
 	 );
 
-  fprintf(stderr,"%s: %-32s ? %s\n", prog, "GFSMXL_DEBUG_ENABLED",
+  fprintf(f,"%s%s: %-32s ? %s\n", prefix, label, "GFSMXL_DEBUG_ENABLED",
 #if defined(GFSMXL_DEBUG_ENABLED)
 	 "yes"
 #else
@@ -203,13 +209,50 @@ void show_config_macros(const char *prog)
 #endif
 	 );
 
-  fprintf(stderr,"%s: %-32s ? %s\n", prog, "GFSMXL_CLC_FH_STATS",
+  fprintf(f,"%s%s: %-32s ? %s\n", prefix, label, "GFSMXL_CLC_FH_STATS",
 #if defined(GFSMXL_CLC_FH_STATS)
 	 "yes"
 #else
 	 "no"
 #endif
 	 );
+}
+
+//----------------------------------------------------------------------
+void show_config(FILE *f, const char *prefix, const char *label)
+{
+  //-- show preprocessor configuration
+  //show_config_macros(f, prefix, label);
+
+  //-- report
+  fprintf(f, "%s%s: cascade file: %s\n", prefix, label, cscfilename);
+  fprintf(f, "%s%s: alphabet    : %s\n", prefix, label, abetfilename);
+  fprintf(f, "%s%s: max_paths   : %u\n", prefix, label, cl->max_paths);
+  fprintf(f, "%s%s: max_w       : %g\n", prefix, label, cl->max_w);
+  fprintf(f, "%s%s: max_ops     : %u\n", prefix, label, cl->max_ops);
+  fprintf(f, "%s%s: debug       : %u\n", prefix, label, args.debug_flag);
+  fprintf(f, "%s%s: input file  : %s\n", prefix, label, infilename);
+  fprintf(f, "%s%s: output file : %s\n", prefix, label, outfilename);
+  //fprintf(f, "%s%s: processing  : ", prefix, label);
+}
+
+//----------------------------------------------------------------------
+void show_stats(FILE *f, const char *prefix, const char *label)
+{
+#ifdef GFSMXL_CLC_FH_STATS
+  fprintf(f, "%s%s: fh:maxn     : %8d\n", prefix, label, gfsmxl_clc_fh_maxn(cl->heap));
+  fprintf(f, "%s%s: fh:#/insert : %8d\n", prefix, label, gfsmxl_clc_fh_ninserts(cl->heap));
+  fprintf(f, "%s%s: fh:#/extrct : %8d\n", prefix, label, gfsmxl_clc_fh_nextracts(cl->heap));
+#endif
+  fprintf(f, "%s%s: #/tokens    : %8lu tok\n", prefix, label, ntoks);
+  fprintf(f, "%s%s: #/chars     : %8lu chr  (%8.2f chr/tok)\n", prefix, label, nchars_total, ((double)nchars_total)/ntoks_d);
+  fprintf(f, "%s%s: #/ops       : %8lu ops  (%8.2f ops/tok == %8.2f ops/chr)\n",
+	  prefix, label, nops_total, ((double)nops_total/ntoks_d), ((double)nops_total/nchars_d));
+  fprintf(f, "%s%s: #/res_sts   : %8lu sts  (%8.2f sts/tok == %8.2f sts/chr)\n",
+	  prefix, label, nstates_total, ((double)nstates_total/ntoks_d), ((double)nstates_total/nchars_d));
+  fprintf(f, "%s%s: covered     : %8lu tok  (%8.2f %%      )\n", prefix, label, ncovered, coverage);
+  fprintf(f, "%s%s: elapsed     : %8.2f sec\n", prefix, label, elapsed);
+  fprintf(f, "%s%s: throughput  : %8.2f tok/sec\n", prefix, label, toks_per_sec);
 }
 
 /*--------------------------------------------------------------------------
@@ -285,24 +328,15 @@ int main (int argc, char **argv)
   size_t         buflen=0;
   ssize_t        nread;
   GTimer         *timer=NULL;
-  double         elapsed, ntoks_d, toks_per_sec, coverage, nchars_d;
   const char *prog = progname;
 
   get_my_options(argc,argv);
 
-  //-- show preprocessor configuration
-  //show_config_macros(progname);
-
-  //-- report
-  fprintf(stderr, "%s: cascade file: %s\n", progname, cscfilename);
-  fprintf(stderr, "%s: alphabet    : %s\n", progname, abetfilename);
-  fprintf(stderr, "%s: max_paths   : %u\n", progname, cl->max_paths);
-  fprintf(stderr, "%s: max_w       : %g\n", progname, cl->max_w);
-  fprintf(stderr, "%s: max_ops     : %u\n", progname, cl->max_ops);
-  fprintf(stderr, "%s: debug       : %u\n", progname, args.debug_flag);
-  fprintf(stderr, "%s: input file  : %s\n", progname, infilename);
-  fprintf(stderr, "%s: output file : %s\n", progname, outfilename);
-  fprintf(stderr, "%s: processing  : ", progname);
+  //-- show configuration
+  if (args.verbose_arg > 0) {
+    show_config(stderr, "",progname);
+    fprintf(stderr, "%s: processing  : ", progname);
+  }
 
   //-- allocate globals
   labvec = g_ptr_array_new();
@@ -326,34 +360,30 @@ int main (int argc, char **argv)
     if (linebuf[0]) {
       analyze_token(linebuf,outh);
       //
-      if ( ntoks%TOKS_PER_DOT == 0 ) { fputc('.',stderr); fflush(stderr); }
+      if ( args.verbose_arg > 0 && ntoks%TOKS_PER_DOT == 0 ) { fputc('.',stderr); fflush(stderr); }
       ++ntoks;
     } else {
       gfsmio_putc(outh,'\n');
     }
   }
-  fprintf(stderr, " done.\n");
+  if (args.verbose_arg > 0) fprintf(stderr, " done.\n");
 
-  elapsed = g_timer_elapsed(timer,NULL);
-  ntoks_d = ntoks;
-  nchars_d = nchars_total;
-  toks_per_sec = ntoks_d / elapsed;
-  coverage     = 100.0 * ((double)ncovered) / ntoks_d;
+  //-- show stats
+  if (args.verbose_arg > 0) {
+    elapsed = g_timer_elapsed(timer,NULL);
+    ntoks_d = ntoks;
+    nchars_d = nchars_total;
+    toks_per_sec = ntoks_d / elapsed;
+    coverage     = 100.0 * ((double)ncovered) / ntoks_d;
+    show_stats(stderr, "", prog);
+  }
 
-#ifdef GFSMXL_CLC_FH_STATS
-  fprintf(stderr, "%s: fh:maxn     : %8d\n", prog, gfsmxl_clc_fh_maxn(cl->heap));
-  fprintf(stderr, "%s: fh:#/insert : %8d\n", prog, gfsmxl_clc_fh_ninserts(cl->heap));
-  fprintf(stderr, "%s: fh:#/extrct : %8d\n", prog, gfsmxl_clc_fh_nextracts(cl->heap));
-#endif
-  fprintf(stderr, "%s: #/tokens    : %8lu tok\n", prog, ntoks);
-  fprintf(stderr, "%s: #/chars     : %8lu chr  (%8.2f chr/tok)\n", prog, nchars_total, ((double)nchars_total)/ntoks_d);
-  fprintf(stderr, "%s: #/ops       : %8lu ops  (%8.2f ops/tok == %8.2f ops/chr)\n",
-	  prog, nops_total, ((double)nops_total/ntoks_d), ((double)nops_total/nchars_d));
-  fprintf(stderr, "%s: #/res_sts   : %8lu sts  (%8.2f sts/tok == %8.2f sts/chr)\n",
-	  prog, nstates_total, ((double)nstates_total/ntoks_d), ((double)nstates_total/nchars_d));
-  fprintf(stderr, "%s: covered     : %8lu tok  (%8.2f %%      )\n", prog, ncovered, coverage);
-  fprintf(stderr, "%s: elapsed     : %8.2f sec\n", prog, elapsed);
-  fprintf(stderr, "%s: throughput  : %8.2f tok/sec\n", prog, toks_per_sec);
+  //-- file footer
+  if (args.verbose_arg > 1 && outh->iotype==gfsmIOTCFile) {
+    FILE *outf = (FILE*)outh->handle;
+    show_config(outf, "%% ", prog);
+    show_stats(outf, "%% ", prog);
+  }
 
   //-- cleanup & finish
   gfsmio_close(ih);

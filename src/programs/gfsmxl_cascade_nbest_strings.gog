@@ -33,6 +33,9 @@ Required.  Input files are assumed to be in 1-word-per-line format.
 #-----------------------------------------------------------------------------
 #group "Basic Options"
 
+int "verbose" v "Verbosity level (0:none, 1:stderr, 2:stderr+file)" \
+  default="1"
+
 string "cascade" C "Specify cascade for lookup" \
     arg="CASCADE" \
     default="cascade.gfsc" \

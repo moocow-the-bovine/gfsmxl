@@ -19,6 +19,7 @@ extern "C" {
  */
 
 struct gengetopt_args_info {
+  int verbose_arg;	 /* Verbosity level (0:none, 1:stderr, 2:stderr+file) (default=1). */
   char * cascade_arg;	 /* Specify cascade for lookup (default=cascade.gfsc). */
   char * labels_arg;	 /* Specify alphabet for string->label lookup (default=cascade.lab). */
   int utf8_flag;	 /* Assume UTF-8 encoded alphabet and input (default=0). */
@@ -31,6 +32,7 @@ struct gengetopt_args_info {
 
   int help_given;	 /* Whether help was given */
   int version_given;	 /* Whether version was given */
+  int verbose_given;	 /* Whether verbose was given */
   int cascade_given;	 /* Whether cascade was given */
   int labels_given;	 /* Whether labels was given */
   int utf8_given;	 /* Whether utf8 was given */

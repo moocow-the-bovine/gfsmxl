@@ -18,8 +18,9 @@ $GFSMXL_LIBS   = join(' ', map { $s=`pkg-config --libs-only-l $_`; chomp($s); $s
 WriteMakefile
   (
    NAME		=> 'Gfsm::XL',
-   DISTNAME	=> 'gfsmxl-perl',
-   AUTHOR       => 'Bryan Jurish <moocow@ling.uni-potsdam.de>',
+   #DISTNAME	=> 'gfsmxl-perl',
+   DISTNAME	=> 'Gfsm-XL',
+   AUTHOR       => 'Bryan Jurish <moocow@cpan.org>',
    ABSTRACT	=> 'Perl interface to libgfsmxl finite-state cascade library',
    VERSION_FROM	=> 'XL.pm',
 
@@ -32,6 +33,9 @@ WriteMakefile
    CCFLAGS      => '',                  ##-- additional flags
    OBJECT       => 'XL.o GfsmXLPerl.o',
    OPTIMIZE     => '-O2 -pipe',
+
+   ##-- scripts
+   EXE_FILES => [glob('gfsmxl*.perl')],
 
    ##-- DEBUG
    #MAKEAPERL=>1,
@@ -69,8 +73,52 @@ sub MY::depend {
 		 ."\n"
 		 ."GfsmXLPerl.o: GfsmXLPerl.h GfsmXLPerl.c\n"
 		 ."\n"
+		 ###-- readme
+		 ."dist: README.txt\n"
+		 ."\n"
+		 ."create_distdir: README.txt\n"
+		 #."distdir_am: README.txt\n"
+		 ."\n"
+		 ."distcheck: README.txt\n"
+		 ."\n"
+		 ."manicheck: README.txt\n"
+		 ."\n"
 		 ## -- more here
 		 ."\n"
 		);
   $inherited;
+}
+
+##---------------------------------------------------------------
+sub MY::special_targets {
+  package MY;
+  my $inherited = shift->SUPER::special_targets(@_);
+  $inherited .=
+"
+.SUFFIXES: .pm .pod .rpod .man .txt .html
+
+##-- pod2xxx
+.pm.html:
+\tpod2html --title=\$@ --infile=\$< --outfile=\$@
+
+.pm.txt:
+\tpod2text \$< \$@
+
+.pod.html:
+\tpod2html --title=\$@ --infile=\$< --outfile=\$@
+
+.pod.txt:
+\tpod2text \$< \$@
+
+##-- readme
+.rpod.html:
+\tpod2html --title=\$@ --infile=\$< --outfile=\$@
+
+.rpod.txt:
+\tpod2text \$< \$@
+
+readme: README.txt
+
+";
+  return $inherited;
 }

@@ -9,7 +9,7 @@ use Exporter;
 
 our @ISA = qw(Exporter);
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 # we need Gfsm loaded
 require Gfsm;
@@ -49,6 +49,7 @@ our @EXPORT_OK = map { @$_ } values(%EXPORT_TAGS);
 __END__
 
 # Below is stub documentation for your module. You'd better edit it!
+=pod
 
 =head1 NAME
 
@@ -75,7 +76,7 @@ fsm(1).
 
 =head1 AUTHOR
 
-Bryan Jurish E<lt>moocow@ling.uni-potsdam.deE<gt>
+Bryan Jurish E<lt>moocow@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

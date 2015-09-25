@@ -2,6 +2,7 @@
 ^Makefile$
 ^pm_to_blib$
 ^blib
+^MYMETA\.
 
 CVS
 \.svn
@@ -12,6 +13,8 @@ CVS
 \.o$
 \.gz$
 \.zip$
+\.old$
+\.bak$
 
 ^[^\/]*\.tfst$
 \-got\.tfst$
@@ -19,6 +22,7 @@ tmp.*\.tfst$
 \.lab$
 \.gfst$
 \.gfsx$
+\.gfsc$
 
 \.old$
 \.ps$

@@ -1,18 +1,24 @@
 MANIFEST			This list of files
 MANIFEST.SKIP			Files to skip
-.cvsignore
-Cascade.xs
+Makefile.PL
+Changes
+README.rpod
+README.txt
+
 GfsmXLPerl.c
 GfsmXLPerl.h
-Lookup.xs
-Makefile.PL
-perlobject.map
 ppport.h
+
 typemap
-XL.pm
+perlobject.map
+
+Cascade.xs
+Lookup.xs
 XL.xs
+
+XL.pm
 XL/Cascade.pm
 XL/Cascade/Lookup.pm
+
 t/01_ini.t
 t/common.plt
-testme.perl

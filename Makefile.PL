@@ -15,11 +15,15 @@ my %prereq = (
 ##-- ensure minimum libgfsmxl version
 use version;
 my $gfsmxl_min_version   = "0.0.11";
-my $gfsmxl_alien_version = Alien::GfsmXL->pkgconfig('gfsmxl')->keyword('Version');
-(my $v_alien = $gfsmxl_alien_version) =~ s/\-/_/g;
-die("Required library libgfsmxl >= v$gfsmxl_min_version not found (we have v$gfsmxl_alien_version)\n")
-  if (version->parse($v_alien) < version->parse($gfsmxl_min_version));
-  #if (system("pkg-config --atleast-version=$gfsmxl_min_version gfsmxl") != 0);
+if (Alien::GfsmXL->install_type ne 'system') {
+  my $gfsmxl_alien_version = Alien::GfsmXL->pkgconfig('gfsmxl')->keyword('Version');
+  (my $v_alien = $gfsmxl_alien_version) =~ s/\-/_/g;
+  die("Required library libgfsmxl >= v$gfsmxl_min_version not found; we have v$gfsmxl_alien_version\n")
+    if (version->parse($v_alien) < version->parse($gfsmxl_min_version));
+}
+elsif (system("pkg-config --atleast-version=${gfsmxl_min_version} gfsmxl") != 0) {
+  die("Required library libgfsmxl >= v$gfsmxl_min_version not found; we have v", `pkg-config --modversion gfsmxl`);
+}
 
 ##----------------------------------------------------------------------
 ## MAIN

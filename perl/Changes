@@ -2,6 +2,9 @@
 ##
 ## Change Log for perl package Gfsm::XL
 
+v0.09 Mon, 22 Feb 2016 13:27:54 +0100 moocow
+	* external c library dependencies now use Alien::Gfsm, Alien::GfsmXL
+
 v0.08 Fri, 25 Sep 2015 13:54:34 +0200 moocow
 	* renamed distribution to Gfsm::XL for CPAN-friendliness
 	* added README, Changes

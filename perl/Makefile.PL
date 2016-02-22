@@ -3,14 +3,23 @@ use ExtUtils::MakeMaker;
 ##----------------------------------------------------------------------
 ## Configuration
 ##----------------------------------------------------------------------
-our $gfsmxl_min_version = "0.0.11";
-if (system("pkg-config --atleast-version=$gfsmxl_min_version gfsmxl") != 0) {
-  die("Required module gfsmxl >= v$gfsmxl_min_version not found!\n");
-}
+use Alien::Gfsm;
+use Alien::GfsmXL;
+my %prereq = (
+	      'ExtUtils::MakeMaker' => 0,
+	      'Alien::Gfsm' => 0.001,
+	      'Alien::GfsmXL' => 0.001,
+	      'Gfsm' => 0.0404,
+	     );
 
-$GFSMXL_IFLAGS = join(' ', map { $s=`pkg-config --cflags-only-I $_`; chomp($s); $s } qw(gfsmxl));
-$GFSMXL_LDFLAGS= join(' ', map { $s=`pkg-config --libs-only-L $_`; chomp($s); $s } qw(gfsmxl));
-$GFSMXL_LIBS   = join(' ', map { $s=`pkg-config --libs-only-l $_`; chomp($s); $s } qw(gfsmxl));
+##-- ensure minimum libgfsmxl version
+use version;
+my $gfsmxl_min_version   = "0.0.11";
+my $gfsmxl_alien_version = Alien::GfsmXL->pkgconfig('gfsmxl')->keyword('Version');
+(my $v_alien = $gfsmxl_alien_version) =~ s/\-/_/g;
+die("Required library libgfsmxl >= v$gfsmxl_min_version not found (we have v$gfsmxl_alien_version)\n")
+  if (version->parse($v_alien) < version->parse($gfsmxl_min_version));
+  #if (system("pkg-config --atleast-version=$gfsmxl_min_version gfsmxl") != 0);
 
 ##----------------------------------------------------------------------
 ## MAIN
@@ -23,14 +32,17 @@ WriteMakefile
    AUTHOR       => 'Bryan Jurish <moocow@cpan.org>',
    ABSTRACT	=> 'Perl interface to libgfsmxl finite-state cascade library',
    VERSION_FROM	=> 'XL.pm',
+   LICENSE => 'perl',
 
+   ##-- prerequisites
+   PREREQ_PM => \%prereq,
 
    ##-- user variables
    #CC           => 'c++',   ##-- your c++ compiler
-   LIBS         => "$GFSMXL_LDFLAGS $GFSMXL_LIBS",      ##-- additional libraries
-   DEFINE       => '-DHAVE_CONFIG_H',   ##-- additional defines
-   INC          => $GFSMXL_IFLAGS,      ##-- additional includes
-   CCFLAGS      => '',                  ##-- additional flags
+   LIBS         => join(' ', Alien::Gfsm->libs,   Alien::GfsmXL->libs),      ##-- additional libraries
+   INC          => join(' ', Alien::Gfsm->cflags, Alien::GfsmXL->cflags),    ##-- additional includes
+   DEFINE       => '-DHAVE_CONFIG_H',	     ##-- additional defines
+   CCFLAGS      => '',                        ##-- additional flags
    OBJECT       => 'XL.o GfsmXLPerl.o',
    OPTIMIZE     => '-O2 -pipe',
 

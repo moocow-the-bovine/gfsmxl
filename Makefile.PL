@@ -6,7 +6,7 @@ use ExtUtils::MakeMaker;
 use Alien::Gfsm;
 use Alien::GfsmXL;
 my %prereq = (
-	      'ExtUtils::MakeMaker' => 0,
+	      'ExtUtils::MakeMaker' => 6.52, ##-- for CONFIGURE_REQUIRES
 	      'Alien::Gfsm' => 0.001,
 	      'Alien::GfsmXL' => 0.001,
 	      'Gfsm' => 0.0404,
@@ -39,6 +39,7 @@ WriteMakefile
    LICENSE => 'perl',
 
    ##-- prerequisites
+   CONFIGURE_REQUIRES => \%prereq,
    PREREQ_PM => \%prereq,
 
    ##-- user variables

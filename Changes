@@ -2,6 +2,9 @@
 ##
 ## Change Log for perl package Gfsm::XL
 
+v0.10 Wed, 24 Feb 2016 09:10:10 +0100 mooocow
+	* added CONFIGURE_REQUIRES to fix RT bug #112321
+
 v0.09 Mon, 22 Feb 2016 13:27:54 +0100 moocow
 	* external c library dependencies now use Alien::Gfsm, Alien::GfsmXL
 

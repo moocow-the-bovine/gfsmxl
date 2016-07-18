@@ -4,7 +4,7 @@
  * Author: Bryan Jurish <moocow.bovine@gmail.com>
  * Description: finite state machine library: lookup cascade: inline definitions
  *
- * Copyright (c) 2007-2012 Bryan Jurish.
+ * Copyright (c) 2007-2016 Bryan Jurish.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -315,7 +315,7 @@ gfsmxlCascadeArc* gfsmxl_cascade_arc_sized_new(guint depth)
 {
   //gfsmxlCascadeArc *arc = (gfsmxlCascadeArc*)g_malloc(sizeof(gfsmxlCascadeArc)+(depth*sizeof(gfsmStateId)));
   gfsmxlCascadeArc *arc = (gfsmxlCascadeArc*)gfsm_slice_alloc(sizeof(gfsmxlCascadeArc)+(depth*sizeof(gfsmStateId)));
-  arc->targets = (gfsmxlCascadeStateId)( ((void*)arc) + sizeof(gfsmxlCascadeArc) );
+  arc->targets = (gfsmxlCascadeStateId)( ((char*)arc) + sizeof(gfsmxlCascadeArc) ); //-- no pointer arithmetic with (void*), patch from F. Petran
   return arc;
 }
 

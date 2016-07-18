@@ -1,5 +1,8 @@
 Change log for gfsmxl
 
+v0.0.14 Mon, 18 Jul 2016 11:21:53 +0200 moocow
+	+ changed void* arithmetic to char* for linking with clang (patch by Florian Petran)
+
 v0.0.13 Wed, 02 Jul 2014 10:20:14 +0200 moocow
 	+ fixed memory leak in gfsmxl_cascade_lookup_free() reported by Marcel Bollmann & Florian Petran
 

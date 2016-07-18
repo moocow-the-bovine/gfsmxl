@@ -3,8 +3,8 @@ AC_PREREQ(2.5)
 
 dnl Some handy macros
 define([THE_PACKAGE_NAME],    [gfsmxl])
-define([THE_PACKAGE_VERSION], [0.0.14])
-define([THE_PACKAGE_MAINTAINER],  [moocow.bovine@gmail.com])
+define([THE_PACKAGE_VERSION], [0.0.15])
+define([THE_PACKAGE_MAINTAINER],  [moocow@cpan.org])
 
 AC_INIT(THE_PACKAGE_NAME, THE_PACKAGE_VERSION, THE_PACKAGE_MAINTAINER)
 

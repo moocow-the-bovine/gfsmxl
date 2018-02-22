@@ -44,6 +44,9 @@ libgfsmxl_la_SOURCES = \
 	gfsmxlLabelIndex.c \
 	gfsmxlSuffixIndex.c
 
+nodist_libgfsmxl_la_SOURCES = \
+	gfsmxlConfigNoAuto.h
+
 ## --- Extra (possible) sources
 #EXTRA_${prog_i}_SOURCES = 
 #EXTRA_${lib_i}_la_SOURCES = 
@@ -53,9 +56,9 @@ libgfsmxl_la_SOURCES = \
 ##----------------------------------------------------
 ## Additional rules
 
-gfsmxlConfigNoAuto.h: gfsmxlConfigAuto.h.in
-	rm -f "$@"
-	cp "$<" "$@"
+gfsmxlConfigNoAuto.h: gfsmxlConfigAuto.h
+	echo "/* src/libgfsm/gfsmConfigNoAuto.h. Generated from gfsmxlConfigAuto.h by make */" > $@
+	sed 's/^#define \([^ ]*\).*$$/#undef \1/;' gfsmxlConfigAuto.h >> $@
 
 ##-----------------------------------------------------------------------
 ## headers

@@ -1,10 +1,12 @@
+/* src/libgfsm/gfsmConfigNoAuto.h. Generated from gfsmxlConfigAuto.h by make */
+/* src/libgfsmxl/gfsmxlConfigAuto.h.  Generated from gfsmxlConfigAuto.h.in by configure.  */
 /* src/libgfsmxl/gfsmxlConfigAuto.h.in.  Generated from configure.ac by autoheader.  */
 
 /* Define this to enable tracking of fibheap statistics */
-#undef GFSMXL_CLC_FH_STATS
+/* #undef GFSMXL_CLC_FH_STATS */
 
 /* Define this to enable debugging code */
-#undef GFSMXL_DEBUG_ENABLED
+/* #undef GFSMXL_DEBUG_ENABLED */
 
 /* Major gfsmxl version */
 #undef GFSMXL_VERSION_MAJOR

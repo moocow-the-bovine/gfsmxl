@@ -1,5 +1,10 @@
 Change log for gfsmxl
 
+v0.0.16 Thu, 22 Feb 2018 13:10:04 +0100 moocow
+	+ explicit mootAutoConfig.h argument in rule generating mootNoConfig.h (BSD make chokes otherwise)
+	  - this probably happens with other (non-pattern?) rules too, fortunately BSD make dies before they're encountered
+	  - should fix Alien::Moot RT bug #124451
+
 v0.0.15 Mon, 18 Jul 2016 11:21:53 +0200 moocow
 	+ changed void* arithmetic to char* for linking with clang (patch by Florian Petran)
 

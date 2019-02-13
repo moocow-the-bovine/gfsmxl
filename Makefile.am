@@ -15,7 +15,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 ## --- recursion subdirectories
-SUBDIRS = config src doc
+SUBDIRS = config src $(GFSMXL_DOC_SUBDIRS)
 #SUBDIRST += tests
 
 ## --- pseudo-deps for '.SUFFIXES'

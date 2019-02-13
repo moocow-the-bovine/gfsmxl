@@ -3,7 +3,7 @@ AC_PREREQ(2.5)
 
 dnl Some handy macros
 define([THE_PACKAGE_NAME],    [gfsmxl])
-define([THE_PACKAGE_VERSION], [0.0.16])
+define([THE_PACKAGE_VERSION], [0.0.17-rc1])
 define([THE_PACKAGE_MAINTAINER],  [moocow@cpan.org])
 
 AC_INIT(THE_PACKAGE_NAME, THE_PACKAGE_VERSION, THE_PACKAGE_MAINTAINER)
@@ -392,6 +392,7 @@ AM_CONDITIONAL(HAVE_OPTGEN, [test "$OPTGEN_PERL" != "no"])
 ##vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 ## documentation
 ##
+GFSMLXL_DOC_SUBDIRS=""
 AC_ARG_WITH(docdir,
 	AC_HELP_STRING([--with-docdir=DIR],
 		[install documentation in DIR/AC_PACKAGE_NAME (default=DATADIR/doc)]),
@@ -430,8 +431,11 @@ gfsmxl_doc_formats=`echo "$ac_cv_doc_formats" | sed 's/\,/ /g'`
 if test "$enable_doc" != "yes" ; then
  ##-- disable all docs
  gfsmxl_doc_formats="none"
+else
+ GFSMXL_DOC_SUBDIRS="doc"
 fi
 AC_MSG_RESULT($gfsmxl_doc_formats)
+AC_SUBST(GFSMXL_DOC_SUBDIRS)
 #echo ">> post RESULT"
 
 ##-- doxygen: var
@@ -648,6 +652,7 @@ AM_CONDITIONAL(HAVE_POD2MAN,     [test -n "$POD2MAN"   -a "$POD2MAN"   != "no"])
 AM_CONDITIONAL(HAVE_POD2HTML,    [test -n "$POD2HTML"  -a "$POD2HTML"  != "no"])
 AM_CONDITIONAL(HAVE_POD2LATEX,   [test -n "$POD2LATEX" -a "$POD2LATEX" != "no"])
 
+AM_CONDITIONAL(DOC_ENABLED,      [test "$enable_doc" = "yes"])
 AM_CONDITIONAL(DOC_WANT_TXT,     [test -n "$CONFIG_DOC_WANT_TXT"   -a "$CONFIG_DOC_WANT_TXT"   != "no"])
 AM_CONDITIONAL(DOC_WANT_MAN,     [test -n "$CONFIG_DOC_WANT_MAN"   -a "$CONFIG_DOC_WANT_MAN"   != "no"])
 AM_CONDITIONAL(DOC_WANT_HTML,    [test -n "$CONFIG_DOC_WANT_HTML"  -a "$CONFIG_DOC_WANT_HTML"  != "no"])

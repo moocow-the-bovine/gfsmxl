@@ -1,4 +1,10 @@
-Change log for gfsmxl
+## Change log for gfsmxl
+
+v0.0.17 Wed, 13 Feb 2019 10:13:14 +0100 moocow
+	+ added m4/ax_have_gnu_make.m4 to check for GNU make
+	+ omit doc/ subdirectory from build entirely on ./configure --disable-doc
+	  - problem in GNU-make syntax in doc/libgfsm/Makefile.am:82 (=vpath %.h $(DOXY_INCLUDES))
+	+ should fix RT bug #128486 (maybe also consider using Alien::gmake for this)
 
 v0.0.16 Thu, 22 Feb 2018 13:10:04 +0100 moocow
 	+ explicit mootAutoConfig.h argument in rule generating mootNoConfig.h (BSD make chokes otherwise)

@@ -3,7 +3,7 @@ AC_PREREQ(2.5)
 
 dnl Some handy macros
 define([THE_PACKAGE_NAME],    [gfsmxl])
-define([THE_PACKAGE_VERSION], [0.0.17-rc1])
+define([THE_PACKAGE_VERSION], [0.0.17])
 define([THE_PACKAGE_MAINTAINER],  [moocow@cpan.org])
 
 AC_INIT(THE_PACKAGE_NAME, THE_PACKAGE_VERSION, THE_PACKAGE_MAINTAINER)
@@ -37,6 +37,9 @@ dnl
 AC_PROG_CC
 dnl AC_PROG_CXX
 dnl AC_LANG(C++)
+
+##-- check for GNU make
+AX_HAVE_GNU_MAKE
 
 ##vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 ## gnulib

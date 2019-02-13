@@ -169,7 +169,8 @@ libgfsmxl_la_LIBADD  = @gfsmxl_LIBS@ $(LIBS)
 #CLEANFILES =
 
 ## --- distclean: built by 'configure'
-#DISTCLEANFILES =
+DISTCLEANFILES = \
+	gfsmxlConfigNoAuto.h
 
 ## -- maintainerclean: built by maintainer / by hand
 MAINTAINERCLEANFILES = \
